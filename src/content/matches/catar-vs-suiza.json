@@ -7,13 +7,13 @@
   "homeTeamName": "Catar",
   "awayTeamName": "Suiza",
   "kickoffAt": "2026-06-13T19:00:00.000Z",
-  "phase": "odds_captured",
+  "phase": "finalized",
   "stake": {
     "eventUrl": "https://stake.pe/deportes/football/world/fifa-world-cup/catar-vs-suiza/event/21798324",
     "eventId": "21798324"
   },
   "apiFootball": {
-    "fixtureId": null
+    "fixtureId": 1505459
   },
   "odds": {
     "source": "stake",
@@ -36,7 +36,10 @@
             "participantType": "HOME_TEAM",
             "participantName": "Catar",
             "oddDecimal": 15.25,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "1",
             "sourceSelectionId": "3133858136",
             "rawMarketName": "Resultado del Partido",
@@ -49,7 +52,10 @@
             "operator": "DRAW",
             "participantType": "MATCH",
             "oddDecimal": 6.75,
-            "status": "pending",
+            "status": "won",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "1",
             "sourceSelectionId": "3133858137",
             "rawMarketName": "Resultado del Partido",
@@ -63,7 +69,10 @@
             "participantType": "AWAY_TEAM",
             "participantName": "Suiza",
             "oddDecimal": 1.2,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "1",
             "sourceSelectionId": "3133858138",
             "rawMarketName": "Resultado del Partido",
@@ -86,7 +95,10 @@
             "operator": "HOME_OR_DRAW",
             "participantType": "MATCH",
             "oddDecimal": 4.7,
-            "status": "pending",
+            "status": "won",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "3",
             "sourceSelectionId": "3133857694",
             "rawMarketName": "Doble Oportunidad",
@@ -99,7 +111,10 @@
             "operator": "HOME_OR_AWAY",
             "participantType": "MATCH",
             "oddDecimal": 1.111,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "3",
             "sourceSelectionId": "3133857693",
             "rawMarketName": "Doble Oportunidad",
@@ -123,7 +138,10 @@
             "participantType": "HOME_TEAM",
             "participantName": "Catar",
             "oddDecimal": 9.2,
-            "status": "pending",
+            "status": "void",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Empate final: seleccion anulada.",
             "sourceMarketId": "156",
             "sourceSelectionId": "3133858139",
             "rawMarketName": "Ganador sin empate",
@@ -147,7 +165,10 @@
             "participantType": "MATCH",
             "line": 2.5,
             "oddDecimal": 1.6,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
             "sourceSelectionId": "3133857871",
             "rawMarketName": "Total",
@@ -161,7 +182,10 @@
             "participantType": "MATCH",
             "line": 2.5,
             "oddDecimal": 2.35,
-            "status": "pending",
+            "status": "won",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
             "sourceSelectionId": "3133857872",
             "rawMarketName": "Total",
@@ -175,7 +199,10 @@
             "participantType": "MATCH",
             "line": 0.5,
             "oddDecimal": 13,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total llego a 2 goles.",
             "sourceMarketId": "6",
             "sourceSelectionId": "3133857868",
             "rawMarketName": "Total",
@@ -189,7 +216,10 @@
             "participantType": "MATCH",
             "line": 1.5,
             "oddDecimal": 1.17,
-            "status": "pending",
+            "status": "won",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total llego a 2 goles.",
             "sourceMarketId": "6",
             "sourceSelectionId": "3133857861",
             "rawMarketName": "Total",
@@ -203,7 +233,10 @@
             "participantType": "MATCH",
             "line": 1.5,
             "oddDecimal": 4.4,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total llego a 2 goles.",
             "sourceMarketId": "6",
             "sourceSelectionId": "3133857862",
             "rawMarketName": "Total",
@@ -217,7 +250,10 @@
             "participantType": "MATCH",
             "line": 3.5,
             "oddDecimal": 2.6,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
             "sourceSelectionId": "3133857859",
             "rawMarketName": "Total",
@@ -231,7 +267,10 @@
             "participantType": "MATCH",
             "line": 3.5,
             "oddDecimal": 1.5,
-            "status": "pending",
+            "status": "won",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
             "sourceSelectionId": "3133857860",
             "rawMarketName": "Total",
@@ -272,7 +311,10 @@
             "operator": "YES",
             "participantType": "MATCH",
             "oddDecimal": 2.35,
-            "status": "pending",
+            "status": "won",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Ambos equipos ya marcaron.",
             "sourceMarketId": "222",
             "sourceSelectionId": "3133857836",
             "rawMarketName": "Ambos equipos anotan",
@@ -285,7 +327,10 @@
             "operator": "NO",
             "participantType": "MATCH",
             "oddDecimal": 1.55,
-            "status": "pending",
+            "status": "lost",
+            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Ambos equipos ya marcaron.",
             "sourceMarketId": "222",
             "sourceSelectionId": "3133857835",
             "rawMarketName": "Ambos equipos anotan",
@@ -328,7 +373,8 @@
             "participantName": "Catar",
             "line": 1.5,
             "oddDecimal": 2.3,
-            "status": "pending",
+            "status": "unsupported",
+            "resolutionReason": "No hay regla implementada para este mercado.",
             "sourceMarketId": "4",
             "sourceSelectionId": "3133858371",
             "rawMarketName": "Hándicap",
@@ -343,7 +389,8 @@
             "participantName": "Suiza",
             "line": -1.5,
             "oddDecimal": 1.62,
-            "status": "pending",
+            "status": "unsupported",
+            "resolutionReason": "No hay regla implementada para este mercado.",
             "sourceMarketId": "4",
             "sourceSelectionId": "3133858372",
             "rawMarketName": "Hándicap",
@@ -358,7 +405,8 @@
             "participantName": "Catar",
             "line": 2.5,
             "oddDecimal": 1.47,
-            "status": "pending",
+            "status": "unsupported",
+            "resolutionReason": "No hay regla implementada para este mercado.",
             "sourceMarketId": "4",
             "sourceSelectionId": "3133858365",
             "rawMarketName": "Hándicap",
@@ -373,7 +421,8 @@
             "participantName": "Suiza",
             "line": -2.5,
             "oddDecimal": 2.7,
-            "status": "pending",
+            "status": "unsupported",
+            "resolutionReason": "No hay regla implementada para este mercado.",
             "sourceMarketId": "4",
             "sourceSelectionId": "3133858366",
             "rawMarketName": "Hándicap",
@@ -388,7 +437,8 @@
             "participantName": "Catar",
             "line": 3.5,
             "oddDecimal": 1.154,
-            "status": "pending",
+            "status": "unsupported",
+            "resolutionReason": "No hay regla implementada para este mercado.",
             "sourceMarketId": "4",
             "sourceSelectionId": "3133858367",
             "rawMarketName": "Hándicap",
@@ -403,7 +453,8 @@
             "participantName": "Suiza",
             "line": -3.5,
             "oddDecimal": 4.6,
-            "status": "pending",
+            "status": "unsupported",
+            "resolutionReason": "No hay regla implementada para este mercado.",
             "sourceMarketId": "4",
             "sourceSelectionId": "3133858368",
             "rawMarketName": "Hándicap",
@@ -418,7 +469,8 @@
             "participantName": "Suiza",
             "line": -4.5,
             "oddDecimal": 10,
-            "status": "pending",
+            "status": "unsupported",
+            "resolutionReason": "No hay regla implementada para este mercado.",
             "sourceMarketId": "4",
             "sourceSelectionId": "3133858370",
             "rawMarketName": "Hándicap",
@@ -595,10 +647,568 @@
       }
     ]
   },
-  "result": null,
+  "result": {
+    "status": "FT",
+    "elapsedMinutes": 90,
+    "score": {
+      "home": 1,
+      "away": 1,
+      "halftimeHome": 0,
+      "halftimeAway": 0
+    },
+    "firstScoringTeam": "HOME",
+    "yellowCards": {
+      "home": 2,
+      "away": 2
+    },
+    "corners": {
+      "home": 8,
+      "away": 3
+    },
+    "events": [
+      {
+        "type": "YELLOW_CARD",
+        "teamSide": "HOME",
+        "minute": 33,
+        "extraMinute": null,
+        "playerName": "F. Chamorro",
+        "providerEventId": "1505459-33-2341-0"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 44,
+        "extraMinute": null,
+        "playerName": "A. Zanini",
+        "providerEventId": "1505459-44-2341-1"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 46,
+        "extraMinute": null,
+        "playerName": "B. Soto",
+        "providerEventId": "1505459-46-2329-2"
+      },
+      {
+        "type": "YELLOW_CARD",
+        "teamSide": "HOME",
+        "minute": 53,
+        "extraMinute": null,
+        "playerName": "B. Gutierrez",
+        "providerEventId": "1505459-53-2341-3"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 55,
+        "extraMinute": null,
+        "playerName": "M. Collao",
+        "providerEventId": "1505459-55-2329-4"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 62,
+        "extraMinute": null,
+        "playerName": "E. Matus",
+        "providerEventId": "1505459-62-2329-5"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 62,
+        "extraMinute": null,
+        "playerName": "F. Troyansky",
+        "providerEventId": "1505459-62-2329-6"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 66,
+        "extraMinute": null,
+        "playerName": "F. Chamorro",
+        "providerEventId": "1505459-66-2341-7"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 66,
+        "extraMinute": null,
+        "playerName": "M. Pinto",
+        "providerEventId": "1505459-66-2341-8"
+      },
+      {
+        "type": "GOAL",
+        "teamSide": "HOME",
+        "minute": 74,
+        "extraMinute": null,
+        "playerName": "G. Escalante",
+        "providerEventId": "1505459-74-2341-9"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 79,
+        "extraMinute": null,
+        "playerName": "M. Fuentes",
+        "providerEventId": "1505459-79-2329-10"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 79,
+        "extraMinute": null,
+        "playerName": "F. Mateos",
+        "providerEventId": "1505459-79-2329-11"
+      },
+      {
+        "type": "YELLOW_CARD",
+        "teamSide": "HOME",
+        "minute": 80,
+        "extraMinute": null,
+        "playerName": "E. Ferrario",
+        "providerEventId": "1505459-80-2329-12"
+      },
+      {
+        "type": "GOAL",
+        "teamSide": "HOME",
+        "minute": 82,
+        "extraMinute": null,
+        "playerName": "D. Coelho",
+        "providerEventId": "1505459-82-2329-13"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 87,
+        "extraMinute": null,
+        "playerName": "M. Marin",
+        "providerEventId": "1505459-87-2341-14"
+      },
+      {
+        "type": "YELLOW_CARD",
+        "teamSide": "HOME",
+        "minute": 89,
+        "extraMinute": null,
+        "playerName": "D. Coelho",
+        "providerEventId": "1505459-89-2329-15"
+      },
+      {
+        "type": "SUBSTITUTION",
+        "teamSide": "HOME",
+        "minute": 90,
+        "extraMinute": 5,
+        "playerName": "J. Vargas",
+        "providerEventId": "1505459-90-2341-16"
+      }
+    ],
+    "playerStats": {
+      "player_11495": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_tomas-ahumada": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_11351": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_enzo-ferrario": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_11767": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_marco-collao": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_353976": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_daniel-pina": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_11356": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_raimundo-rebolledo": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_12226": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_federico-mateos": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_70464": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_bryan-soto": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_11713": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_michael-vadulli": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_353975": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_esteban-matus": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_414545": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_giovani-chiaverano": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_6131": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_franco-troyansky": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_356450": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_ignacio-fuenzalida": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_643105": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_vicente-zenteno": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_310594": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_paolo-guajardo": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_51347": {
+        "goals": 1,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_diego-coelho": {
+        "goals": 1,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_485674": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_mario-sandoval": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_362431": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_favian-loyola": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_307109": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_pedro-garrido": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_508431": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_martin-jimenez": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_408960": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_diego-monreal": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_357317": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_jose-tapia": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_237168": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_bruno-gutierrez": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_59297": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_andres-zanini": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_5935": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_rafael-delgado": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_371150": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_yahir-salazar": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_6717": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_francis-mac-allister": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_47388": {
+        "goals": 1,
+        "shotsOnTarget": 2,
+        "appeared": true
+      },
+      "player_gonzalo-escalante": {
+        "goals": 1,
+        "shotsOnTarget": 2,
+        "appeared": true
+      },
+      "player_343903": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_matias-pinto": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_274563": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_felipe-chamorro": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_11378": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_jeisson-vargas": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_11857": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_matias-marin": {
+        "goals": 0,
+        "shotsOnTarget": 1,
+        "appeared": true
+      },
+      "player_12070": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_joaquin-gutierrez": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_12078": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_sebastian-diaz": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_11840": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_angelo-henriquez": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_506569": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_fabricio-diaz": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_589528": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_milovan-velasquez": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": true
+      },
+      "player_411625": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_fernando-dinamarca": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_11728": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_joan-orellana": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_639759": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_bastian-sandoval": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_0": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      },
+      "player_maximo-hernandez": {
+        "goals": 0,
+        "shotsOnTarget": 0,
+        "appeared": false
+      }
+    }
+  },
   "metadata": {
     "createdAt": "2026-06-13T07:49:20.636Z",
-    "finalizedAt": null,
-    "lastEvaluatedAt": null
+    "finalizedAt": "2026-06-13T23:30:00.000Z",
+    "lastEvaluatedAt": "2026-06-13T23:30:00.000Z"
   }
 }

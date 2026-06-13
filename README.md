@@ -982,8 +982,9 @@ PLAYER_STATS_REFRESH_INTERVAL_MS=60000
 
 STAKE_ALLOWED_HOSTS=stake.pe
 STAKE_IMPORT_TIMEOUT_MS=45000
+STAKE_IMPORT_HEADLESS=true
 
-# Opcional para un navegador remoto.
+# Opcional para conectar un Chrome/Chromium real con remote debugging.
 BROWSER_WS_ENDPOINT=
 ```
 
@@ -1330,10 +1331,13 @@ El modo demo utilizará fixtures y simulará el avance del partido.
 Implementar estas opciones en este orden:
 
 1. **CLI local**, obligatorio y suficiente para el MVP.
-2. **Navegador remoto** mediante `BROWSER_WS_ENDPOINT`, opcional.
-3. **Worker separado**, opcional si se necesita automatización estable.
+2. **CLI local visible** con `--headed`, útil cuando el widget embebido de Stake no monta mercados en Chromium headless.
+3. **Navegador remoto** mediante `BROWSER_WS_ENDPOINT`, opcional. Puede ser un endpoint CDP de Chrome/Chromium como `http://127.0.0.1:9222` para reutilizar cookies, sesión y modales ya aceptados.
+4. **Worker separado**, opcional si se necesita automatización estable.
 
 El frontend y las APIs públicas deben permanecer en Vercel aunque el navegador se ejecute externamente.
+
+Guía operativa actual: [`docs/odds-capture.md`](docs/odds-capture.md).
 
 ---
 

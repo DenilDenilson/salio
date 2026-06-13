@@ -21,6 +21,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "stake:import": "tsx scripts/import-stake.ts",
     "odds:capture": "tsx scripts/odds-capture.ts",
+    "odds:capture:cdp": "BROWSER_WS_ENDPOINT=http://127.0.0.1:9222 tsx scripts/odds-capture.ts",
+    "odds:capture:headed": "tsx scripts/odds-capture.ts --headed",
     "fixture:search": "tsx scripts/fixture-search.ts",
     "match:finalize": "tsx scripts/match-finalize.ts"
   },

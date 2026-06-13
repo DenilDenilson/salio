@@ -11,6 +11,8 @@ import { MatchSnapshotSchema } from "../../src/server/snapshots/schema";
 const execFileAsync = promisify(execFile);
 const slug = `test-snapshot-${Date.now().toString(36)}`;
 const snapshotPath = snapshotPathForSlug(slug);
+const titleOnlySlug = `test-title-only-${Date.now().toString(36)}`;
+const titleOnlySnapshotPath = snapshotPathForSlug(titleOnlySlug);
 
 async function runCli(script: string, args: string[], demoMode = true) {
   const tsxBin = join(
@@ -37,11 +39,13 @@ async function readTempSnapshot() {
 }
 
 afterAll(async () => {
-  await unlink(snapshotPath).catch((error: NodeJS.ErrnoException) => {
-    if (error.code !== "ENOENT") {
-      throw error;
-    }
-  });
+  for (const path of [snapshotPath, titleOnlySnapshotPath]) {
+    await unlink(path).catch((error: NodeJS.ErrnoException) => {
+      if (error.code !== "ENOENT") {
+        throw error;
+      }
+    });
+  }
 });
 
 describe.sequential("snapshot CLIs", () => {
@@ -95,6 +99,47 @@ describe.sequential("snapshot CLIs", () => {
         }),
       ]),
     );
+  });
+
+  it("uses the match title as team fallback when Stake omits visible teams", async () => {
+    const { stdout } = await runCli("scripts/odds-capture.ts", [
+      "--slug",
+      titleOnlySlug,
+      "--stake-url",
+      "https://stake.pe/deportes/football/world/fifa-world-cup/brasil-vs-marruecos/event/21798325",
+      "--title",
+      "Brasil vs Marruecos",
+      "--kickoff",
+      "2026-06-13T22:00:00.000Z",
+      "--competition",
+      "Mundial 2026",
+      "--fixture-html",
+      "tests/fixtures/stake/event-without-visible-teams.html",
+      "--captured-at",
+      "2026-06-13T21:55:00.000Z",
+    ]);
+    const output = JSON.parse(stdout) as {
+      ok: boolean;
+      phase: string;
+      markets: number;
+    };
+    const snapshot = MatchSnapshotSchema.parse(
+      JSON.parse(await readFile(titleOnlySnapshotPath, "utf8")) as unknown,
+    );
+
+    expect(output).toMatchObject({
+      ok: true,
+      phase: "odds_captured",
+      markets: 1,
+    });
+    expect(snapshot).toMatchObject({
+      slug: titleOnlySlug,
+      title: "Brasil vs Marruecos",
+      homeTeamName: "Brasil",
+      awayTeamName: "Marruecos",
+      competitionName: "Mundial 2026",
+      stake: { eventId: "21798325" },
+    });
   });
 
   it("finds fixture candidates with the explicit demo provider", async () => {

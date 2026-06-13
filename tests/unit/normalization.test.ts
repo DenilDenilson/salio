@@ -141,6 +141,35 @@ describe("Stake normalization", () => {
     );
   });
 
+  it("drops markets without selections", () => {
+    const markets = normalizeStakeMarkets({
+      matchId: "empty-market",
+      homeTeamName: "Haití",
+      awayTeamName: "Escocia",
+      markets: [
+        {
+          rawMarketName: "Resultado del Partido",
+          displayOrder: 0,
+          selections: [],
+        },
+        {
+          rawMarketName: "Resultado del Partido",
+          displayOrder: 1,
+          selections: [
+            {
+              rawSelectionName: "Escocia",
+              oddDecimal: 1.52,
+              locked: false,
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(markets).toHaveLength(1);
+    expect(markets[0]?.selections).toHaveLength(1);
+  });
+
   it("handles accents, casing and spaces", () => {
     expect(normalizeText("  TÓtal   de Córners ")).toBe("total de corners");
     expect(detectMarketType("TOTAL DE CÓRNERS")).toBe(MarketType.TOTAL_CORNERS);

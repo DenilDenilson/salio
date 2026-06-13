@@ -34,6 +34,10 @@ const EnvSchema = z.object({
     .default(60_000),
   STAKE_ALLOWED_HOSTS: z.string().default("stake.pe"),
   STAKE_IMPORT_TIMEOUT_MS: z.coerce.number().int().positive().default(45_000),
+  STAKE_IMPORT_HEADLESS: z
+    .string()
+    .optional()
+    .transform((value) => value !== "false"),
   DEMO_MODE: z
     .string()
     .optional()

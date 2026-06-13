@@ -228,6 +228,7 @@ export function normalizeStakeMarkets(
         selections,
       };
     })
+    .filter((market) => market.selections.length > 0)
     .sort((a, b) => a.displayOrder - b.displayOrder);
 }
 

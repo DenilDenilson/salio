@@ -41,6 +41,7 @@ async function createServices(): Promise<Services> {
     allowedHosts: config.stakeAllowedHosts,
     timeoutMs: config.STAKE_IMPORT_TIMEOUT_MS,
     browserWsEndpoint: config.BROWSER_WS_ENDPOINT,
+    headless: config.STAKE_IMPORT_HEADLESS,
     fixtureHtmlPath: config.DEMO_MODE ? stakeFixturePath : undefined,
   });
   const provider = config.DEMO_MODE

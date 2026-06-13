@@ -4,6 +4,7 @@ import {
   optionalNumberArg,
   optionalStringArg,
   parseCliArgs,
+  parseMatchTitleTeams,
   requireStringArg,
 } from "../../src/server/snapshots/cli";
 
@@ -40,5 +41,17 @@ describe("snapshot CLI helpers", () => {
     expect(booleanFlag({ "demo-provider": "false" }, "demo-provider")).toBe(
       false,
     );
+  });
+
+  it("derives teams from visible match titles", () => {
+    expect(parseMatchTitleTeams("Brasil vs Marruecos")).toEqual({
+      home: "Brasil",
+      away: "Marruecos",
+    });
+    expect(parseMatchTitleTeams("Países Bajos vs. Japón")).toEqual({
+      home: "Países Bajos",
+      away: "Japón",
+    });
+    expect(parseMatchTitleTeams("Brasil contra Marruecos")).toBeNull();
   });
 });

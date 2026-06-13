@@ -1,10 +1,14 @@
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
+import type { Browser, BrowserContext, Page } from "playwright";
 import {
   type NormalizedMarket,
   normalizeStakeMarkets,
 } from "../../../domain/markets/normalization";
 import { AppError } from "../../errors";
 import { parseStakeEventHtml } from "./domParser";
+
+type PlaywrightModule = typeof import("playwright");
 
 export interface ImportedEvent {
   source: "stake";
@@ -38,7 +42,9 @@ export interface StakeImporterOptions {
   allowedHosts: string[];
   timeoutMs: number;
   browserWsEndpoint?: string;
+  headless?: boolean;
   fixtureHtmlPath?: string;
+  debugHtmlPath?: string;
 }
 
 export class StakeImporter implements OddsImporter {
@@ -84,16 +90,34 @@ export class StakeImporter implements OddsImporter {
   }): Promise<ImportedEvent> {
     const timeoutMs = this.options.timeoutMs;
     const payloads: unknown[] = [];
+    let browser: Browser | null = null;
+    let context: BrowserContext | null = null;
+    let page: Page | null = null;
+    let shouldCloseBrowser = false;
+    let shouldCloseContext = false;
 
     try {
       const playwright = await import("playwright");
-      const browser = this.options.browserWsEndpoint
-        ? await playwright.chromium.connect(this.options.browserWsEndpoint, {
-            timeout: timeoutMs,
-          })
-        : await playwright.chromium.launch({ headless: true });
-      const page = await browser.newPage();
+      const session = await openBrowserSession(
+        playwright,
+        this.options,
+        timeoutMs,
+      );
+      browser = session.browser;
+      context =
+        session.context ??
+        (await browser.newContext({
+          locale: "es-PE",
+          timezoneId: "America/Lima",
+          viewport: { width: 1640, height: 950 },
+        }));
+      shouldCloseBrowser = session.shouldCloseBrowser;
+      shouldCloseContext = session.context === null;
+      page = await context.newPage();
       page.setDefaultTimeout(timeoutMs);
+      await page.setViewportSize({ width: 1640, height: 950 }).catch(() => {
+        return undefined;
+      });
 
       page.on("response", (response) => {
         const request = response.request();
@@ -114,11 +138,21 @@ export class StakeImporter implements OddsImporter {
         waitUntil: "domcontentloaded",
         timeout: timeoutMs,
       });
+      await dismissStakeOverlays(page);
       await page
         .waitForLoadState("networkidle", { timeout: timeoutMs })
         .catch(() => undefined);
+      await dismissStakeOverlays(page);
+      await page
+        .waitForSelector(".wol-market, [data-market-id][data-market-name]", {
+          timeout: timeoutMs,
+        })
+        .catch(() => undefined);
       const html = await page.content();
-      await browser.close();
+      if (this.options.debugHtmlPath) {
+        await mkdir(dirname(this.options.debugHtmlPath), { recursive: true });
+        await writeFile(this.options.debugHtmlPath, html, "utf8");
+      }
 
       if (payloads.length > 0) {
         const fromHtml = importStakeHtml({
@@ -152,9 +186,86 @@ export class StakeImporter implements OddsImporter {
         "STAKE_PAGE_TIMEOUT",
         error instanceof Error ? error.message : "Stake import timed out.",
       );
+    } finally {
+      await page?.close().catch(() => undefined);
+      if (shouldCloseContext) {
+        await context?.close().catch(() => undefined);
+      }
+      if (shouldCloseBrowser) {
+        await browser?.close().catch(() => undefined);
+      }
     }
   }
   /* v8 ignore stop */
+}
+
+/* v8 ignore start */
+async function openBrowserSession(
+  playwright: PlaywrightModule,
+  options: StakeImporterOptions,
+  timeoutMs: number,
+): Promise<{
+  browser: Browser;
+  context: BrowserContext | null;
+  shouldCloseBrowser: boolean;
+}> {
+  if (!options.browserWsEndpoint) {
+    const browser = await playwright.chromium.launch({
+      headless: options.headless ?? true,
+    });
+    return { browser, context: null, shouldCloseBrowser: true };
+  }
+
+  if (isCdpEndpoint(options.browserWsEndpoint)) {
+    const browser = await playwright.chromium.connectOverCDP(
+      options.browserWsEndpoint,
+      { timeout: timeoutMs },
+    );
+    return {
+      browser,
+      context: browser.contexts()[0] ?? null,
+      shouldCloseBrowser: true,
+    };
+  }
+
+  const browser = await playwright.chromium.connect(options.browserWsEndpoint, {
+    timeout: timeoutMs,
+  });
+  return { browser, context: null, shouldCloseBrowser: true };
+}
+
+function isCdpEndpoint(endpoint: string): boolean {
+  return (
+    endpoint.startsWith("http://") ||
+    endpoint.startsWith("https://") ||
+    endpoint.includes("/devtools/browser/")
+  );
+}
+/* v8 ignore stop */
+
+type PlaywrightPage = {
+  locator: (selector: string) => {
+    first: () => {
+      click: (options?: { timeout?: number }) => Promise<unknown>;
+    };
+  };
+  waitForTimeout: (timeout: number) => Promise<unknown>;
+};
+
+async function dismissStakeOverlays(page: PlaywrightPage): Promise<void> {
+  for (const selector of [
+    "#gdpr-snackbar-accept",
+    'button:has-text("Aceptar")',
+    '[data-testid="styled-banner"] [aria-label="Cerrar"]',
+    '[aria-label="Cerrar"][role="button"]',
+  ]) {
+    await page
+      .locator(selector)
+      .first()
+      .click({ timeout: 800 })
+      .catch(() => undefined);
+  }
+  await page.waitForTimeout(250).catch(() => undefined);
 }
 
 export function importStakeHtml(input: {

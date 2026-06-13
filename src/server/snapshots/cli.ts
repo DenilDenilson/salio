@@ -39,6 +39,19 @@ export function optionalStringArg(args: CliArgs, key: string): string | null {
   return typeof value === "string" && value.trim().length > 0 ? value : null;
 }
 
+export function parseMatchTitleTeams(
+  title: string | null,
+): { home: string; away: string } | null {
+  if (!title) {
+    return null;
+  }
+  const [home, away] = title
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(/\s+vs\.?\s+/i);
+  return home && away ? { home, away } : null;
+}
+
 export function optionalNumberArg(args: CliArgs, key: string): number | null {
   const value = optionalStringArg(args, key);
   if (value === null) {

@@ -13,6 +13,7 @@ export default [
       "playwright-report/**",
       ".astro/**",
       ".vercel/**",
+      ".tmp/**",
     ],
   },
   js.configs.recommended,

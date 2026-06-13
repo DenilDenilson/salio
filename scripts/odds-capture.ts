@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { getConfig } from "../src/server/config";
 import { stakeFixturePath } from "../src/server/demo/seed";
+import { AppError } from "../src/server/errors";
 import { StakeImporter } from "../src/server/importers/stake/importer";
 import { buildOddsCapturedSnapshot } from "../src/server/snapshots/logic";
 import {
@@ -9,19 +10,27 @@ import {
   writeSnapshot,
 } from "../src/server/snapshots/io";
 import {
+  booleanFlag,
   optionalStringArg,
   parseCliArgs,
+  parseMatchTitleTeams,
   requireStringArg,
 } from "../src/server/snapshots/cli";
 
 const args = parseCliArgs(process.argv.slice(2));
+const usage =
+  'Uso: pnpm odds:capture -- --slug=equipo-a-vs-equipo-b --stake-url="https://stake.pe/..." --kickoff="2026-06-13T22:00:00.000Z" --title="Equipo A vs Equipo B" [--home="Equipo A"] [--away="Equipo B"] [--competition="Competición"] [--fixture-html="./stake.html"] [--debug-html="./tmp/stake-debug.html"] [--headed]';
 
 try {
   const config = getConfig();
   const slug = requireStringArg(args, "slug");
   const stakeUrl = requireStringArg(args, "stake-url");
-  const homeTeamName = optionalStringArg(args, "home") ?? undefined;
-  const awayTeamName = optionalStringArg(args, "away") ?? undefined;
+  const title = optionalStringArg(args, "title");
+  const titleTeams = parseMatchTitleTeams(title);
+  const homeTeamName =
+    optionalStringArg(args, "home") ?? titleTeams?.home ?? undefined;
+  const awayTeamName =
+    optionalStringArg(args, "away") ?? titleTeams?.away ?? undefined;
   const competitionName = optionalStringArg(args, "competition");
   const kickoffArg = optionalStringArg(args, "kickoff");
   const capturedAt = parseDateArg(
@@ -40,6 +49,10 @@ try {
     allowedHosts: config.stakeAllowedHosts,
     timeoutMs: config.STAKE_IMPORT_TIMEOUT_MS,
     browserWsEndpoint: config.BROWSER_WS_ENDPOINT,
+    headless: booleanFlag(args, "headed")
+      ? false
+      : config.STAKE_IMPORT_HEADLESS,
+    debugHtmlPath: optionalStringArg(args, "debug-html") ?? undefined,
     fixtureHtmlPath:
       optionalStringArg(args, "fixture-html") ??
       (config.DEMO_MODE ? stakeFixturePath : undefined),
@@ -61,9 +74,7 @@ try {
 
   const snapshot = buildOddsCapturedSnapshot({
     slug,
-    title:
-      optionalStringArg(args, "title") ??
-      `${imported.homeTeamName} vs ${imported.awayTeamName}`,
+    title: title ?? `${imported.homeTeamName} vs ${imported.awayTeamName}`,
     homeTeamName: homeTeamName ?? imported.homeTeamName,
     awayTeamName: awayTeamName ?? imported.awayTeamName,
     competitionName: competitionName ?? imported.competitionName,
@@ -97,9 +108,12 @@ try {
   );
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
-  console.error(
-    'Uso: pnpm odds:capture -- --slug=canada-vs-bosnia --stake-url="https://stake.pe/..." --kickoff="2026-06-12T19:00:00.000Z" [--title="Canadá vs Bosnia y Herzegovina"] [--home="Canadá"] [--away="Bosnia y Herzegovina"] [--competition="Amistoso internacional"]',
-  );
+  if (error instanceof AppError && error.code === "STAKE_NO_MARKETS_FOUND") {
+    console.error(
+      "Stake no expuso mercados en el HTML cargado por Playwright. Puede ser una pantalla intermedia, bloqueo, contenido lazy o una página sin cuotas visibles. Reintenta primero con --headed o conecta un Chrome real con BROWSER_WS_ENDPOINT=http://127.0.0.1:9222. Usa --debug-html para guardar lo que vio Playwright.",
+    );
+  }
+  console.error(usage);
   process.exit(1);
 }
 

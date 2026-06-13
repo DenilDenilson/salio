@@ -22,6 +22,7 @@ function config(overrides: Partial<AppConfig> = {}): AppConfig {
     PLAYER_STATS_REFRESH_INTERVAL_MS: 60_000,
     STAKE_ALLOWED_HOSTS: "stake.pe",
     STAKE_IMPORT_TIMEOUT_MS: 45_000,
+    STAKE_IMPORT_HEADLESS: true,
     DEMO_MODE: false,
     BROWSER_WS_ENDPOINT: undefined,
     stakeAllowedHosts: ["stake.pe"],

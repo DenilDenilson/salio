@@ -2,6 +2,7 @@ node_modules
 .astro
 dist
 .vercel
+.tmp
 coverage
 playwright-report
 test-results
