@@ -1,8 +1,26 @@
 # Stake Match Tracker
 
-Panel informativo que importa las cuotas prepartido de un evento público de Stake y muestra, durante el partido, qué selecciones ya se cumplieron, cuáles siguen pendientes y cuáles ya perdieron.
+Panel informativo que importa cuotas prepartido de un evento público de Stake, las congela en JSON y, después del partido, cruza esas cuotas con datos de API-Football para mostrar qué selecciones salieron y cuáles no.
 
-> Este proyecto no realiza apuestas, no gestiona dinero, no accede a cuentas de usuarios y no calcula montos apostados. Solo presenta cuotas públicas capturadas antes del inicio y las compara con datos deportivos en vivo.
+> Este proyecto no realiza apuestas, no gestiona dinero, no accede a cuentas de usuarios y no calcula montos apostados. Solo presenta cuotas públicas capturadas antes del inicio y las compara con datos deportivos finales.
+
+---
+
+## Estado actual implementado
+
+- La web pública se renderiza desde Astro Content Collections usando JSON versionados en `src/content/matches`.
+- No hay base de datos en el flujo público actual. Las cuotas prepartido y los resultados finales quedan congelados en archivos JSON.
+- La captura prepartido se hace localmente desde la URL pública de Stake con `pnpm odds:capture:cdp` o `pnpm odds:capture:headed`.
+- El modo recomendado para Stake es CDP: un Chromium/Chrome real abierto en `http://127.0.0.1:9222`, porque reutiliza cookies, modales aceptados y el DOM real del sportsbook.
+- La finalización post partido se hace con API-Football mediante `pnpm fixture:search` y `pnpm match:finalize`.
+- Los tests y CI usan fixtures/mocks. No deben llamar realmente a Stake ni a API-Football.
+- Decisiones técnicas relevantes están en `docs/decisions/`.
+
+Guías operativas:
+
+- Captura de cuotas: [`docs/odds-capture.md`](docs/odds-capture.md)
+- Decisión de snapshots estáticos: [`docs/decisions/0002-static-post-match-snapshots.md`](docs/decisions/0002-static-post-match-snapshots.md)
+- Modos de navegador para Stake: [`docs/decisions/0003-stake-live-capture-browser-modes.md`](docs/decisions/0003-stake-live-capture-browser-modes.md)
 
 ---
 
@@ -40,8 +58,8 @@ Ambos equipos marcan
 1. Los visitantes no pegan URLs ni configuran partidos.
 2. El administrador importa previamente una URL pública de Stake.
 3. Las cuotas se capturan antes del inicio y luego quedan congeladas.
-4. Durante el encuentro solo se actualizan los datos deportivos y el estado de las selecciones.
-5. Todos los visitantes ven el mismo estado compartido.
+4. Después del partido se consulta API-Football, se guarda el resultado final y se evalúan las selecciones.
+5. Todos los visitantes ven el mismo estado estático publicado.
 6. Los colores nunca son la única señal: cada estado debe incluir icono y texto accesible.
 7. No se debe intentar evadir CAPTCHA, autenticación, bloqueos geográficos, rate limits ni protecciones del sitio origen.
 8. Si un mercado no puede evaluarse con certeza, debe mostrarse como `unsupported`, nunca adivinarse.
@@ -52,24 +70,24 @@ Ambos equipos marcan
 
 ### Incluido
 
-- Aplicación en Astro desplegada en Vercel.
-- Página pública del partido.
-- Panel privado o comando CLI para importar una URL de Stake.
-- Captura de las cuotas prepartido.
-- Congelación de la última captura entre 2 y 5 minutos antes del inicio; valor por defecto: 3 minutos.
-- Integración con API-Football.
-- Polling del navegador cada 10 segundos.
-- Refresco del marcador y eventos cada 15 segundos.
-- Refresco de estadísticas colectivas y de jugadores cada 60 segundos.
-- Caché compartida y bloqueo distribuido para evitar llamadas duplicadas.
-- Persistencia en PostgreSQL.
+- Aplicación en Astro desplegable en Vercel.
+- Página principal con historial de partidos.
+- Página pública por partido en `/partidos/[slug]`.
+- Astro Content Collections como fuente pública de verdad.
+- Un JSON congelado por partido en `src/content/matches`.
+- Captura local de cuotas prepartido desde URL pública de Stake.
+- Modos de captura Stake: CDP con Chromium real y Playwright visible con `--headed`.
+- Búsqueda de fixture post partido en API-Football.
+- Finalización post partido con resultado, eventos, estadísticas y evaluación de selecciones.
 - Motor de reglas independiente del proveedor y de la UI.
-- Tests unitarios, de integración y end-to-end.
+- Validación con Zod.
+- Fixtures y mocks para tests; CI no llama Stake ni API-Football.
+- Tests unitarios, de integración y E2E.
 - Vista responsive y accesible.
-- Historial mínimo de actualizaciones y errores.
 
 ### Fuera del MVP
 
+- Seguimiento público en tiempo real durante el partido.
 - Apuestas en vivo o cambios de cuota después del inicio.
 - Registro de usuarios públicos.
 - Montos apostados por personas.
@@ -80,6 +98,7 @@ Ambos equipos marcan
 - Notificaciones push.
 - Aplicación móvil nativa.
 - Soporte completo para todos los deportes.
+- Base de datos para el render público actual.
 
 ---
 
@@ -92,9 +111,7 @@ Usar versiones estables compatibles entre sí.
 - **Despliegue web:** Vercel mediante `@astrojs/vercel`.
 - **Estilos:** Tailwind CSS.
 - **Validación:** Zod.
-- **Base de datos:** Supabase PostgreSQL.
-- **ORM y migraciones:** Drizzle ORM.
-- **Caché y locks:** Upstash Redis.
+- **Fuente pública de datos:** Astro Content Collections + JSON congelados.
 - **Proveedor deportivo:** API-Football v3.
 - **Importador web:** Playwright.
 - **Tests unitarios/integración:** Vitest.
@@ -103,35 +120,39 @@ Usar versiones estables compatibles entre sí.
 - **Lint/format:** ESLint + Prettier.
 - **CI:** GitHub Actions.
 
-No introducir Next.js, NestJS ni otro framework de backend salvo que exista un bloqueo técnico documentado.
+El repositorio conserva código legacy de Drizzle/PostgreSQL y servicios runtime, pero el flujo público actual no depende de base de datos ni Redis.
 
 ---
 
 ## 5. Arquitectura
 
 ```text
-┌──────────────────────────────────────────────────────┐
-│ Astro en Vercel                                      │
-│                                                      │
-│  /                          Página pública principal │
-│  /partidos/[slug]           Página pública opcional  │
-│  /admin                     Configuración privada    │
-│  /api/admin/...             Importación y mapping    │
-│  /api/matches/[slug]/state  Estado compartido        │
-└───────────────────────┬──────────────────────────────┘
-                        │
-                 ┌──────┴──────┐
-                 │             │
-                 ▼             ▼
-        Supabase PostgreSQL  Upstash Redis
-        datos persistentes   caché + locks
-                 ▲             ▲
-                 └──────┬──────┘
-                        │
-              refreshMatchIfStale()
-                        │
-                        ▼
-                 API-Football v3
+Prepartido local
+  Stake URL publica
+        │
+        ▼
+  pnpm odds:capture:cdp / odds:capture:headed
+        │
+        ▼
+  src/content/matches/<slug>.json
+
+Post partido local
+  pnpm fixture:search
+        │
+        ▼
+  API-Football fixtureId
+        │
+        ▼
+  pnpm match:finalize
+        │
+        ▼
+  JSON finalizado y evaluado
+
+Publicacion
+  Astro Content Collections
+        │
+        ▼
+  / y /partidos/[slug] prerenderizados
 ```
 
 ### Importación de Stake
@@ -543,9 +564,13 @@ evaluateSelection(
 
 ---
 
-## 13. Actualización en vivo
+## 13. Actualización en vivo legacy
 
-### Intervalos
+El flujo actual no hace seguimiento público en tiempo real. La web pública se publica desde JSON congelados y la actualización post partido ocurre con `pnpm match:finalize`.
+
+Esta sección queda como referencia para una posible versión futura con runtime compartido.
+
+### Intervalos propuestos
 
 ```text
 Cliente → endpoint compartido:       10 s
@@ -557,7 +582,7 @@ Partido finalizado:                   sin polling continuo
 
 API-Football publica una frecuencia aproximada de 15 segundos para fixtures y eventos del Mundial 2026. Consultar más rápido no garantiza datos más frescos.
 
-### Flujo request-driven
+### Flujo request-driven propuesto
 
 Cada cliente consulta:
 
@@ -565,7 +590,7 @@ Cada cliente consulta:
 GET /api/matches/:slug/state
 ```
 
-El endpoint:
+El endpoint futuro:
 
 1. Lee el último estado de PostgreSQL o Redis.
 2. Determina qué secciones están vencidas.
@@ -818,7 +843,12 @@ Fuerza un refresh deportivo con rate limit.
 Aunque exista panel administrativo, implementar también:
 
 ```bash
-pnpm stake:import --url="https://..." --slug="canada-vs-bosnia"
+pnpm odds:capture:cdp -- \
+  --slug=canada-vs-bosnia \
+  --stake-url="https://stake.pe/..." \
+  --kickoff="2026-06-12T19:00:00.000Z" \
+  --title="Canadá vs Bosnia y Herzegovina" \
+  --competition="Amistoso internacional"
 ```
 
 El CLI debe usar exactamente los mismos servicios de dominio que el endpoint.
@@ -960,29 +990,17 @@ Errores públicos deben ser genéricos. Registrar el detalle solo en servidor.
 Crear `.env.example` sin secretos reales:
 
 ```dotenv
-DATABASE_URL=
-DIRECT_URL=
-
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
-
+# Necesario para fixture:search y match:finalize reales.
 API_FOOTBALL_BASE_URL=https://v3.football.api-sports.io
 API_FOOTBALL_KEY=
 
-ADMIN_SESSION_SECRET=
-ADMIN_EMAIL=
-ADMIN_PASSWORD_HASH=
-
-PUBLIC_SITE_URL=http://localhost:4321
-ODDS_FREEZE_OFFSET_MINUTES=3
-PUBLIC_STATE_POLL_INTERVAL_MS=10000
-EVENTS_REFRESH_INTERVAL_MS=15000
-STATS_REFRESH_INTERVAL_MS=60000
-PLAYER_STATS_REFRESH_INTERVAL_MS=60000
-
+# Necesario para odds:capture real.
 STAKE_ALLOWED_HOSTS=stake.pe
 STAKE_IMPORT_TIMEOUT_MS=45000
 STAKE_IMPORT_HEADLESS=true
+
+# Usa fixtures locales y provider demo si lo activas.
+DEMO_MODE=false
 
 # Opcional para conectar un Chrome/Chromium real con remote debugging.
 BROWSER_WS_ENDPOINT=
@@ -1269,15 +1287,17 @@ No perseguir cobertura con tests triviales. Priorizar reglas y casos límite.
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx scripts/seed.ts",
-    "stake:import": "tsx scripts/import-stake.ts"
+    "stake:import": "tsx scripts/import-stake.ts",
+    "odds:capture": "tsx scripts/odds-capture.ts",
+    "odds:capture:cdp": "BROWSER_WS_ENDPOINT=http://127.0.0.1:9222 tsx scripts/odds-capture.ts",
+    "odds:capture:headed": "tsx scripts/odds-capture.ts --headed",
+    "fixture:search": "tsx scripts/fixture-search.ts",
+    "match:finalize": "tsx scripts/match-finalize.ts"
   }
 }
 ```
 
-El agente puede adaptar detalles del comando sin eliminar capacidades.
+`stake:import` queda como compatibilidad legacy. El flujo operativo actual usa `odds:capture:*`, `fixture:search` y `match:finalize`.
 
 ---
 
@@ -1285,9 +1305,7 @@ El agente puede adaptar detalles del comando sin eliminar capacidades.
 
 ```bash
 pnpm install
-cp .env.example .env
-pnpm db:migrate
-pnpm db:seed
+cp .env.example .env.local
 pnpm dev
 ```
 
@@ -1297,21 +1315,46 @@ Para Playwright:
 pnpm exec playwright install chromium
 ```
 
-Para importar:
+Para capturar cuotas prepartido con Chromium ya abierto:
 
 ```bash
-pnpm stake:import \
-  --url="https://stake.pe/deportes/..." \
-  --slug="estados-unidos-vs-paraguay"
+chromium --remote-debugging-port=9222 --user-data-dir=/tmp/stake-capture
 ```
 
-Debe existir un modo demo sin APIs:
+En otra terminal:
+
+```bash
+pnpm odds:capture:cdp -- \
+  --slug=australia-vs-rival \
+  --stake-url="URL_DE_STAKE_DEL_PARTIDO" \
+  --kickoff="2026-06-14T01:00:00.000Z" \
+  --title="Australia vs Rival" \
+  --competition="Mundial 2026"
+```
+
+Para capturar cuotas prepartido abriendo Chromium visible desde Playwright:
+
+```bash
+pnpm odds:capture:headed -- \
+  --slug=australia-vs-rival \
+  --stake-url="URL_DE_STAKE_DEL_PARTIDO" \
+  --kickoff="2026-06-14T01:00:00.000Z" \
+  --title="Australia vs Rival" \
+  --competition="Mundial 2026"
+```
+
+Para finalizar post partido:
+
+```bash
+pnpm fixture:search -- --slug=catar-vs-suiza
+pnpm match:finalize -- --slug=catar-vs-suiza --fixture-id=123456
+```
+
+El modo demo usa fixtures y providers locales:
 
 ```bash
 DEMO_MODE=true pnpm dev
 ```
-
-El modo demo utilizará fixtures y simulará el avance del partido.
 
 ---
 
@@ -1320,11 +1363,10 @@ El modo demo utilizará fixtures y simulará el avance del partido.
 ### Vercel
 
 - Añadir adaptador oficial de Astro para Vercel.
-- Usar renderizado bajo demanda para rutas dinámicas y endpoints.
+- Publicar páginas prerenderizadas desde `src/content/matches`.
 - Configurar variables de entorno.
-- Conectar Supabase y Upstash.
-- Ejecutar migraciones en un paso controlado, no automáticamente en cada request.
 - No incluir Chromium completo en la función principal.
+- Capturar cuotas y finalizar resultados localmente; luego hacer commit/deploy del JSON actualizado.
 
 ### Importador Playwright
 
@@ -1405,10 +1447,11 @@ El MVP está terminado cuando:
 - [ ] Se extraen correctamente mercados, selecciones y cuotas.
 - [ ] Se puede crear y publicar un partido.
 - [ ] Las cuotas quedan congeladas y muestran su hora de captura.
-- [ ] El partido se vincula a un fixture de API-Football.
+- [x] El partido se puede vincular a un fixture de API-Football con `fixture:search`.
 - [ ] La página pública carga sin autenticación.
-- [ ] El cliente actualiza cada 10 segundos.
-- [ ] El servidor evita llamadas duplicadas mediante Redis.
+- [x] La página pública carga desde JSON estático sin autenticación.
+- [ ] Seguimiento en vivo cada 10 segundos queda fuera del MVP actual.
+- [ ] Redis/locks quedan fuera del flujo público actual.
 - [ ] Resultado, goles, ambos marcan, primer gol, tarjetas y córners funcionan.
 - [ ] Al menos un mercado de jugador funciona si el proveedor entrega estadísticas.
 - [ ] Verde, rojo, gris, amarillo y unsupported tienen texto e icono.
@@ -1419,9 +1462,9 @@ El MVP está terminado cuando:
 - [ ] Se cumplen los umbrales de cobertura.
 - [ ] La aplicación compila y se despliega en Vercel.
 - [ ] No hay secretos en el repositorio.
-- [ ] Existe `.env.example`.
-- [ ] Existe modo demo reproducible.
-- [ ] README y decisiones técnicas quedan actualizados.
+- [x] Existe `.env.example`.
+- [x] Existe modo demo reproducible.
+- [x] README y decisiones técnicas quedan actualizados.
 
 ---
 
@@ -1431,10 +1474,9 @@ El MVP está terminado cuando:
 
 1. Crear proyecto Astro TypeScript.
 2. Configurar Vercel, React, Tailwind, Vitest y Playwright.
-3. Configurar Drizzle, Supabase y migraciones.
-4. Crear dominio y enums.
-5. Añadir `.env.example`.
-6. Configurar CI.
+3. Crear dominio y enums.
+4. Añadir `.env.example`.
+5. Configurar CI.
 
 ### Fase 2 — Importación
 
@@ -1444,16 +1486,15 @@ El MVP está terminado cuando:
 4. Añadir tests.
 5. Implementar CLI.
 6. Implementar snapshot y congelamiento.
-7. Añadir inspección de red Playwright como estrategia preferida.
+7. Añadir modos CDP y `--headed` para capturar desde el DOM real de Stake.
 
 ### Fase 3 — Datos deportivos
 
 1. Crear adaptador API-Football.
 2. Añadir schemas Zod.
 3. Implementar búsqueda y confirmación de fixture.
-4. Implementar caché y locks.
-5. Implementar `refreshMatchIfStale`.
-6. Añadir contract e integration tests.
+4. Implementar finalización post partido.
+5. Añadir contract e integration tests.
 
 ### Fase 4 — Reglas
 
