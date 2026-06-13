@@ -19,7 +19,10 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx scripts/seed.ts",
-    "stake:import": "tsx scripts/import-stake.ts"
+    "stake:import": "tsx scripts/import-stake.ts",
+    "odds:capture": "tsx scripts/odds-capture.ts",
+    "fixture:search": "tsx scripts/fixture-search.ts",
+    "match:finalize": "tsx scripts/match-finalize.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",

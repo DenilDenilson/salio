@@ -119,4 +119,127 @@ describe("Stake DOM parser", () => {
     );
     expect(() => parseStakeEventHtml(brokenSelection)).toThrow(AppError);
   });
+
+  it("uses explicit fallbacks when Stake omits event metadata", () => {
+    const parsed = parseStakeEventHtml(
+      `
+        <section class="wol-market" data-market-id="m1" data-market-name="Resultado">
+          <button data-odd-value="1.80" data-selection-name="Catar">Catar</button>
+          <button data-odd-value="3.40" data-selection-name="Empate">Empate</button>
+          <button data-odd-value="4.20" data-selection-name="Suiza">Suiza</button>
+        </section>
+      `,
+      {
+        homeTeamName: "Catar",
+        awayTeamName: "Suiza",
+        competitionName: "Mundial 2026",
+        kickoffAt: "2026-06-13T19:00:00.000Z",
+        eventId: "21798324",
+      },
+    );
+
+    expect(parsed).toMatchObject({
+      eventId: "21798324",
+      homeTeamName: "Catar",
+      awayTeamName: "Suiza",
+      competitionName: "Mundial 2026",
+      kickoffAt: "2026-06-13T19:00:00.000Z",
+    });
+    expect(parsed.markets[0]?.selections).toHaveLength(3);
+  });
+
+  it("infers visible Stake event metadata when explicit fallbacks are omitted", () => {
+    const parsed = parseStakeEventHtml(`
+      <ol class="wbc-breadcrumbs">
+        <li class="wbc-breadcrumb">
+          <div class="wbc-breadcrumb__toggle">
+            <div class="wbc-breadcrumb__typography">Mundial 2026</div>
+          </div>
+        </li>
+      </ol>
+      <section class="wpet">
+        <div class="wpet-teams__team__text"><span>Países Bajos vs. Japón</span></div>
+      </section>
+      <div class="wol-market" data-market-id="1">
+        <header class="wol-market__header">
+          <div class="wol-market__header__title">Resultado del Partido</div>
+        </header>
+        <div class="wol-odd" data-event-odd-id="home" data-event-id="21798328" data-odd-value="1.65">
+          <span class="wol-odd__info">Países Bajos <b class="purple"></b></span>
+        </div>
+        <div class="wol-odd" data-event-odd-id="away" data-event-id="21798328" data-odd-value="5.20">
+          <span class="wol-odd__info">Japón <b class="purple"></b></span>
+        </div>
+      </div>
+    `);
+
+    expect(parsed).toMatchObject({
+      eventId: "21798328",
+      homeTeamName: "Países Bajos",
+      awayTeamName: "Japón",
+      competitionName: "Mundial 2026",
+    });
+  });
+
+  it("extracts real Stake WOL market titles and odd labels", () => {
+    const parsed = parseStakeEventHtml(
+      `
+        <div class="wol-market" data-market-id="1">
+          <header class="wol-market__header">
+            <div class="wol-market__header__title">Resultado del Partido</div>
+          </header>
+          <div class="wol-market__body show">
+            <div class="wol-odd" data-event-odd-id="3133857683" data-event-id="21798324" data-odd-value="15.25" data-odd-id="1">
+              <div class="wol-odd-changer"><span class="wol-odd__info">Catar <b class="purple"></b></span><span class="wol-odd__value">15.25</span></div>
+            </div>
+            <div class="wol-odd" data-event-odd-id="3133857682" data-event-id="21798324" data-odd-value="1.17" data-odd-id="2">
+              <div class="wol-odd-changer"><span class="wol-odd__info">Suiza <b class="purple"></b></span><span class="wol-odd__value">1.17</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="wol-market" data-market-id="6">
+          <header class="wol-market__header">
+            <div class="wol-market__header__title">Total</div>
+          </header>
+          <div class="wol-market__body show">
+            <div class="wol-odd" data-event-odd-id="3133857871" data-event-id="21798324" data-additional-value="2.5" data-odd-value="1.6" data-odd-id="35" data-odd-ttl="_OVR">
+              <div class="wol-odd-changer"><span class="wol-odd__info">Más de <b class="purple"> 2.5</b></span><span class="wol-odd__value">1.60</span></div>
+            </div>
+          </div>
+        </div>
+      `,
+      {
+        homeTeamName: "Catar",
+        awayTeamName: "Suiza",
+        competitionName: "Mundial 2026",
+        kickoffAt: "2026-06-13T19:00:00.000Z",
+      },
+    );
+
+    expect(parsed.markets).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          sourceMarketId: "1",
+          rawMarketName: "Resultado del Partido",
+          selections: expect.arrayContaining([
+            expect.objectContaining({
+              rawSelectionName: "Catar",
+              oddDecimal: 15.25,
+            }),
+          ]),
+        }),
+        expect.objectContaining({
+          sourceMarketId: "6",
+          rawMarketName: "Total",
+          selections: expect.arrayContaining([
+            expect.objectContaining({
+              rawSelectionName: "Más de  2.5",
+              additionalValue: "2.5",
+              ttl: "_OVR",
+            }),
+          ]),
+        }),
+      ]),
+    );
+  });
 });

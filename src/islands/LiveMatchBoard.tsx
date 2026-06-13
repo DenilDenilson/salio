@@ -77,9 +77,13 @@ const statusFilters = [
 
 interface Props {
   initialState: StateResponse;
+  pollEnabled?: boolean;
 }
 
-export default function LiveMatchBoard({ initialState }: Props) {
+export default function LiveMatchBoard({
+  initialState,
+  pollEnabled = true,
+}: Props) {
   const [state, setState] = useState(initialState);
   const [category, setCategory] =
     useState<(typeof categoryFilters)[number]["id"]>("all");
@@ -88,7 +92,7 @@ export default function LiveMatchBoard({ initialState }: Props) {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    if (state.nextSuggestedPollMs >= 60_000) {
+    if (!pollEnabled || state.nextSuggestedPollMs >= 60_000) {
       return;
     }
     const interval = window.setInterval(() => {
@@ -100,7 +104,7 @@ export default function LiveMatchBoard({ initialState }: Props) {
         .catch(() => undefined);
     }, state.nextSuggestedPollMs);
     return () => window.clearInterval(interval);
-  }, [state.match.slug, state.nextSuggestedPollMs]);
+  }, [pollEnabled, state.match.slug, state.nextSuggestedPollMs]);
 
   const markets = useMemo(() => {
     return state.markets

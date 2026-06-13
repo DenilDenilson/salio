@@ -1,0 +1,504 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "canada-vs-bosnia",
+  "title": "Canadá vs Bosnia y Herzegovina",
+  "competitionName": "Copa Mundial 2026 · Grupo B",
+  "timezone": "America/Lima",
+  "homeTeamName": "Canadá",
+  "awayTeamName": "Bosnia y Herzegovina",
+  "kickoffAt": "2026-06-12T19:00:00.000Z",
+  "phase": "finalized",
+  "stake": {
+    "eventUrl": "https://stake.pe/deportes/futbol/world-cup/event-canada-bosnia-demo",
+    "eventId": "canada-bosnia-demo"
+  },
+  "apiFootball": {
+    "fixtureId": 990001
+  },
+  "odds": {
+    "source": "stake",
+    "capturedAt": "2026-06-12T18:57:00.000Z",
+    "frozen": true,
+    "markets": [
+      {
+        "id": "market_m3lit9",
+        "marketType": "MATCH_RESULT",
+        "rawMarketName": "Resultado",
+        "displayName": "Resultado",
+        "displayOrder": 10,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_17a6gta",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "MATCH_RESULT",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Canadá",
+            "oddDecimal": 1.86,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
+            "sourceMarketId": "m-result",
+            "sourceSelectionId": "s-home",
+            "rawMarketName": "Resultado",
+            "rawSelectionName": "Canadá"
+          },
+          {
+            "id": "selection_15fg2is",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "MATCH_RESULT",
+            "operator": "DRAW",
+            "participantType": "MATCH",
+            "oddDecimal": 3.4,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
+            "sourceMarketId": "m-result",
+            "sourceSelectionId": "s-draw",
+            "rawMarketName": "Resultado",
+            "rawSelectionName": "Empate"
+          },
+          {
+            "id": "selection_14327sf",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "MATCH_RESULT",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Bosnia y Herzegovina",
+            "oddDecimal": 4.2,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
+            "sourceMarketId": "m-result",
+            "sourceSelectionId": "s-away",
+            "rawMarketName": "Resultado",
+            "rawSelectionName": "Bosnia y Herzegovina"
+          }
+        ]
+      },
+      {
+        "id": "market_12x5ets",
+        "marketType": "DOUBLE_CHANCE",
+        "rawMarketName": "Doble oportunidad",
+        "displayName": "Doble oportunidad",
+        "displayOrder": 21,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_6sqhys",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "DOUBLE_CHANCE",
+            "operator": "HOME_OR_DRAW",
+            "participantType": "MATCH",
+            "oddDecimal": 1.22,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
+            "sourceMarketId": "m-double-chance",
+            "sourceSelectionId": "s-dc-1x",
+            "rawMarketName": "Doble oportunidad",
+            "rawSelectionName": "1X"
+          },
+          {
+            "id": "selection_6sp227",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "DOUBLE_CHANCE",
+            "operator": "HOME_OR_AWAY",
+            "participantType": "MATCH",
+            "oddDecimal": 1.32,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
+            "sourceMarketId": "m-double-chance",
+            "sourceSelectionId": "s-dc-12",
+            "rawMarketName": "Doble oportunidad",
+            "rawSelectionName": "12"
+          },
+          {
+            "id": "selection_6tye4p",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "DOUBLE_CHANCE",
+            "operator": "DRAW_OR_AWAY",
+            "participantType": "MATCH",
+            "oddDecimal": 1.85,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Resultado final 1-1.",
+            "sourceMarketId": "m-double-chance",
+            "sourceSelectionId": "s-dc-x2",
+            "rawMarketName": "Doble oportunidad",
+            "rawSelectionName": "X2"
+          }
+        ]
+      },
+      {
+        "id": "market_1osfy0",
+        "marketType": "DRAW_NO_BET",
+        "rawMarketName": "Ganador sin empate",
+        "displayName": "Ganador sin empate",
+        "displayOrder": 32,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_1o31637",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "DRAW_NO_BET",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Canadá",
+            "oddDecimal": 1.38,
+            "status": "void",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Empate final: seleccion anulada.",
+            "sourceMarketId": "m-dnb",
+            "sourceSelectionId": "s-dnb-home",
+            "rawMarketName": "Ganador sin empate",
+            "rawSelectionName": "Canadá"
+          },
+          {
+            "id": "selection_1kvwx2b",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "DRAW_NO_BET",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Bosnia y Herzegovina",
+            "oddDecimal": 2.95,
+            "status": "void",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Empate final: seleccion anulada.",
+            "sourceMarketId": "m-dnb",
+            "sourceSelectionId": "s-dnb-away",
+            "rawMarketName": "Ganador sin empate",
+            "rawSelectionName": "Bosnia y Herzegovina"
+          }
+        ]
+      },
+      {
+        "id": "market_y0p3mf",
+        "marketType": "TOTAL_GOALS",
+        "rawMarketName": "Total de goles",
+        "displayName": "Total de goles",
+        "displayOrder": 43,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_wa578j",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_GOALS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 0.5,
+            "oddDecimal": 1.07,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total llego a 2 goles.",
+            "sourceMarketId": "m-total-goals",
+            "sourceSelectionId": "s-goals-over-05",
+            "rawMarketName": "Total de goles",
+            "rawSelectionName": "Más de 0.5"
+          },
+          {
+            "id": "selection_wa5u83",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_GOALS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 1.5,
+            "oddDecimal": 1.34,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total llego a 2 goles.",
+            "sourceMarketId": "m-total-goals",
+            "sourceSelectionId": "s-goals-over-15",
+            "rawMarketName": "Total de goles",
+            "rawSelectionName": "Más de 1.5"
+          },
+          {
+            "id": "selection_wa6h7n",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_GOALS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 2.5,
+            "oddDecimal": 2.08,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 2 goles.",
+            "sourceMarketId": "m-total-goals",
+            "sourceSelectionId": "s-goals-over-25",
+            "rawMarketName": "Total de goles",
+            "rawSelectionName": "Más de 2.5"
+          },
+          {
+            "id": "selection_12xfgnw",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_GOALS",
+            "operator": "UNDER",
+            "participantType": "MATCH",
+            "line": 2.5,
+            "oddDecimal": 1.74,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 2 goles.",
+            "sourceMarketId": "m-total-goals",
+            "sourceSelectionId": "s-goals-under-25",
+            "rawMarketName": "Total de goles",
+            "rawSelectionName": "Menos de 2.5"
+          }
+        ]
+      },
+      {
+        "id": "market_1gcgl9t",
+        "marketType": "BOTH_TEAMS_TO_SCORE",
+        "rawMarketName": "Ambos equipos marcan",
+        "displayName": "Ambos equipos marcan",
+        "displayOrder": 54,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_1cxseq3",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "BOTH_TEAMS_TO_SCORE",
+            "operator": "YES",
+            "participantType": "MATCH",
+            "oddDecimal": 1.95,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Ambos equipos ya marcaron.",
+            "sourceMarketId": "m-btts",
+            "sourceSelectionId": "s-btts-yes",
+            "rawMarketName": "Ambos equipos marcan",
+            "rawSelectionName": "Sí"
+          },
+          {
+            "id": "selection_jwjhhg",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "BOTH_TEAMS_TO_SCORE",
+            "operator": "NO",
+            "participantType": "MATCH",
+            "oddDecimal": 1.82,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "Ambos equipos ya marcaron.",
+            "sourceMarketId": "m-btts",
+            "sourceSelectionId": "s-btts-no",
+            "rawMarketName": "Ambos equipos marcan",
+            "rawSelectionName": "No"
+          }
+        ]
+      },
+      {
+        "id": "market_sfn3ow",
+        "marketType": "FIRST_TEAM_TO_SCORE",
+        "rawMarketName": "Equipo que marca primero",
+        "displayName": "Equipo que marca primero",
+        "displayOrder": 65,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_s9ifyb",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "FIRST_TEAM_TO_SCORE",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Canadá",
+            "oddDecimal": 1.62,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El visitante marco primero.",
+            "sourceMarketId": "m-first-goal",
+            "sourceSelectionId": "s-first-home",
+            "rawMarketName": "Equipo que marca primero",
+            "rawSelectionName": "Canadá"
+          },
+          {
+            "id": "selection_p2e6xf",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "FIRST_TEAM_TO_SCORE",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Bosnia y Herzegovina",
+            "oddDecimal": 2.45,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El visitante marco primero.",
+            "sourceMarketId": "m-first-goal",
+            "sourceSelectionId": "s-first-away",
+            "rawMarketName": "Equipo que marca primero",
+            "rawSelectionName": "Bosnia y Herzegovina"
+          },
+          {
+            "id": "selection_v3stb2",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "FIRST_TEAM_TO_SCORE",
+            "operator": "NO",
+            "participantType": "MATCH",
+            "oddDecimal": 9.5,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El visitante marco primero.",
+            "sourceMarketId": "m-first-goal",
+            "sourceSelectionId": "s-first-none",
+            "rawMarketName": "Equipo que marca primero",
+            "rawSelectionName": "Ninguno"
+          }
+        ]
+      },
+      {
+        "id": "market_2nrcbu",
+        "marketType": "TOTAL_YELLOW_CARDS",
+        "rawMarketName": "Total de tarjetas amarillas",
+        "displayName": "Total de tarjetas amarillas",
+        "displayOrder": 76,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_1qs8ibz",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_YELLOW_CARDS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 4.5,
+            "oddDecimal": 2.1,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 3 tarjetas amarillas.",
+            "sourceMarketId": "m-yellow-cards",
+            "sourceSelectionId": "s-cards-over-45",
+            "rawMarketName": "Total de tarjetas amarillas",
+            "rawSelectionName": "Más de 4.5"
+          },
+          {
+            "id": "selection_1p1nejs",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_YELLOW_CARDS",
+            "operator": "UNDER",
+            "participantType": "MATCH",
+            "line": 4.5,
+            "oddDecimal": 1.7,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total termino en 3 tarjetas amarillas.",
+            "sourceMarketId": "m-yellow-cards",
+            "sourceSelectionId": "s-cards-under-45",
+            "rawMarketName": "Total de tarjetas amarillas",
+            "rawSelectionName": "Menos de 4.5"
+          }
+        ]
+      },
+      {
+        "id": "market_17gofa6",
+        "marketType": "TOTAL_CORNERS",
+        "rawMarketName": "Total de córners",
+        "displayName": "Total de corners",
+        "displayOrder": 87,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_oix0wd",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_CORNERS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 8.5,
+            "oddDecimal": 1.9,
+            "status": "won",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total llego a 11 corners.",
+            "sourceMarketId": "m-corners",
+            "sourceSelectionId": "s-corners-over-85",
+            "rawMarketName": "Total de córners",
+            "rawSelectionName": "Más de 8.5"
+          },
+          {
+            "id": "selection_bgfnaa",
+            "matchId": "canada-vs-bosnia",
+            "marketType": "TOTAL_CORNERS",
+            "operator": "UNDER",
+            "participantType": "MATCH",
+            "line": 8.5,
+            "oddDecimal": 1.88,
+            "status": "lost",
+            "resolvedAt": "2026-06-13T06:39:22.217Z",
+            "resolvedMinute": 90,
+            "resolutionReason": "El total llego a 11 corners.",
+            "sourceMarketId": "m-corners",
+            "sourceSelectionId": "s-corners-under-85",
+            "rawMarketName": "Total de córners",
+            "rawSelectionName": "Menos de 8.5"
+          }
+        ]
+      }
+    ]
+  },
+  "result": {
+    "status": "FT",
+    "elapsedMinutes": 90,
+    "score": {
+      "home": 1,
+      "away": 1,
+      "halftimeHome": 0,
+      "halftimeAway": 1
+    },
+    "firstScoringTeam": "AWAY",
+    "yellowCards": {
+      "home": 2,
+      "away": 1
+    },
+    "corners": {
+      "home": 8,
+      "away": 3
+    },
+    "events": [
+      {
+        "type": "GOAL",
+        "teamSide": "AWAY",
+        "minute": 21,
+        "extraMinute": null,
+        "playerName": "Jovo Lukic",
+        "providerEventId": "goal-bosnia-lukic-21"
+      },
+      {
+        "type": "GOAL",
+        "teamSide": "HOME",
+        "minute": 79,
+        "extraMinute": null,
+        "playerName": "Cyle Larin",
+        "providerEventId": "goal-canada-larin-79"
+      }
+    ],
+    "playerStats": {
+      "player_cyle-larin": {
+        "goals": 1,
+        "shotsOnTarget": 1,
+        "appeared": true
+      }
+    }
+  },
+  "metadata": {
+    "createdAt": "2026-06-12T18:57:00.000Z",
+    "finalizedAt": "2026-06-13T06:39:22.217Z",
+    "lastEvaluatedAt": "2026-06-13T06:39:22.217Z"
+  }
+}

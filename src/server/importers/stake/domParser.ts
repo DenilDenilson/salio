@@ -35,24 +35,45 @@ export const StakeDomParseResultSchema = z.object({
 
 export type StakeDomParseResult = z.infer<typeof StakeDomParseResultSchema>;
 
-export function parseStakeEventHtml(html: string): StakeDomParseResult {
+export interface StakeDomParseOptions {
+  homeTeamName?: string | null;
+  awayTeamName?: string | null;
+  competitionName?: string | null;
+  kickoffAt?: string | null;
+  eventId?: string | null;
+}
+
+export function parseStakeEventHtml(
+  html: string,
+  options: StakeDomParseOptions = {},
+): StakeDomParseResult {
   const root = parse(html);
+  const eventTeams = splitEventTitle(readEventTitle(root));
   const homeTeamName =
     readMeta(root, "home-team") ??
-    root.querySelector("[data-home-team]")?.getAttribute("data-home-team");
+    root.querySelector("[data-home-team]")?.getAttribute("data-home-team") ??
+    options.homeTeamName ??
+    eventTeams?.home ??
+    undefined;
   const awayTeamName =
     readMeta(root, "away-team") ??
-    root.querySelector("[data-away-team]")?.getAttribute("data-away-team");
+    root.querySelector("[data-away-team]")?.getAttribute("data-away-team") ??
+    options.awayTeamName ??
+    eventTeams?.away ??
+    undefined;
   const competitionName =
     readMeta(root, "competition") ??
     root
       .querySelector("[data-competition]")
       ?.getAttribute("data-competition") ??
+    options.competitionName ??
+    readCompetitionName(root) ??
     null;
-  const kickoffAt = readMeta(root, "kickoff-at");
+  const kickoffAt = readMeta(root, "kickoff-at") ?? options.kickoffAt ?? null;
   const eventId =
     readMeta(root, "event-id") ??
     root.querySelector("[data-event-id]")?.getAttribute("data-event-id") ??
+    options.eventId ??
     null;
 
   if (!homeTeamName || !awayTeamName) {
@@ -76,7 +97,9 @@ export function parseStakeEventHtml(html: string): StakeDomParseResult {
     const rawMarketName =
       marketNode.getAttribute("data-market-name") ??
       marketNode
-        .querySelector(".market-title, [data-market-title]")
+        .querySelector(
+          ".market-title, .wol-market__header__title, [data-market-title]",
+        )
         ?.text.trim() ??
       "";
     if (!rawMarketName) {
@@ -93,7 +116,9 @@ export function parseStakeEventHtml(html: string): StakeDomParseResult {
         const rawSelectionName =
           selectionNode.getAttribute("data-selection-name") ??
           selectionNode
-            .querySelector(".selection-name, [data-selection-title]")
+            .querySelector(
+              ".selection-name, .wol-odd__info, [data-selection-title]",
+            )
             ?.text.trim() ??
           selectionNode.text.trim();
         const sourceSelectionId =
@@ -168,6 +193,50 @@ function readMeta(
   return (
     root.querySelector(`meta[name="stake:${key}"]`)?.getAttribute("content") ??
     root.querySelector(`[data-${key}]`)?.getAttribute(`data-${key}`) ??
+    undefined
+  );
+}
+
+function readEventTitle(root: ReturnType<typeof parse>): string | undefined {
+  const title =
+    root.querySelector(".wpet-teams__team__text span")?.text.trim() ??
+    root.querySelector(".wbc-breadcrumb__no-hover")?.text.trim() ??
+    undefined;
+  if (title) {
+    return title;
+  }
+
+  const topEventTitle = root.querySelector(".wte-top-event-title");
+  const teamNames = topEventTitle
+    ?.querySelectorAll("span")
+    .map((node) => node.text.trim())
+    .filter((value) => value && !/^vs\.?$/i.test(value));
+  return teamNames && teamNames.length >= 2
+    ? `${teamNames[0]} vs. ${teamNames[1]}`
+    : undefined;
+}
+
+function splitEventTitle(
+  title: string | undefined,
+): { home: string; away: string } | undefined {
+  if (!title) {
+    return undefined;
+  }
+  const [home, away] = title
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(/\s+vs\.?\s+/i);
+  return home && away ? { home, away } : undefined;
+}
+
+function readCompetitionName(
+  root: ReturnType<typeof parse>,
+): string | undefined {
+  return (
+    root.querySelector(".wte-top-tournament-title")?.text.trim() ??
+    root
+      .querySelector(".wbc-breadcrumb__toggle .wbc-breadcrumb__typography")
+      ?.text.trim() ??
     undefined
   );
 }

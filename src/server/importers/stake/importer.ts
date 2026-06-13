@@ -27,6 +27,10 @@ export interface OddsImporter {
     url: string;
     capturedAt: Date;
     matchId: string;
+    fallbackHomeTeamName?: string;
+    fallbackAwayTeamName?: string;
+    fallbackCompetitionName?: string | null;
+    fallbackKickoffAt?: string | null;
   }): Promise<ImportedEvent>;
 }
 
@@ -44,6 +48,10 @@ export class StakeImporter implements OddsImporter {
     url: string;
     capturedAt: Date;
     matchId: string;
+    fallbackHomeTeamName?: string;
+    fallbackAwayTeamName?: string;
+    fallbackCompetitionName?: string | null;
+    fallbackKickoffAt?: string | null;
   }): Promise<ImportedEvent> {
     validateStakeUrl(input.url, this.options.allowedHosts);
 
@@ -54,6 +62,10 @@ export class StakeImporter implements OddsImporter {
         url: input.url,
         capturedAt: input.capturedAt,
         matchId: input.matchId,
+        fallbackHomeTeamName: input.fallbackHomeTeamName,
+        fallbackAwayTeamName: input.fallbackAwayTeamName,
+        fallbackCompetitionName: input.fallbackCompetitionName,
+        fallbackKickoffAt: input.fallbackKickoffAt,
       });
     }
 
@@ -65,6 +77,10 @@ export class StakeImporter implements OddsImporter {
     url: string;
     capturedAt: Date;
     matchId: string;
+    fallbackHomeTeamName?: string;
+    fallbackAwayTeamName?: string;
+    fallbackCompetitionName?: string | null;
+    fallbackKickoffAt?: string | null;
   }): Promise<ImportedEvent> {
     const timeoutMs = this.options.timeoutMs;
     const payloads: unknown[] = [];
@@ -110,6 +126,10 @@ export class StakeImporter implements OddsImporter {
           url: input.url,
           capturedAt: input.capturedAt,
           matchId: input.matchId,
+          fallbackHomeTeamName: input.fallbackHomeTeamName,
+          fallbackAwayTeamName: input.fallbackAwayTeamName,
+          fallbackCompetitionName: input.fallbackCompetitionName,
+          fallbackKickoffAt: input.fallbackKickoffAt,
         });
         return { ...fromHtml, rawFixture: { html, networkPayloads: payloads } };
       }
@@ -119,6 +139,10 @@ export class StakeImporter implements OddsImporter {
         url: input.url,
         capturedAt: input.capturedAt,
         matchId: input.matchId,
+        fallbackHomeTeamName: input.fallbackHomeTeamName,
+        fallbackAwayTeamName: input.fallbackAwayTeamName,
+        fallbackCompetitionName: input.fallbackCompetitionName,
+        fallbackKickoffAt: input.fallbackKickoffAt,
       });
     } catch (error) {
       if (error instanceof AppError) {
@@ -138,8 +162,18 @@ export function importStakeHtml(input: {
   url: string;
   capturedAt: Date;
   matchId: string;
+  fallbackHomeTeamName?: string;
+  fallbackAwayTeamName?: string;
+  fallbackCompetitionName?: string | null;
+  fallbackKickoffAt?: string | null;
 }): ImportedEvent {
-  const parsed = parseStakeEventHtml(input.html);
+  const parsed = parseStakeEventHtml(input.html, {
+    homeTeamName: input.fallbackHomeTeamName,
+    awayTeamName: input.fallbackAwayTeamName,
+    competitionName: input.fallbackCompetitionName,
+    kickoffAt: input.fallbackKickoffAt,
+    eventId: stakeEventIdFromUrl(input.url),
+  });
   return {
     source: "stake",
     sourceUrl: input.url,
@@ -193,4 +227,15 @@ function sanitizeHtmlForDebug(html: string): string {
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function stakeEventIdFromUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    const segments = parsed.pathname.split("/").filter(Boolean);
+    const eventIndex = segments.lastIndexOf("event");
+    return eventIndex >= 0 ? (segments[eventIndex + 1] ?? null) : null;
+  } catch {
+    return null;
+  }
 }

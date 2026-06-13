@@ -83,17 +83,20 @@ export function detectMarketType(rawName: string): MarketType {
   }
   if (
     name.includes("ambos equipos marcan") ||
+    name.includes("ambos equipos anotan") ||
     name.includes("both teams to score")
   ) {
     return MarketType.BOTH_TEAMS_TO_SCORE;
   }
   if (
     name.includes("equipo que marca primero") ||
-    name.includes("primer equipo en marcar")
+    name.includes("primer equipo en marcar") ||
+    name.includes("equipo - primer gol")
   ) {
     return MarketType.FIRST_TEAM_TO_SCORE;
   }
   if (
+    name.includes("total tarjetas amarillas") ||
     name.includes("total de tarjetas amarillas") ||
     name.includes("total yellow cards")
   ) {
@@ -102,13 +105,18 @@ export function detectMarketType(rawName: string): MarketType {
   if (
     name.includes("total de corners") ||
     name.includes("total de corn") ||
+    name.includes("total de esquinas") ||
     name.includes("total corners")
   ) {
     return MarketType.TOTAL_CORNERS;
   }
   if (
     name.includes("total de goles por equipo") ||
-    name.includes("team total goals")
+    name.includes("team total goals") ||
+    name.includes("total del local") ||
+    name.includes("total del visitante") ||
+    name.includes("total de goles del local") ||
+    name.includes("total de goles del visitante")
   ) {
     return MarketType.TEAM_TOTAL_GOALS;
   }
@@ -118,7 +126,15 @@ export function detectMarketType(rawName: string): MarketType {
   if (name.includes("marcador exacto") || name.includes("correct score")) {
     return MarketType.EXACT_SCORE;
   }
-  if (name.includes("primer tiempo") && name.includes("total")) {
+  if (
+    name.includes("total") &&
+    (name.includes("primer tiempo") ||
+      name.includes("primera mitad") ||
+      name.includes("1er tiempo") ||
+      name.includes("1er mitad") ||
+      name.includes("1ra mitad") ||
+      name.includes("first half"))
+  ) {
     return MarketType.FIRST_HALF_TOTAL_GOALS;
   }
   if (
@@ -131,7 +147,11 @@ export function detectMarketType(rawName: string): MarketType {
   if (name.includes("tiros a puerta") || name.includes("shots on target")) {
     return MarketType.PLAYER_SHOTS_ON_TARGET;
   }
-  if (name.includes("total de goles") || name === "total goals") {
+  if (
+    name.includes("total de goles") ||
+    name === "total goals" ||
+    name === "total"
+  ) {
     return MarketType.TOTAL_GOALS;
   }
 
@@ -336,7 +356,12 @@ function inferSelection(
     ].includes(marketType)
   ) {
     const operator =
-      text.includes("menos") || text.includes("under") || token.includes("_und")
+      text.includes("menos") ||
+      text.includes("inferior") ||
+      text.includes("abajo de") ||
+      text.includes("debajo de") ||
+      text.includes("under") ||
+      token.includes("_und")
         ? SelectionOperator.UNDER
         : SelectionOperator.OVER;
     const participant =
@@ -346,7 +371,14 @@ function inferSelection(
             participantName: stripLineWords(selection.rawSelectionName),
             participantId: playerId(stripLineWords(selection.rawSelectionName)),
           }
-        : teamTotalParticipant(text, home, away, homeTeamName, awayTeamName);
+        : teamTotalParticipant(
+            text,
+            home,
+            away,
+            homeTeamName,
+            awayTeamName,
+            selection.teamSide,
+          );
 
     return {
       operator,
@@ -359,7 +391,7 @@ function inferSelection(
 
   if (marketType === MarketType.BOTH_TEAMS_TO_SCORE) {
     return base(
-      text === "si" || text === "yes" || text === "s"
+      /\b(si|yes|s)\b/.test(text)
         ? SelectionOperator.YES
         : SelectionOperator.NO,
     );
@@ -435,6 +467,7 @@ function teamTotalParticipant(
   away: string,
   homeTeamName: string,
   awayTeamName: string,
+  teamSide?: string,
 ): Pick<
   NormalizedSelection,
   "participantType" | "participantName" | "participantId"
@@ -446,6 +479,18 @@ function teamTotalParticipant(
     };
   }
   if (isTeamNameMatch(text, away)) {
+    return {
+      participantType: ParticipantType.AWAY_TEAM,
+      participantName: awayTeamName,
+    };
+  }
+  if (teamSide === "1") {
+    return {
+      participantType: ParticipantType.HOME_TEAM,
+      participantName: homeTeamName,
+    };
+  }
+  if (teamSide === "2") {
     return {
       participantType: ParticipantType.AWAY_TEAM,
       participantName: awayTeamName,

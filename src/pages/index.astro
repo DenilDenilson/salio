@@ -1,26 +1,113 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
-import { getServices } from "../server/runtime";
+import { getCollection } from "astro:content";
 
-const { store } = await getServices();
-const current = await store.getPublishedCurrentMatch();
+export const prerender = true;
 
-if (current) {
-  return Astro.redirect(`/partidos/${current.slug}`);
+const matches = (await getCollection("matches")).sort(
+  (left, right) =>
+    new Date(right.data.kickoffAt).getTime() -
+    new Date(left.data.kickoffAt).getTime(),
+);
+
+function phaseLabel(phase: "odds_captured" | "finalized"): string {
+  return phase === "finalized" ? "Finalizado" : "Cuotas capturadas";
+}
+
+function phaseClass(phase: "odds_captured" | "finalized"): string {
+  return phase === "finalized"
+    ? "rounded-md border border-success/30 bg-green-50 px-2 py-1 text-xs font-medium text-success"
+    : "rounded-md border border-warning/40 bg-yellow-50 px-2 py-1 text-xs font-medium text-warning";
+}
+
+function formatDate(value: string): string {
+  return new Intl.DateTimeFormat("es", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
 }
 ---
 
 <AppLayout title="Stake Match Tracker">
   <main class="min-h-screen bg-[#f4f7fb]">
-    <section class="mx-auto max-w-3xl px-4 py-16 text-center">
-      <h1 class="text-3xl font-semibold text-ink">No hay partido publicado</h1>
-      <p class="mt-3 text-neutral">
-        Cuando el administrador publique un partido, aparecerá aquí.
-      </p>
-      <a
-        class="mt-6 inline-flex rounded-md bg-accent px-4 py-2 font-medium text-white"
-        href="/admin">Ir a admin</a
-      >
+    <section class="border-b border-line bg-white">
+      <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        <p class="text-sm font-medium text-accent">
+          Snapshots post-partido versionados
+        </p>
+        <h1 class="mt-1 text-3xl font-semibold text-ink">
+          Histórico de partidos
+        </h1>
+        <p class="mt-2 max-w-2xl text-neutral">
+          Cuotas prepartido congeladas y resultados deportivos agregados desde
+          archivos JSON validados en build.
+        </p>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      {
+        matches.length > 0 ? (
+          <div class="grid gap-3">
+            {matches.map((entry) => {
+              const match = entry.data;
+              const score = match.result?.score;
+              return (
+                <a
+                  class="grid gap-3 rounded-md border border-line bg-white p-4 transition hover:border-accent md:grid-cols-[1fr_auto]"
+                  href={`/partidos/${match.slug}`}
+                >
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h2 class="text-lg font-semibold text-ink">
+                        {match.title}
+                      </h2>
+                      <span class={phaseClass(match.phase)}>
+                        {phaseLabel(match.phase)}
+                      </span>
+                    </div>
+                    <p class="mt-1 text-sm text-neutral">
+                      {match.competitionName ?? "Competición sin nombre"} ·{" "}
+                      {formatDate(match.kickoffAt)}
+                    </p>
+                    <p class="mt-2 text-sm text-neutral">
+                      Cuotas capturadas {formatDate(match.odds.capturedAt)}
+                    </p>
+                  </div>
+                  <div class="self-center rounded-md border border-line bg-panel px-4 py-3 text-center">
+                    {score ? (
+                      <>
+                        <p class="text-sm font-medium text-neutral">
+                          {match.result?.status}
+                        </p>
+                        <p class="mt-1 text-2xl font-bold tabular-nums text-ink">
+                          {score.home} - {score.away}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p class="text-sm font-medium text-neutral">
+                          Pendiente
+                        </p>
+                        <p class="mt-1 text-sm text-ink">Sin resultado</p>
+                      </>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        ) : (
+          <div class="rounded-md border border-line bg-white p-6 text-center">
+            <h2 class="text-xl font-semibold text-ink">
+              No hay snapshots publicados
+            </h2>
+            <p class="mt-2 text-neutral">
+              Cuando captures cuotas o finalices un partido, aparecerá aquí.
+            </p>
+          </div>
+        )
+      }
     </section>
   </main>
 </AppLayout>

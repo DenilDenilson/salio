@@ -1,0 +1,73 @@
+import { describe, expect, it } from "vitest";
+import { ApiFootballProvider } from "../../src/server/providers/api-football/provider";
+import { DemoSportsProvider } from "../../src/server/providers/demoProvider";
+import { type AppConfig } from "../../src/server/config";
+import { createSnapshotSportsProvider } from "../../src/server/snapshots/providerFactory";
+
+function config(overrides: Partial<AppConfig> = {}): AppConfig {
+  return {
+    DATABASE_URL: undefined,
+    UPSTASH_REDIS_REST_URL: undefined,
+    UPSTASH_REDIS_REST_TOKEN: undefined,
+    API_FOOTBALL_BASE_URL: "https://api.example.test",
+    API_FOOTBALL_KEY: undefined,
+    ADMIN_SESSION_SECRET: "test-secret",
+    ADMIN_EMAIL: "admin@example.com",
+    ADMIN_PASSWORD_HASH: "demo",
+    PUBLIC_SITE_URL: "http://127.0.0.1:4321",
+    ODDS_FREEZE_OFFSET_MINUTES: 3,
+    PUBLIC_STATE_POLL_INTERVAL_MS: 10_000,
+    EVENTS_REFRESH_INTERVAL_MS: 15_000,
+    STATS_REFRESH_INTERVAL_MS: 60_000,
+    PLAYER_STATS_REFRESH_INTERVAL_MS: 60_000,
+    STAKE_ALLOWED_HOSTS: "stake.pe",
+    STAKE_IMPORT_TIMEOUT_MS: 45_000,
+    DEMO_MODE: false,
+    BROWSER_WS_ENDPOINT: undefined,
+    stakeAllowedHosts: ["stake.pe"],
+    ...overrides,
+  };
+}
+
+describe("snapshot provider factory", () => {
+  it("fails closed without API-Football key or explicit demo mode", () => {
+    expect(() =>
+      createSnapshotSportsProvider({
+        config: config(),
+        homeTeamName: "Canadá",
+        awayTeamName: "Bosnia y Herzegovina",
+      }),
+    ).toThrow(/Missing API_FOOTBALL_KEY/);
+  });
+
+  it("uses demo provider when DEMO_MODE=true", () => {
+    const provider = createSnapshotSportsProvider({
+      config: config({ DEMO_MODE: true }),
+      homeTeamName: "Canadá",
+      awayTeamName: "Bosnia y Herzegovina",
+    });
+
+    expect(provider).toBeInstanceOf(DemoSportsProvider);
+  });
+
+  it("uses demo provider when --demo-provider is explicit", () => {
+    const provider = createSnapshotSportsProvider({
+      config: config(),
+      homeTeamName: "Canadá",
+      awayTeamName: "Bosnia y Herzegovina",
+      demoProvider: true,
+    });
+
+    expect(provider).toBeInstanceOf(DemoSportsProvider);
+  });
+
+  it("creates the real provider only when an API-Football key is configured", () => {
+    const provider = createSnapshotSportsProvider({
+      config: config({ API_FOOTBALL_KEY: "test-key" }),
+      homeTeamName: "Canadá",
+      awayTeamName: "Bosnia y Herzegovina",
+    });
+
+    expect(provider).toBeInstanceOf(ApiFootballProvider);
+  });
+});

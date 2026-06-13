@@ -1,0 +1,604 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "catar-vs-suiza",
+  "title": "Catar vs Suiza",
+  "competitionName": "Mundial 2026",
+  "timezone": "America/Lima",
+  "homeTeamName": "Catar",
+  "awayTeamName": "Suiza",
+  "kickoffAt": "2026-06-13T19:00:00.000Z",
+  "phase": "odds_captured",
+  "stake": {
+    "eventUrl": "https://stake.pe/deportes/football/world/fifa-world-cup/catar-vs-suiza/event/21798324",
+    "eventId": "21798324"
+  },
+  "apiFootball": {
+    "fixtureId": null
+  },
+  "odds": {
+    "source": "stake",
+    "capturedAt": "2026-06-13T07:49:20.636Z",
+    "frozen": true,
+    "markets": [
+      {
+        "id": "market_1d",
+        "marketType": "MATCH_RESULT",
+        "rawMarketName": "Resultado del Partido",
+        "displayName": "Resultado",
+        "displayOrder": 10,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_1868fap",
+            "matchId": "catar-vs-suiza",
+            "marketType": "MATCH_RESULT",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Catar",
+            "oddDecimal": 15.25,
+            "status": "pending",
+            "sourceMarketId": "1",
+            "sourceSelectionId": "3133858136",
+            "rawMarketName": "Resultado del Partido",
+            "rawSelectionName": "Catar"
+          },
+          {
+            "id": "selection_1868g1f",
+            "matchId": "catar-vs-suiza",
+            "marketType": "MATCH_RESULT",
+            "operator": "DRAW",
+            "participantType": "MATCH",
+            "oddDecimal": 6.75,
+            "status": "pending",
+            "sourceMarketId": "1",
+            "sourceSelectionId": "3133858137",
+            "rawMarketName": "Resultado del Partido",
+            "rawSelectionName": "X"
+          },
+          {
+            "id": "selection_1868gs5",
+            "matchId": "catar-vs-suiza",
+            "marketType": "MATCH_RESULT",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Suiza",
+            "oddDecimal": 1.2,
+            "status": "pending",
+            "sourceMarketId": "1",
+            "sourceSelectionId": "3133858138",
+            "rawMarketName": "Resultado del Partido",
+            "rawSelectionName": "Suiza"
+          }
+        ]
+      },
+      {
+        "id": "market_1f",
+        "marketType": "DOUBLE_CHANCE",
+        "rawMarketName": "Doble Oportunidad",
+        "displayName": "Doble oportunidad",
+        "displayOrder": 24,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_r21t8t",
+            "matchId": "catar-vs-suiza",
+            "marketType": "DOUBLE_CHANCE",
+            "operator": "HOME_OR_DRAW",
+            "participantType": "MATCH",
+            "oddDecimal": 4.7,
+            "status": "pending",
+            "sourceMarketId": "3",
+            "sourceSelectionId": "3133857694",
+            "rawMarketName": "Doble Oportunidad",
+            "rawSelectionName": "1X"
+          },
+          {
+            "id": "selection_r21si5",
+            "matchId": "catar-vs-suiza",
+            "marketType": "DOUBLE_CHANCE",
+            "operator": "HOME_OR_AWAY",
+            "participantType": "MATCH",
+            "oddDecimal": 1.111,
+            "status": "pending",
+            "sourceMarketId": "3",
+            "sourceSelectionId": "3133857693",
+            "rawMarketName": "Doble Oportunidad",
+            "rawSelectionName": "12"
+          }
+        ]
+      },
+      {
+        "id": "market_11n6",
+        "marketType": "DRAW_NO_BET",
+        "rawMarketName": "Ganador sin empate",
+        "displayName": "Ganador sin empate",
+        "displayOrder": 33,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_dz1n3z",
+            "matchId": "catar-vs-suiza",
+            "marketType": "DRAW_NO_BET",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Catar",
+            "oddDecimal": 9.2,
+            "status": "pending",
+            "sourceMarketId": "156",
+            "sourceSelectionId": "3133858139",
+            "rawMarketName": "Ganador sin empate",
+            "rawSelectionName": "Apuesta sin empate - Catar"
+          }
+        ]
+      },
+      {
+        "id": "market_1i",
+        "marketType": "TOTAL_GOALS",
+        "rawMarketName": "Total",
+        "displayName": "Total de goles",
+        "displayOrder": 47,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_204fmz",
+            "matchId": "catar-vs-suiza",
+            "marketType": "TOTAL_GOALS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 2.5,
+            "oddDecimal": 1.6,
+            "status": "pending",
+            "sourceMarketId": "6",
+            "sourceSelectionId": "3133857871",
+            "rawMarketName": "Total",
+            "rawSelectionName": "Más de  2.5"
+          },
+          {
+            "id": "selection_204gdp",
+            "matchId": "catar-vs-suiza",
+            "marketType": "TOTAL_GOALS",
+            "operator": "UNDER",
+            "participantType": "MATCH",
+            "line": 2.5,
+            "oddDecimal": 2.35,
+            "status": "pending",
+            "sourceMarketId": "6",
+            "sourceSelectionId": "3133857872",
+            "rawMarketName": "Total",
+            "rawSelectionName": "Menos de  2.5"
+          },
+          {
+            "id": "selection_203xud",
+            "matchId": "catar-vs-suiza",
+            "marketType": "TOTAL_GOALS",
+            "operator": "UNDER",
+            "participantType": "MATCH",
+            "line": 0.5,
+            "oddDecimal": 13,
+            "status": "pending",
+            "sourceMarketId": "6",
+            "sourceSelectionId": "3133857868",
+            "rawMarketName": "Total",
+            "rawSelectionName": "Menos de  0.5"
+          },
+          {
+            "id": "selection_203snj",
+            "matchId": "catar-vs-suiza",
+            "marketType": "TOTAL_GOALS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 1.5,
+            "oddDecimal": 1.17,
+            "status": "pending",
+            "sourceMarketId": "6",
+            "sourceSelectionId": "3133857861",
+            "rawMarketName": "Total",
+            "rawSelectionName": "Más de  1.5"
+          },
+          {
+            "id": "selection_203te9",
+            "matchId": "catar-vs-suiza",
+            "marketType": "TOTAL_GOALS",
+            "operator": "UNDER",
+            "participantType": "MATCH",
+            "line": 1.5,
+            "oddDecimal": 4.4,
+            "status": "pending",
+            "sourceMarketId": "6",
+            "sourceSelectionId": "3133857862",
+            "rawMarketName": "Total",
+            "rawSelectionName": "Menos de  1.5"
+          },
+          {
+            "id": "selection_203blm",
+            "matchId": "catar-vs-suiza",
+            "marketType": "TOTAL_GOALS",
+            "operator": "OVER",
+            "participantType": "MATCH",
+            "line": 3.5,
+            "oddDecimal": 2.6,
+            "status": "pending",
+            "sourceMarketId": "6",
+            "sourceSelectionId": "3133857859",
+            "rawMarketName": "Total",
+            "rawSelectionName": "Más de  3.5"
+          },
+          {
+            "id": "selection_203rwx",
+            "matchId": "catar-vs-suiza",
+            "marketType": "TOTAL_GOALS",
+            "operator": "UNDER",
+            "participantType": "MATCH",
+            "line": 3.5,
+            "oddDecimal": 1.5,
+            "status": "pending",
+            "sourceMarketId": "6",
+            "sourceSelectionId": "3133857860",
+            "rawMarketName": "Total",
+            "rawSelectionName": "Menos de  3.5"
+          }
+        ]
+      },
+      {
+        "id": "market_13sp",
+        "marketType": "TOTAL_GOALS",
+        "rawMarketName": "Total de Goles del Visitante",
+        "displayName": "Total de goles",
+        "displayOrder": 49,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_11qn",
+        "marketType": "TOTAL_GOALS",
+        "rawMarketName": "1er mitad - Total de goles",
+        "displayName": "Total de goles",
+        "displayOrder": 54,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_12b6",
+        "marketType": "BOTH_TEAMS_TO_SCORE",
+        "rawMarketName": "Ambos equipos anotan",
+        "displayName": "Ambos equipos marcan",
+        "displayOrder": 55,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_1p4rgs7",
+            "matchId": "catar-vs-suiza",
+            "marketType": "BOTH_TEAMS_TO_SCORE",
+            "operator": "YES",
+            "participantType": "MATCH",
+            "oddDecimal": 2.35,
+            "status": "pending",
+            "sourceMarketId": "222",
+            "sourceSelectionId": "3133857836",
+            "rawMarketName": "Ambos equipos anotan",
+            "rawSelectionName": "Ambos equipos marcan - SÍ"
+          },
+          {
+            "id": "selection_1p4rg1j",
+            "matchId": "catar-vs-suiza",
+            "marketType": "BOTH_TEAMS_TO_SCORE",
+            "operator": "NO",
+            "participantType": "MATCH",
+            "oddDecimal": 1.55,
+            "status": "pending",
+            "sourceMarketId": "222",
+            "sourceSelectionId": "3133857835",
+            "rawMarketName": "Ambos equipos anotan",
+            "rawSelectionName": "Ambos equipos marcan - NO"
+          }
+        ]
+      },
+      {
+        "id": "market_134h",
+        "marketType": "TOTAL_YELLOW_CARDS",
+        "rawMarketName": "Total tarjetas amarillas",
+        "displayName": "Total de tarjetas amarillas",
+        "displayOrder": 85,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_11ot",
+        "marketType": "TOTAL_CORNERS",
+        "rawMarketName": "Total de esquinas",
+        "displayName": "Total de corners",
+        "displayOrder": 96,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_1g",
+        "marketType": "HANDICAP",
+        "rawMarketName": "Hándicap",
+        "displayName": "Handicap",
+        "displayOrder": 106,
+        "supported": true,
+        "selections": [
+          {
+            "id": "selection_j4eu4n",
+            "matchId": "catar-vs-suiza",
+            "marketType": "HANDICAP",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Catar",
+            "line": 1.5,
+            "oddDecimal": 2.3,
+            "status": "pending",
+            "sourceMarketId": "4",
+            "sourceSelectionId": "3133858371",
+            "rawMarketName": "Hándicap",
+            "rawSelectionName": "Catar  (+1.5)"
+          },
+          {
+            "id": "selection_j4euvd",
+            "matchId": "catar-vs-suiza",
+            "marketType": "HANDICAP",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Suiza",
+            "line": -1.5,
+            "oddDecimal": 1.62,
+            "status": "pending",
+            "sourceMarketId": "4",
+            "sourceSelectionId": "3133858372",
+            "rawMarketName": "Hándicap",
+            "rawSelectionName": "Suiza  (-1.5)"
+          },
+          {
+            "id": "selection_j4ea3y",
+            "matchId": "catar-vs-suiza",
+            "marketType": "HANDICAP",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Catar",
+            "line": 2.5,
+            "oddDecimal": 1.47,
+            "status": "pending",
+            "sourceMarketId": "4",
+            "sourceSelectionId": "3133858365",
+            "rawMarketName": "Hándicap",
+            "rawSelectionName": "Catar  (+2.5)"
+          },
+          {
+            "id": "selection_j4eauo",
+            "matchId": "catar-vs-suiza",
+            "marketType": "HANDICAP",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Suiza",
+            "line": -2.5,
+            "oddDecimal": 2.7,
+            "status": "pending",
+            "sourceMarketId": "4",
+            "sourceSelectionId": "3133858366",
+            "rawMarketName": "Hándicap",
+            "rawSelectionName": "Suiza  (-2.5)"
+          },
+          {
+            "id": "selection_j4eble",
+            "matchId": "catar-vs-suiza",
+            "marketType": "HANDICAP",
+            "operator": "HOME",
+            "participantType": "HOME_TEAM",
+            "participantName": "Catar",
+            "line": 3.5,
+            "oddDecimal": 1.154,
+            "status": "pending",
+            "sourceMarketId": "4",
+            "sourceSelectionId": "3133858367",
+            "rawMarketName": "Hándicap",
+            "rawSelectionName": "Catar  (+3.5)"
+          },
+          {
+            "id": "selection_j4ecc4",
+            "matchId": "catar-vs-suiza",
+            "marketType": "HANDICAP",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Suiza",
+            "line": -3.5,
+            "oddDecimal": 4.6,
+            "status": "pending",
+            "sourceMarketId": "4",
+            "sourceSelectionId": "3133858368",
+            "rawMarketName": "Hándicap",
+            "rawSelectionName": "Suiza  (-3.5)"
+          },
+          {
+            "id": "selection_j4ete4",
+            "matchId": "catar-vs-suiza",
+            "marketType": "HANDICAP",
+            "operator": "AWAY",
+            "participantType": "AWAY_TEAM",
+            "participantName": "Suiza",
+            "line": -4.5,
+            "oddDecimal": 10,
+            "status": "pending",
+            "sourceMarketId": "4",
+            "sourceSelectionId": "3133858370",
+            "rawMarketName": "Hándicap",
+            "rawSelectionName": "Suiza  (-4.5)"
+          }
+        ]
+      },
+      {
+        "id": "market_17k",
+        "marketType": "EXACT_SCORE",
+        "rawMarketName": "Marcador exacto",
+        "displayName": "Marcador exacto",
+        "displayOrder": 120,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_11jt",
+        "marketType": "ANYTIME_GOALSCORER",
+        "rawMarketName": "Jugador que marcará gol",
+        "displayName": "Jugador que marca",
+        "displayOrder": 143,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_12c4",
+        "marketType": "ANYTIME_GOALSCORER",
+        "rawMarketName": "Otros Goleadores",
+        "displayName": "Jugador que marca",
+        "displayOrder": 147,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_14pc",
+        "marketType": "PLAYER_SHOTS_ON_TARGET",
+        "rawMarketName": "Tiros a puerta de jugadores",
+        "displayName": "Tiros a puerta por jugador",
+        "displayOrder": 158,
+        "supported": true,
+        "selections": []
+      },
+      {
+        "id": "market_16vm",
+        "marketType": "UNSUPPORTED",
+        "rawMarketName": "Early Payout Moneyline",
+        "displayName": "Early Payout Moneyline",
+        "displayOrder": 901,
+        "supported": false,
+        "selections": [
+          {
+            "id": "selection_1uiihwj",
+            "matchId": "catar-vs-suiza",
+            "marketType": "UNSUPPORTED",
+            "operator": "EXACT",
+            "participantType": "MATCH",
+            "oddDecimal": 14.75,
+            "status": "unsupported",
+            "resolutionReason": "Este mercado todavia no puede evaluarse automaticamente.",
+            "sourceMarketId": "871",
+            "sourceSelectionId": "3133858164",
+            "rawMarketName": "Early Payout Moneyline",
+            "rawSelectionName": "EP - Catar"
+          },
+          {
+            "id": "selection_1uiiin9",
+            "matchId": "catar-vs-suiza",
+            "marketType": "UNSUPPORTED",
+            "operator": "EXACT",
+            "participantType": "MATCH",
+            "oddDecimal": 6.75,
+            "status": "unsupported",
+            "resolutionReason": "Este mercado todavia no puede evaluarse automaticamente.",
+            "sourceMarketId": "871",
+            "sourceSelectionId": "3133858165",
+            "rawMarketName": "Early Payout Moneyline",
+            "rawSelectionName": "Draw"
+          },
+          {
+            "id": "selection_1uiijdz",
+            "matchId": "catar-vs-suiza",
+            "marketType": "UNSUPPORTED",
+            "operator": "EXACT",
+            "participantType": "MATCH",
+            "oddDecimal": 1.17,
+            "status": "unsupported",
+            "resolutionReason": "Este mercado todavia no puede evaluarse automaticamente.",
+            "sourceMarketId": "871",
+            "sourceSelectionId": "3133858166",
+            "rawMarketName": "Early Payout Moneyline",
+            "rawSelectionName": "EP - Suiza"
+          }
+        ]
+      },
+      {
+        "id": "market_16vn",
+        "marketType": "UNSUPPORTED",
+        "rawMarketName": "Early Payout Moneyline by 1 Goal",
+        "displayName": "Early Payout Moneyline by 1 Goal",
+        "displayOrder": 902,
+        "supported": false,
+        "selections": [
+          {
+            "id": "selection_1m5ha69",
+            "matchId": "catar-vs-suiza",
+            "marketType": "UNSUPPORTED",
+            "operator": "EXACT",
+            "participantType": "MATCH",
+            "oddDecimal": 4.55,
+            "status": "unsupported",
+            "resolutionReason": "Este mercado todavia no puede evaluarse automaticamente.",
+            "sourceMarketId": "872",
+            "sourceSelectionId": "3133858141",
+            "rawMarketName": "Early Payout Moneyline by 1 Goal",
+            "rawSelectionName": "1 Goal EP - Catar"
+          },
+          {
+            "id": "selection_1m5hawz",
+            "matchId": "catar-vs-suiza",
+            "marketType": "UNSUPPORTED",
+            "operator": "EXACT",
+            "participantType": "MATCH",
+            "oddDecimal": 6.75,
+            "status": "unsupported",
+            "resolutionReason": "Este mercado todavia no puede evaluarse automaticamente.",
+            "sourceMarketId": "872",
+            "sourceSelectionId": "3133858142",
+            "rawMarketName": "Early Payout Moneyline by 1 Goal",
+            "rawSelectionName": "Draw"
+          },
+          {
+            "id": "selection_1m5hbnp",
+            "matchId": "catar-vs-suiza",
+            "marketType": "UNSUPPORTED",
+            "operator": "EXACT",
+            "participantType": "MATCH",
+            "oddDecimal": 1.133,
+            "status": "unsupported",
+            "resolutionReason": "Este mercado todavia no puede evaluarse automaticamente.",
+            "sourceMarketId": "872",
+            "sourceSelectionId": "3133858143",
+            "rawMarketName": "Early Payout Moneyline by 1 Goal",
+            "rawSelectionName": "1 Goal EP - Suiza"
+          }
+        ]
+      },
+      {
+        "id": "market_13so",
+        "marketType": "UNSUPPORTED",
+        "rawMarketName": "Total del Local",
+        "displayName": "Total del Local",
+        "displayOrder": 908,
+        "supported": false,
+        "selections": []
+      },
+      {
+        "id": "market_17l",
+        "marketType": "UNSUPPORTED",
+        "rawMarketName": "Descanso / Final",
+        "displayName": "Descanso / Final",
+        "displayOrder": 911,
+        "supported": false,
+        "selections": []
+      },
+      {
+        "id": "market_12b4",
+        "marketType": "UNSUPPORTED",
+        "rawMarketName": "Equipo - Primer gol",
+        "displayName": "Equipo - Primer gol",
+        "displayOrder": 912,
+        "supported": false,
+        "selections": []
+      }
+    ]
+  },
+  "result": null,
+  "metadata": {
+    "createdAt": "2026-06-13T07:49:20.636Z",
+    "finalizedAt": null,
+    "lastEvaluatedAt": null
+  }
+}

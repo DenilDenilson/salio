@@ -1,52 +1,27 @@
 ---
 import LiveMatchBoard from "../../islands/LiveMatchBoard";
 import AppLayout from "../../layouts/AppLayout.astro";
-import { publicErrorMessage } from "../../server/errors";
-import { getServices } from "../../server/runtime";
-import { refreshMatchIfStale } from "../../server/services/refresh";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { snapshotToStateResponse } from "../../server/snapshots/logic";
 
-const { slug } = Astro.params;
-const services = await getServices();
-let state = null;
-let error = null;
+export const prerender = true;
 
-try {
-  state = await refreshMatchIfStale({
-    slug: slug ?? "",
-    store: services.store,
-    cache: services.cache,
-    provider: services.provider,
-    options: {
-      pollMs: services.config.PUBLIC_STATE_POLL_INTERVAL_MS,
-      eventsRefreshMs: services.config.EVENTS_REFRESH_INTERVAL_MS,
-      statsRefreshMs: services.config.STATS_REFRESH_INTERVAL_MS,
-      playerStatsRefreshMs: services.config.PLAYER_STATS_REFRESH_INTERVAL_MS,
-    },
-  });
-} catch (caught) {
-  error =
-    caught instanceof Error
-      ? caught
-      : new Error("No se pudo cargar el partido.");
+export async function getStaticPaths() {
+  const matches = await getCollection("matches");
+  return matches.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
 }
+
+interface Props {
+  entry: CollectionEntry<"matches">;
+}
+
+const { entry } = Astro.props;
+const state = snapshotToStateResponse(entry.data);
 ---
 
-<AppLayout title={state ? state.match.title : "Partido"}>
-  {
-    state ? (
-      <LiveMatchBoard client:load initialState={state} />
-    ) : (
-      <main class="min-h-screen bg-[#f4f7fb]">
-        <section class="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h1 class="text-3xl font-semibold text-ink">
-            No se pudo cargar el partido
-          </h1>
-          <p class="mt-3 text-neutral">
-            {publicErrorMessage("MATCH_NOT_FOUND")}
-          </p>
-          <p class="mt-2 text-sm text-neutral">{error?.message}</p>
-        </section>
-      </main>
-    )
-  }
+<AppLayout title={state.match.title}>
+  <LiveMatchBoard client:load initialState={state} pollEnabled={false} />
 </AppLayout>

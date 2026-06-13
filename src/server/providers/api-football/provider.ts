@@ -214,11 +214,13 @@ export class ApiFootballProvider implements LiveSportsProvider {
   }
 
   private inferTeamSide(teamName: string): "HOME" | "AWAY" {
-    const name = teamName.toLowerCase();
-    if (
-      this.options.awayTeamName &&
-      name.includes(this.options.awayTeamName.toLowerCase())
-    ) {
+    const homeScore = this.options.homeTeamName
+      ? similarity(teamName, this.options.homeTeamName)
+      : 0;
+    const awayScore = this.options.awayTeamName
+      ? similarity(teamName, this.options.awayTeamName)
+      : 0;
+    if (awayScore > homeScore) {
       return "AWAY";
     }
     return "HOME";
@@ -307,6 +309,7 @@ function normalize(value: string): string {
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }

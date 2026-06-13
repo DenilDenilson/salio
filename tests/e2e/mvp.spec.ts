@@ -1,76 +1,59 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-test("admin creates, imports, maps, freezes and publishes a match", async ({
+test("home shows the static historical match list", async ({
   page,
 }, testInfo) => {
   test.skip(
     testInfo.project.name !== "chromium",
-    "Admin flow runs once; mobile has a dedicated layout smoke test.",
+    "Historical listing smoke runs once; mobile has a dedicated layout test.",
   );
 
-  const slug = `e2e-${Date.now()}`;
-  await page.goto("/admin");
-  await page.getByRole("button", { name: "Entrar" }).click();
+  await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Administración" }),
+    page.getByRole("heading", { name: "Histórico de partidos" }),
   ).toBeVisible();
-  await page.waitForLoadState("networkidle");
-  await page.waitForTimeout(250);
+  const matchLink = page.getByRole("link", {
+    name: /Canadá vs Bosnia y Herzegovina/,
+  });
+  await expect(matchLink).toBeVisible();
+  await expect(matchLink.getByText("Finalizado")).toBeVisible();
+  await expect(matchLink.getByText("1 - 1")).toBeVisible();
 
-  await page.getByLabel("Slug").fill(slug);
-  await page.getByLabel("Título").fill("Canadá vs Bosnia E2E");
-  await expect(page.getByLabel("Slug")).toHaveValue(slug);
-  await page.getByRole("button", { name: "Crear" }).click();
-  await page.waitForLoadState("networkidle");
-  await expect(page.locator("article").filter({ hasText: slug })).toBeVisible();
-
-  let article = page.locator("article").filter({ hasText: slug });
-  await article.getByRole("button", { name: "Importar Stake" }).click();
-  await page.waitForLoadState("networkidle");
-  article = page.locator("article").filter({ hasText: slug });
-  await article.getByRole("button", { name: "Buscar fixture" }).click();
+  await matchLink.click();
+  await page.waitForURL("**/partidos/canada-vs-bosnia");
   await expect(
-    article.getByRole("button", { name: "Confirmar" }),
+    page.getByRole("heading", { name: "Canadá vs Bosnia y Herzegovina" }),
   ).toBeVisible();
-  await article.getByRole("button", { name: "Confirmar" }).click();
-  await page.waitForLoadState("networkidle");
-  article = page.locator("article").filter({ hasText: slug });
-  await article.getByRole("button", { name: "Congelar" }).click();
-  await page.waitForLoadState("networkidle");
-  article = page.locator("article").filter({ hasText: slug });
-  await article.getByRole("button", { name: "Publicar" }).click();
-  await page.waitForLoadState("networkidle");
-
-  article = page.locator("article").filter({ hasText: slug });
-  await article.getByRole("link", { name: "Ver página" }).click();
-  await page.waitForURL(`/partidos/${slug}`);
-  await expect(
-    page.getByRole("heading", { name: /Canadá vs Bosnia/ }),
-  ).toBeVisible();
-  await expect(page.getByText("Cuotas congeladas")).toBeVisible();
 });
 
-test("public match board polls, updates statuses and keeps accessible state text", async ({
+test("public snapshot board renders frozen odds, resolved statuses and filters", async ({
   page,
-}) => {
-  await page.goto("/");
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name !== "chromium",
+    "Snapshot board interaction and axe scan run once.",
+  );
+
+  await page.goto("/partidos/canada-vs-bosnia");
   await expect(
     page.getByText("Sitio informativo no afiliado a Stake"),
   ).toBeVisible();
   await expect(page.getByText("1 - 1")).toBeVisible();
+  await expect(
+    page.getByText("Cuotas congeladas:", { exact: true }),
+  ).toBeVisible();
   await expect(page.getByText("Acertada").first()).toBeVisible();
   await expect(page.getByText("Perdida").first()).toBeVisible();
-  await expect(page.getByText("Minuto").first()).toBeVisible();
+  await expect(page.getByText("Anulada").first()).toBeVisible();
 
   await page.getByRole("button", { name: "Goles" }).click();
   await expect(page.getByText("Total de goles", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Perdidas" }).click();
-  await expect(page.getByText("Perdida").first()).toBeVisible();
   await page.getByPlaceholder("Selección").fill("Más de 2.5");
   await expect(
     page.getByText("Más de 2.5", { exact: true }).first(),
   ).toBeVisible();
+  await expect(page.getByText("Perdida").first()).toBeVisible();
 
   const results = await new AxeBuilder({ page }).analyze();
   expect(
@@ -85,10 +68,17 @@ test("mobile viewport does not overflow", async ({ page }, testInfo) => {
   );
   await page.goto("/");
   await expect(
-    page.getByText("Sitio informativo no afiliado a Stake"),
+    page.getByRole("heading", { name: "Histórico de partidos" }),
   ).toBeVisible();
-  const overflow = await page.evaluate(
+  const homeOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth,
   );
-  expect(overflow).toBe(false);
+  expect(homeOverflow).toBe(false);
+
+  await page.goto("/partidos/canada-vs-bosnia");
+  await expect(page.getByText("1 - 1")).toBeVisible();
+  const matchOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > window.innerWidth,
+  );
+  expect(matchOverflow).toBe(false);
 });
