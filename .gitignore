@@ -1,0 +1,11 @@
+node_modules
+.astro
+dist
+.vercel
+coverage
+playwright-report
+test-results
+.env
+.env.local
+.DS_Store
+.env.example

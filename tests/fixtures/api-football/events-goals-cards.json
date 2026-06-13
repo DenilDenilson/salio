@@ -1,0 +1,36 @@
+{
+  "response": [
+    {
+      "time": { "elapsed": 31, "extra": null },
+      "team": { "id": 1, "name": "Estados Unidos" },
+      "player": { "id": 10, "name": "Demo Striker" },
+      "type": "Goal",
+      "detail": "Normal Goal",
+      "comments": null
+    },
+    {
+      "time": { "elapsed": 50, "extra": null },
+      "team": { "id": 2, "name": "Paraguay" },
+      "player": { "id": 22, "name": "Visitante" },
+      "type": "Goal",
+      "detail": "Normal Goal",
+      "comments": null
+    },
+    {
+      "time": { "elapsed": 61, "extra": null },
+      "team": { "id": 1, "name": "Estados Unidos" },
+      "player": { "id": 10, "name": "Demo Striker" },
+      "type": "Goal",
+      "detail": "Normal Goal",
+      "comments": null
+    },
+    {
+      "time": { "elapsed": 70, "extra": null },
+      "team": { "id": 2, "name": "Paraguay" },
+      "player": { "id": 2, "name": "Defensor" },
+      "type": "Card",
+      "detail": "Yellow Card",
+      "comments": null
+    }
+  ]
+}

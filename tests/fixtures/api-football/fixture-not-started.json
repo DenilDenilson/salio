@@ -1,0 +1,18 @@
+{
+  "response": [
+    {
+      "fixture": {
+        "id": 990001,
+        "date": "2026-06-20T21:00:00+00:00",
+        "status": { "short": "NS", "elapsed": null }
+      },
+      "league": { "name": "Amistoso internacional" },
+      "teams": {
+        "home": { "id": 1, "name": "Estados Unidos" },
+        "away": { "id": 2, "name": "Paraguay" }
+      },
+      "goals": { "home": null, "away": null },
+      "score": { "halftime": { "home": null, "away": null } }
+    }
+  ]
+}

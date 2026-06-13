@@ -1,0 +1,26 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { getServices } from "../server/runtime";
+
+const { store } = await getServices();
+const current = await store.getPublishedCurrentMatch();
+
+if (current) {
+  return Astro.redirect(`/partidos/${current.slug}`);
+}
+---
+
+<AppLayout title="Stake Match Tracker">
+  <main class="min-h-screen bg-[#f4f7fb]">
+    <section class="mx-auto max-w-3xl px-4 py-16 text-center">
+      <h1 class="text-3xl font-semibold text-ink">No hay partido publicado</h1>
+      <p class="mt-3 text-neutral">
+        Cuando el administrador publique un partido, aparecerá aquí.
+      </p>
+      <a
+        class="mt-6 inline-flex rounded-md bg-accent px-4 py-2 font-medium text-white"
+        href="/admin">Ir a admin</a
+      >
+    </section>
+  </main>
+</AppLayout>

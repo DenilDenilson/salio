@@ -1,0 +1,1 @@
+export { evaluateSelection } from "./evaluateSelection";

@@ -1,0 +1,55 @@
+---
+import AdminPanel from "../../islands/AdminPanel";
+import AppLayout from "../../layouts/AppLayout.astro";
+import { getCsrfFromCookies, readSession } from "../../server/auth/session";
+import { getServices } from "../../server/runtime";
+
+const services = await getServices();
+const session = readSession(Astro.request, services.config);
+const matches = await services.store.listMatches();
+const csrfToken = getCsrfFromCookies(Astro.cookies);
+---
+
+<AppLayout title="Admin">
+  {
+    session ? (
+      <AdminPanel client:load matches={matches} csrfToken={csrfToken} />
+    ) : (
+      <main class="min-h-screen bg-[#f4f7fb]">
+        <section class="mx-auto max-w-sm px-4 py-16">
+          <form
+            class="rounded-md border border-line bg-white p-5"
+            method="post"
+            action="/api/admin/login"
+          >
+            <h1 class="text-2xl font-semibold text-ink">Admin</h1>
+            <label class="mt-4 block text-sm font-medium">
+              Email
+              <input
+                class="mt-1 w-full rounded-md border border-line px-3 py-2"
+                name="email"
+                type="email"
+                value="admin@example.com"
+              />
+            </label>
+            <label class="mt-3 block text-sm font-medium">
+              Contraseña
+              <input
+                class="mt-1 w-full rounded-md border border-line px-3 py-2"
+                name="password"
+                type="password"
+                value="admin"
+              />
+            </label>
+            <button
+              class="mt-4 w-full rounded-md bg-accent px-3 py-2 font-medium text-white"
+              type="submit"
+            >
+              Entrar
+            </button>
+          </form>
+        </section>
+      </main>
+    )
+  }
+</AppLayout>
