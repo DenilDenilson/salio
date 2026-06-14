@@ -60,26 +60,21 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f4f7fb]">
-      <section className="border-b border-line bg-white">
+    <main className="metal-shell">
+      <section className="metal-header">
         <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold text-ink">Administración</h1>
           <p className="mt-1 text-sm text-neutral">
             Importación, mapping, congelamiento y publicación.
           </p>
           {message ? (
-            <p className="mt-3 rounded-md border border-line bg-panel p-3 text-sm">
-              {message}
-            </p>
+            <p className="metal-panel mt-3 rounded-md p-3 text-sm">{message}</p>
           ) : null}
         </div>
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[22rem_1fr] lg:px-8">
-        <form
-          className="rounded-md border border-line bg-white p-4"
-          onSubmit={handleCreate}
-        >
+        <form className="metal-card rounded-md p-4" onSubmit={handleCreate}>
           <h2 className="text-lg font-semibold">Crear partido</h2>
           <Field name="slug" label="Slug" defaultValue="canada-vs-bosnia" />
           <Field
@@ -115,7 +110,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
             defaultValue="https://stake.pe/deportes/futbol/world-cup/event-canada-bosnia-demo"
           />
           <button
-            className="mt-4 w-full rounded-md bg-accent px-3 py-2 font-medium text-white"
+            className="mt-4 w-full rounded-md border border-accent bg-accent/20 px-3 py-2 font-medium text-accent shadow-[0_0_18px_rgba(52,214,255,0.16)]"
             type="submit"
           >
             Crear
@@ -124,10 +119,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
 
         <div className="space-y-4">
           {matches.map((match) => (
-            <article
-              className="rounded-md border border-line bg-white p-4"
-              key={match.id}
-            >
+            <article className="metal-card rounded-md p-4" key={match.id}>
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
                   <h2 className="text-lg font-semibold">{match.title}</h2>
@@ -146,7 +138,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 <button
-                  className="rounded-md border border-line px-3 py-2 text-sm font-medium"
+                  className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent"
                   type="button"
                   onClick={() =>
                     run("Importar Stake", async () => {
@@ -161,7 +153,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                   Importar Stake
                 </button>
                 <button
-                  className="rounded-md border border-line px-3 py-2 text-sm font-medium"
+                  className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent"
                   type="button"
                   onClick={() =>
                     run("Buscar fixture", async () => {
@@ -178,7 +170,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                   Buscar fixture
                 </button>
                 <button
-                  className="rounded-md border border-line px-3 py-2 text-sm font-medium"
+                  className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent"
                   type="button"
                   onClick={() =>
                     run("Congelar", async () => {
@@ -190,7 +182,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                   Congelar
                 </button>
                 <button
-                  className="rounded-md border border-line px-3 py-2 text-sm font-medium"
+                  className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent"
                   type="button"
                   onClick={() =>
                     run("Publicar", async () => {
@@ -202,7 +194,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                   Publicar
                 </button>
                 <button
-                  className="rounded-md border border-line px-3 py-2 text-sm font-medium"
+                  className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent"
                   type="button"
                   onClick={() =>
                     run("Refresh", async () =>
@@ -220,7 +212,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                 <div className="mt-4 space-y-2">
                   {candidates[match.id].map((candidate) => (
                     <div
-                      className="flex flex-col gap-2 rounded-md border border-line bg-panel p-3 md:flex-row md:items-center md:justify-between"
+                      className="metal-panel flex flex-col gap-2 rounded-md p-3 md:flex-row md:items-center md:justify-between"
                       key={candidate.fixtureId}
                     >
                       <div className="text-sm">
@@ -233,7 +225,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                         </p>
                       </div>
                       <button
-                        className="rounded-md bg-accent px-3 py-2 text-sm font-medium text-white"
+                        className="rounded-md border border-accent bg-accent/20 px-3 py-2 text-sm font-medium text-accent"
                         type="button"
                         onClick={() =>
                           run("Confirmar fixture", async () => {
@@ -276,7 +268,7 @@ function Field({
     <label className="mt-3 block text-sm font-medium text-ink">
       {label}
       <input
-        className="mt-1 w-full rounded-md border border-line px-3 py-2 text-sm"
+        className="mt-1 w-full rounded-md border border-line bg-[#090f18] px-3 py-2 text-sm text-ink outline-none placeholder:text-neutral/60 focus:border-accent"
         name={name}
         type={type}
         defaultValue={defaultValue}

@@ -14,27 +14,27 @@ const stateLabels: Record<
   pending: {
     icon: "○",
     label: "Pendiente",
-    className: "border-neutral/30 bg-white text-neutral",
+    className: "status-pill",
   },
   won: {
     icon: "✓",
     label: "Acertada",
-    className: "border-success/30 bg-green-50 text-success",
+    className: "status-pill status-won",
   },
   lost: {
     icon: "✕",
     label: "Perdida",
-    className: "border-danger/30 bg-red-50 text-danger",
+    className: "status-pill status-lost",
   },
   void: {
     icon: "↺",
     label: "Anulada",
-    className: "border-warning/40 bg-yellow-50 text-warning",
+    className: "status-pill status-void",
   },
   unsupported: {
     icon: "?",
     label: "Sin evaluación",
-    className: "border-line bg-slate-100 text-neutral",
+    className: "status-pill status-unsupported",
   },
 };
 
@@ -131,15 +131,15 @@ export default function LiveMatchBoard({
   }, [state.markets]);
 
   return (
-    <main className="min-h-screen bg-[#f4f7fb]">
-      <section className="border-b border-line bg-white">
+    <main className="metal-shell">
+      <section className="metal-header">
         <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-medium text-accent">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-accent">
                 Sitio informativo no afiliado a Stake
               </p>
-              <h1 className="mt-1 text-2xl font-semibold text-ink sm:text-3xl">
+              <h1 className="mt-2 text-2xl font-semibold text-ink sm:text-3xl">
                 {state.match.title}
               </h1>
               <p className="mt-1 text-sm text-neutral">
@@ -148,7 +148,7 @@ export default function LiveMatchBoard({
               </p>
             </div>
             <div
-              className="rounded-md border border-line bg-panel px-4 py-3"
+              className="metal-panel rounded-md px-4 py-3"
               aria-live="polite"
             >
               <div className="text-sm font-medium text-neutral">
@@ -158,7 +158,7 @@ export default function LiveMatchBoard({
                 <span className="max-w-[8rem] truncate text-base font-semibold">
                   {state.match.homeTeamName}
                 </span>
-                <span className="text-3xl font-bold tabular-nums">
+                <span className="text-3xl font-bold tabular-nums text-ink drop-shadow-[0_0_14px_rgba(52,214,255,0.24)]">
                   {state.match.score.home} - {state.match.score.away}
                 </span>
                 <span className="max-w-[8rem] truncate text-base font-semibold">
@@ -175,13 +175,13 @@ export default function LiveMatchBoard({
           </div>
 
           <div className="grid gap-3 text-sm md:grid-cols-[1fr_auto]">
-            <div className="rounded-md border border-line bg-panel p-3">
+            <div className="metal-panel rounded-md p-3">
               <strong>Cuotas congeladas:</strong>{" "}
               {formatDate(state.odds.capturedAt)} · {state.odds.timezone}
               <p className="mt-1 text-neutral">{state.odds.notice}</p>
             </div>
             {state.stale ? (
-              <div className="rounded-md border border-warning/40 bg-yellow-50 p-3 font-medium text-warning">
+              <div className="rounded-md border border-warning/40 bg-warning/10 p-3 font-medium text-warning">
                 Datos stale: mostrando el último estado válido.
               </div>
             ) : null}
@@ -203,10 +203,10 @@ export default function LiveMatchBoard({
                 </button>
               ))}
             </div>
-            <label className="flex min-w-0 items-center gap-2 rounded-md border border-line bg-white px-3 py-2">
+            <label className="metal-panel flex min-w-0 items-center gap-2 rounded-md px-3 py-2">
               <span className="text-sm font-medium text-neutral">Buscar</span>
               <input
-                className="min-w-0 flex-1 bg-transparent text-sm outline-none"
+                className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-neutral/60"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Selección"
@@ -248,11 +248,11 @@ export default function LiveMatchBoard({
         <div className="space-y-3">
           {markets.map((market) => (
             <details
-              className="rounded-md border border-line bg-white"
+              className="metal-card overflow-hidden rounded-md"
               key={market.id}
               open
             >
-              <summary className="cursor-pointer px-4 py-3 text-base font-semibold text-ink">
+              <summary className="cursor-pointer border-b border-line/80 px-4 py-3 text-base font-semibold text-ink">
                 {market.displayName}
                 {!market.supported ? (
                   <span className="ml-2 text-sm font-medium text-neutral">
@@ -260,7 +260,7 @@ export default function LiveMatchBoard({
                   </span>
                 ) : null}
               </summary>
-              <div className="divide-y divide-line">
+              <div className="divide-y divide-line/80">
                 {market.selections.map((selection) => (
                   <SelectionRow key={selection.id} selection={selection} />
                 ))}
@@ -268,7 +268,7 @@ export default function LiveMatchBoard({
             </details>
           ))}
           {markets.length === 0 ? (
-            <div className="rounded-md border border-line bg-white p-6 text-center text-neutral">
+            <div className="metal-card rounded-md p-6 text-center text-neutral">
               No hay selecciones para los filtros elegidos.
             </div>
           ) : null}
@@ -281,7 +281,7 @@ export default function LiveMatchBoard({
 function SelectionRow({ selection }: { selection: NormalizedSelection }) {
   const label = stateLabels[selection.status];
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 px-4 py-3">
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 px-4 py-3 transition hover:bg-accent/5">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <span
@@ -301,7 +301,7 @@ function SelectionRow({ selection }: { selection: NormalizedSelection }) {
           {selection.resolutionReason ?? "Pendiente de resolución deportiva."}
         </p>
       </div>
-      <div className="self-start rounded-md border border-line bg-panel px-3 py-2 text-right font-semibold tabular-nums">
+      <div className="metal-panel self-start rounded-md px-3 py-2 text-right font-semibold tabular-nums text-ink">
         {selection.oddDecimal.toFixed(2)}
       </div>
     </div>
@@ -334,10 +334,8 @@ function filterMarket(
 }
 
 function buttonClass(active: boolean): string {
-  return `rounded-md border px-3 py-2 text-sm font-medium transition ${
-    active
-      ? "border-accent bg-accent text-white"
-      : "border-line bg-white text-ink hover:border-accent"
+  return `rounded-md px-3 py-2 text-sm font-medium ${
+    active ? "ui-button ui-button-active" : "ui-button"
   }`;
 }
 

@@ -15,10 +15,10 @@ const csrfToken = getCsrfFromCookies(Astro.cookies);
     session ? (
       <AdminPanel client:load matches={matches} csrfToken={csrfToken} />
     ) : (
-      <main class="min-h-screen bg-[#f4f7fb]">
+      <main class="metal-shell">
         <section class="mx-auto max-w-sm px-4 py-16">
           <form
-            class="rounded-md border border-line bg-white p-5"
+            class="metal-card rounded-md p-5"
             method="post"
             action="/api/admin/login"
           >
@@ -26,7 +26,7 @@ const csrfToken = getCsrfFromCookies(Astro.cookies);
             <label class="mt-4 block text-sm font-medium">
               Email
               <input
-                class="mt-1 w-full rounded-md border border-line px-3 py-2"
+                class="mt-1 w-full rounded-md border border-line bg-[#090f18] px-3 py-2 text-ink outline-none focus:border-accent"
                 name="email"
                 type="email"
                 value="admin@example.com"
@@ -35,14 +35,14 @@ const csrfToken = getCsrfFromCookies(Astro.cookies);
             <label class="mt-3 block text-sm font-medium">
               Contraseña
               <input
-                class="mt-1 w-full rounded-md border border-line px-3 py-2"
+                class="mt-1 w-full rounded-md border border-line bg-[#090f18] px-3 py-2 text-ink outline-none focus:border-accent"
                 name="password"
                 type="password"
                 value="admin"
               />
             </label>
             <button
-              class="mt-4 w-full rounded-md bg-accent px-3 py-2 font-medium text-white"
+              class="mt-4 w-full rounded-md border border-accent bg-accent/20 px-3 py-2 font-medium text-accent shadow-[0_0_18px_rgba(52,214,255,0.16)]"
               type="submit"
             >
               Entrar

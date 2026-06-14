@@ -16,8 +16,8 @@ function phaseLabel(phase: "odds_captured" | "finalized"): string {
 
 function phaseClass(phase: "odds_captured" | "finalized"): string {
   return phase === "finalized"
-    ? "rounded-md border border-success/30 bg-green-50 px-2 py-1 text-xs font-medium text-success"
-    : "rounded-md border border-warning/40 bg-yellow-50 px-2 py-1 text-xs font-medium text-warning";
+    ? "phase-finalized rounded-md border px-2 py-1 text-xs font-medium"
+    : "phase-captured rounded-md border px-2 py-1 text-xs font-medium";
 }
 
 function formatDate(value: string): string {
@@ -29,16 +29,18 @@ function formatDate(value: string): string {
 ---
 
 <AppLayout title="Stake Match Tracker">
-  <main class="min-h-screen bg-[#f4f7fb]">
-    <section class="border-b border-line bg-white">
+  <main class="metal-shell">
+    <section class="metal-header">
       <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <p class="text-sm font-medium text-accent">
+        <p
+          class="text-sm font-semibold uppercase tracking-[0.16em] text-accent"
+        >
           Snapshots post-partido versionados
         </p>
-        <h1 class="mt-1 text-3xl font-semibold text-ink">
+        <h1 class="mt-2 text-3xl font-semibold text-ink sm:text-4xl">
           Histórico de partidos
         </h1>
-        <p class="mt-2 max-w-2xl text-neutral">
+        <p class="mt-3 max-w-2xl text-neutral">
           Cuotas prepartido congeladas y resultados deportivos agregados desde
           archivos JSON validados en build.
         </p>
@@ -54,7 +56,7 @@ function formatDate(value: string): string {
               const score = match.result?.score;
               return (
                 <a
-                  class="grid gap-3 rounded-md border border-line bg-white p-4 transition hover:border-accent md:grid-cols-[1fr_auto]"
+                  class="metal-card metal-card-hover grid gap-3 rounded-md p-4 md:grid-cols-[1fr_auto]"
                   href={`/partidos/${match.slug}`}
                 >
                   <div class="min-w-0">
@@ -74,13 +76,13 @@ function formatDate(value: string): string {
                       Cuotas capturadas {formatDate(match.odds.capturedAt)}
                     </p>
                   </div>
-                  <div class="self-center rounded-md border border-line bg-panel px-4 py-3 text-center">
+                  <div class="self-center border-line/70 pt-3 text-left md:border-l md:py-1 md:pl-5 md:text-right">
                     {score ? (
                       <>
                         <p class="text-sm font-medium text-neutral">
                           {match.result?.status}
                         </p>
-                        <p class="mt-1 text-2xl font-bold tabular-nums text-ink">
+                        <p class="mt-1 text-2xl font-bold tabular-nums text-ink drop-shadow-[0_0_12px_rgba(52,214,255,0.2)]">
                           {score.home} - {score.away}
                         </p>
                       </>
@@ -98,7 +100,7 @@ function formatDate(value: string): string {
             })}
           </div>
         ) : (
-          <div class="rounded-md border border-line bg-white p-6 text-center">
+          <div class="metal-card rounded-md p-6 text-center">
             <h2 class="text-xl font-semibold text-ink">
               No hay snapshots publicados
             </h2>

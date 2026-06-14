@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family:
     Inter,
     ui-sans-serif,
@@ -15,13 +15,14 @@
 }
 
 html {
-  background: #f4f7fb;
-  color: #17202a;
+  background: #05070b;
+  color: #eef6ff;
 }
 
 body {
   min-width: 320px;
   margin: 0;
+  background: #05070b;
 }
 
 button,
@@ -32,8 +33,171 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid #0f6f8f;
+  outline: 3px solid #34d6ff;
   outline-offset: 2px;
+}
+
+@layer components {
+  .metal-shell {
+    min-height: 100vh;
+    background:
+      linear-gradient(180deg, rgba(8, 13, 20, 0.92), rgba(5, 7, 11, 0.98)),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.035) 0,
+        rgba(255, 255, 255, 0.035) 1px,
+        transparent 1px,
+        transparent 96px
+      ),
+      #05070b;
+  }
+
+  .metal-header {
+    border-bottom: 1px solid rgba(52, 214, 255, 0.16);
+    background:
+      linear-gradient(135deg, rgba(17, 24, 35, 0.96), rgba(7, 11, 18, 0.98)),
+      linear-gradient(90deg, rgba(52, 214, 255, 0.1), rgba(57, 240, 143, 0.04));
+    box-shadow:
+      inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+      0 20px 70px rgba(0, 0, 0, 0.42);
+  }
+
+  .metal-panel {
+    border: 1px solid rgba(133, 156, 184, 0.22);
+    background:
+      linear-gradient(180deg, rgba(23, 33, 47, 0.95), rgba(12, 18, 28, 0.96)),
+      #111823;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 18px 40px rgba(0, 0, 0, 0.28);
+  }
+
+  .metal-card {
+    border: 1px solid rgba(133, 156, 184, 0.2);
+    background:
+      linear-gradient(180deg, rgba(19, 28, 40, 0.98), rgba(9, 14, 22, 0.98)),
+      #0b111b;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 14px 32px rgba(0, 0, 0, 0.22);
+  }
+
+  .metal-card-hover {
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
+  }
+
+  .metal-card-hover:hover {
+    border-color: rgba(52, 214, 255, 0.62);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 1px rgba(52, 214, 255, 0.15),
+      0 22px 48px rgba(0, 0, 0, 0.34);
+    transform: translateY(-1px);
+  }
+
+  .neon-chip {
+    border: 1px solid rgba(52, 214, 255, 0.34);
+    background: rgba(52, 214, 255, 0.1);
+    color: #8be7ff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+}
+
+.text-ink {
+  color: #f4f8ff !important;
+}
+
+.text-neutral {
+  color: #c3cfdd !important;
+}
+
+.text-accent {
+  color: #3ee7ff !important;
+}
+
+.text-success {
+  color: #50f7a2 !important;
+}
+
+.text-danger {
+  color: #ff5f7c !important;
+}
+
+.text-warning {
+  color: #ffd86b !important;
+}
+
+.bg-panel {
+  background-color: #121b29 !important;
+}
+
+.border-line {
+  border-color: #334154 !important;
+}
+
+.ui-button {
+  border: 1px solid #334154;
+  background: linear-gradient(180deg, #182233, #111927);
+  color: #f4f8ff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.ui-button:hover {
+  border-color: rgba(62, 231, 255, 0.7);
+  color: #3ee7ff;
+}
+
+.ui-button-active {
+  border-color: #3ee7ff;
+  background: linear-gradient(
+    180deg,
+    rgba(62, 231, 255, 0.22),
+    rgba(62, 231, 255, 0.11)
+  );
+  color: #8df2ff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 18px rgba(62, 231, 255, 0.16);
+}
+
+.status-pill {
+  border: 1px solid #334154;
+  background: #121b29;
+  color: #c3cfdd;
+}
+
+.status-won,
+.phase-finalized {
+  border-color: rgba(80, 247, 162, 0.46);
+  background: rgba(80, 247, 162, 0.12);
+  color: #50f7a2;
+}
+
+.status-lost {
+  border-color: rgba(255, 95, 124, 0.5);
+  background: rgba(255, 95, 124, 0.12);
+  color: #ff5f7c;
+}
+
+.status-void,
+.phase-captured {
+  border-color: rgba(255, 216, 107, 0.48);
+  background: rgba(255, 216, 107, 0.12);
+  color: #ffd86b;
+}
+
+.status-unsupported {
+  border-color: rgba(160, 176, 194, 0.34);
+  background: rgba(160, 176, 194, 0.1);
+  color: #c3cfdd;
 }
 
 @media (prefers-reduced-motion: reduce) {
