@@ -10,8 +10,8 @@ The repository started from the README specification only. The first delivery ne
 
 - Implement P0 markets end to end first: match result, double chance, draw no bet, total goals, both teams to score, first team to score, total yellow cards, and total corners.
 - Include limited P1 rules for exact score, team total goals, first-half total goals, anytime goalscorer, and player shots on target because they are low-risk extensions of the same deterministic engine.
-- Keep the rule engine pure and provider-agnostic. API-Football JSON is adapted into internal provider models before evaluation.
-- Make all tests and Playwright E2E run on local fixtures or demo providers only. CI must not call Stake or API-Football.
+- Keep the rule engine pure and provider-agnostic. Sports provider JSON is adapted into internal provider models before evaluation.
+- Make all tests and Playwright E2E run on local fixtures or demo providers only. CI must not call Stake or ESPN.
 - Provide a `DEMO_MODE=true` runtime that seeds a published match from `tests/fixtures/stake/event-21798323-main-markets.html`.
 
 ## Technical deviations

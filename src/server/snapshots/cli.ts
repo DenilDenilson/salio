@@ -61,6 +61,9 @@ export function optionalNumberArg(args: CliArgs, key: string): number | null {
   if (!Number.isInteger(parsed)) {
     throw new Error(`Argument --${key} must be an integer.`);
   }
+  if (parsed <= 0) {
+    throw new Error(`Argument --${key} must be a positive integer.`);
+  }
   return parsed;
 }
 

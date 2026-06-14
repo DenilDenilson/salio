@@ -11,11 +11,13 @@ import {
   type NormalizedMarket,
 } from "../../domain/markets/normalization";
 import { evaluateSelection } from "../../domain/rules";
+import { AppError } from "../errors";
 import {
   type ProviderEvent,
   type ProviderFixture,
   type ProviderPlayerStats,
   type ProviderTeamStats,
+  type SportsDataSource,
 } from "../providers/types";
 import {
   MatchSnapshotSchema,
@@ -43,11 +45,20 @@ export function buildResultSnapshot(input: {
   teamStats: ProviderTeamStats;
   playerStats: ProviderPlayerStats[];
 }): SnapshotResult {
-  const scoringEvent = input.events
+  if (input.fixture.score.home === null || input.fixture.score.away === null) {
+    throw new AppError(
+      "SPORTS_PROVIDER_INVALID_RESPONSE",
+      "Finalizable fixture is missing final score.",
+    );
+  }
+  const events = dedupeEvents(input.events);
+  const sortedEvents = events.sort(compareEventsByMinute);
+  const scoringEvent = events
     .filter((event) => event.eventType === "GOAL" && !event.isCancelled)
     .sort(compareEventsByMinute)[0];
 
   return {
+    evidence: input.fixture.evidence ?? null,
     status: input.fixture.status,
     elapsedMinutes: input.fixture.elapsedMinutes ?? null,
     score: {
@@ -59,15 +70,22 @@ export function buildResultSnapshot(input: {
     firstScoringTeam: scoringEvent?.teamSide ?? null,
     yellowCards: input.teamStats.yellowCards,
     corners: input.teamStats.corners,
-    events: input.events
+    teamStatistics: {
+      home: input.teamStats.home,
+      away: input.teamStats.away,
+    },
+    events: sortedEvents
       .filter((event) => !event.isCancelled)
       .map((event) => ({
         type: event.eventType,
+        originalType: event.originalType,
         teamSide: event.teamSide,
+        period: event.period ?? null,
         minute: event.minute ?? null,
         extraMinute: event.extraMinute ?? null,
         playerName: event.playerName ?? null,
         providerEventId: event.providerEventId ?? null,
+        text: event.text ?? null,
       })),
     playerStats: playerStatsRecord(input.playerStats),
   };
@@ -77,7 +95,7 @@ export function evaluateSnapshot(input: {
   snapshot: MatchSnapshot;
   result: SnapshotResult;
   evaluatedAt: Date;
-  fixtureId: number | null;
+  sportsData: SportsDataSource;
 }): MatchSnapshot {
   const context = resultToRuleContext(input.result, input.evaluatedAt);
   const markets = input.snapshot.odds.markets.map((market) => ({
@@ -97,9 +115,7 @@ export function evaluateSnapshot(input: {
   return MatchSnapshotSchema.parse({
     ...input.snapshot,
     phase: "finalized",
-    apiFootball: {
-      fixtureId: input.fixtureId,
-    },
+    sportsData: input.sportsData,
     odds: {
       ...input.snapshot.odds,
       markets,
@@ -172,7 +188,7 @@ export function buildOddsCapturedSnapshot(input: {
   previous?: MatchSnapshot | null;
 }): MatchSnapshot {
   return MatchSnapshotSchema.parse({
-    schemaVersion: "1.0",
+    schemaVersion: "2.0",
     slug: input.slug,
     title: input.title,
     competitionName: input.competitionName,
@@ -185,8 +201,11 @@ export function buildOddsCapturedSnapshot(input: {
       eventUrl: input.stakeUrl,
       eventId: input.stakeEventId,
     },
-    apiFootball: input.previous?.apiFootball ?? {
-      fixtureId: null,
+    sportsData: input.previous?.sportsData ?? {
+      provider: "espn",
+      eventId: null,
+      leagueSlug: null,
+      sourceUrl: null,
     },
     odds: {
       source: "stake",
@@ -230,14 +249,35 @@ function playerStatsRecord(
   const record: SnapshotResult["playerStats"] = {};
   for (const stats of playerStats) {
     const value = {
+      playerName: stats.playerName,
+      teamSide: stats.teamSide ?? null,
+      starter: stats.starter,
+      substitute: stats.substitute,
+      minutes: stats.minutes,
       goals: stats.goals,
+      shots: stats.shots,
       shotsOnTarget: stats.shotsOnTarget,
+      yellowCards: stats.yellowCards,
+      redCards: stats.redCards,
+      assists: stats.assists,
       appeared: stats.appeared,
     };
-    record[stats.playerId] = value;
-    record[playerIdFromName(stats.playerName)] = value;
+    record[stats.playerId || playerIdFromName(stats.playerName)] = value;
   }
   return record;
+}
+
+function dedupeEvents(events: ProviderEvent[]): ProviderEvent[] {
+  const seen = new Set<string>();
+  const deduped: ProviderEvent[] = [];
+  for (const event of events) {
+    if (seen.has(event.providerEventId)) {
+      continue;
+    }
+    seen.add(event.providerEventId);
+    deduped.push(event);
+  }
+  return deduped;
 }
 
 function playerIdFromName(value: string): string {

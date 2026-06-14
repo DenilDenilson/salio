@@ -8,7 +8,6 @@ import {
   timestamp,
   uniqueIndex,
   uuid,
-  bigint,
 } from "drizzle-orm/pg-core";
 
 export const matches = pgTable(
@@ -25,7 +24,8 @@ export const matches = pgTable(
     status: text("status").notNull(),
     stakeUrl: text("stake_url").notNull(),
     stakeEventId: text("stake_event_id"),
-    apiFootballFixtureId: bigint("api_football_fixture_id", { mode: "number" }),
+    sportsEventId: text("sports_event_id"),
+    sportsProvider: text("sports_provider"),
     oddsFreezeOffsetMinutes: integer("odds_freeze_offset_minutes")
       .notNull()
       .default(3),
@@ -39,8 +39,8 @@ export const matches = pgTable(
   },
   (table) => ({
     slugIdx: uniqueIndex("matches_slug_idx").on(table.slug),
-    apiFixtureIdx: uniqueIndex("matches_api_football_fixture_id_idx").on(
-      table.apiFootballFixtureId,
+    sportsEventIdx: uniqueIndex("matches_sports_event_id_idx").on(
+      table.sportsEventId,
     ),
   }),
 );

@@ -104,8 +104,11 @@ describe("match snapshot schema", () => {
   });
 
   it("keeps content slugs aligned with src/content/matches file names", () => {
-    const files = readdirSync(matchesDirectory).filter((file) =>
-      file.endsWith(".json"),
+    const files = readdirSync(matchesDirectory).filter(
+      (file) =>
+        file.endsWith(".json") &&
+        !file.startsWith("test-") &&
+        !file.startsWith("io-test-"),
     );
 
     expect(files.length).toBeGreaterThan(0);

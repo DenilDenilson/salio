@@ -1,7 +1,7 @@
 export interface LogFields {
   requestId?: string;
   matchId?: string;
-  fixtureId?: number;
+  eventId?: string;
   operation: string;
   provider?: string;
   durationMs?: number;

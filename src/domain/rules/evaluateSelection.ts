@@ -33,17 +33,17 @@ const strategies: Partial<Record<MarketType, Strategy>> = {
   [MarketType.FIRST_TEAM_TO_SCORE]: evaluateFirstTeamToScore,
   [MarketType.FIRST_HALF_TOTAL_GOALS]: evaluateFirstHalfTotalGoals,
   [MarketType.TOTAL_YELLOW_CARDS]: (selection, context) =>
-    evaluateTotal(
+    evaluateNullableTotal(
       selection,
       context,
-      context.yellowCards.home + context.yellowCards.away,
+      addKnownValues(context.yellowCards.home, context.yellowCards.away),
       "tarjetas amarillas",
     ),
   [MarketType.TOTAL_CORNERS]: (selection, context) =>
-    evaluateTotal(
+    evaluateNullableTotal(
       selection,
       context,
-      context.corners.home + context.corners.away,
+      addKnownValues(context.corners.home, context.corners.away),
       "corners",
     ),
   [MarketType.ANYTIME_GOALSCORER]: evaluateAnytimeGoalscorer,
@@ -203,6 +203,28 @@ function evaluateTotal(
   }
 
   return unsupported(`Operador no soportado para ${label}.`);
+}
+
+function evaluateNullableTotal(
+  selection: NormalizedSelection,
+  context: RuleEvaluationContext,
+  total: number | null,
+  label: string,
+): RuleEvaluation {
+  if (total === null) {
+    return unsupported(`Faltan datos confiables de ${label}.`);
+  }
+  return evaluateTotal(selection, context, total, label);
+}
+
+function addKnownValues(
+  left: number | null,
+  right: number | null,
+): number | null {
+  if (left === null || right === null) {
+    return null;
+  }
+  return left + right;
 }
 
 function evaluateTeamTotalGoals(
@@ -375,6 +397,9 @@ function evaluateAnytimeGoalscorer(
   if (!stats) {
     return unsupported("No hay estadisticas confiables para este jugador.");
   }
+  if (stats.goals === null) {
+    return unsupported("Faltan goles confiables para este jugador.");
+  }
   if (stats.goals > 0) {
     return resolved(
       SelectionStatus.WON,
@@ -404,6 +429,11 @@ function evaluatePlayerShotsOnTarget(
   if (!stats) {
     return unsupported(
       "No hay estadisticas de tiros a puerta para este jugador.",
+    );
+  }
+  if (stats.shotsOnTarget === null) {
+    return unsupported(
+      "Faltan estadisticas confiables de tiros a puerta para este jugador.",
     );
   }
   return evaluateTotal(

@@ -98,7 +98,7 @@ export interface AppStore {
   ): Promise<StoredSnapshot>;
   confirmFixture(
     matchId: string,
-    fixtureId: number,
+    eventId: string,
     confirmedBy: string,
   ): Promise<MatchSummary>;
   publishMatch(matchId: string): Promise<MatchSummary>;

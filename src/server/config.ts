@@ -6,11 +6,12 @@ const EnvSchema = z.object({
   DATABASE_URL: z.string().optional(),
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
-  API_FOOTBALL_BASE_URL: z
+  ESPN_BASE_URL: z
     .string()
     .url()
-    .default("https://v3.football.api-sports.io"),
-  API_FOOTBALL_KEY: z.string().optional(),
+    .default("https://site.api.espn.com/apis/site/v2/sports/soccer"),
+  ESPN_LEAGUE_SLUG: z.string().min(1).default("fifa.world"),
+  ESPN_REQUEST_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
   ADMIN_SESSION_SECRET: z.string().default("dev-session-secret"),
   ADMIN_EMAIL: z.string().email().default("admin@example.com"),
   ADMIN_PASSWORD_HASH: z.string().default("demo"),

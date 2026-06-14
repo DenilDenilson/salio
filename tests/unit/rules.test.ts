@@ -177,6 +177,49 @@ describe("rule engine P0", () => {
     expect(corners.status).toBe(SelectionStatus.WON);
   });
 
+  it("treats unavailable cards, corners and player statistics as unsupported instead of zero", () => {
+    const contextWithUnavailableStats: RuleEvaluationContext = {
+      ...baseContext,
+      fixtureStatus: FixtureStatus.FINISHED,
+      yellowCards: { home: null, away: null },
+      corners: { home: null, away: null },
+      playerStats: {},
+    };
+
+    expect(
+      evaluateSelection(
+        selection({
+          marketType: MarketType.TOTAL_YELLOW_CARDS,
+          operator: SelectionOperator.UNDER,
+          line: 0.5,
+        }),
+        contextWithUnavailableStats,
+      ).status,
+    ).toBe(SelectionStatus.UNSUPPORTED);
+    expect(
+      evaluateSelection(
+        selection({
+          marketType: MarketType.TOTAL_CORNERS,
+          operator: SelectionOperator.UNDER,
+          line: 0.5,
+        }),
+        contextWithUnavailableStats,
+      ).status,
+    ).toBe(SelectionStatus.UNSUPPORTED);
+    expect(
+      evaluateSelection(
+        selection({
+          marketType: MarketType.PLAYER_SHOTS_ON_TARGET,
+          operator: SelectionOperator.UNDER,
+          participantType: ParticipantType.PLAYER,
+          participantId: "player_missing_shots",
+          line: 0.5,
+        }),
+        contextWithUnavailableStats,
+      ).status,
+    ).toBe(SelectionStatus.UNSUPPORTED);
+  });
+
   it("preserves resolved selections when a later partial context would be pending", () => {
     const result = evaluateSelection(
       selection({

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "2.0",
   "slug": "catar-vs-suiza",
   "title": "Catar vs Suiza",
   "competitionName": "Mundial 2026",
@@ -12,8 +12,11 @@
     "eventUrl": "https://stake.pe/deportes/football/world/fifa-world-cup/catar-vs-suiza/event/21798324",
     "eventId": "21798324"
   },
-  "apiFootball": {
-    "fixtureId": 1505459
+  "sportsData": {
+    "provider": "espn",
+    "eventId": "760420",
+    "leagueSlug": "fifa.world",
+    "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=760420"
   },
   "odds": {
     "source": "stake",
@@ -37,7 +40,7 @@
             "participantName": "Catar",
             "oddDecimal": 15.25,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "1",
@@ -53,7 +56,7 @@
             "participantType": "MATCH",
             "oddDecimal": 6.75,
             "status": "won",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "1",
@@ -70,7 +73,7 @@
             "participantName": "Suiza",
             "oddDecimal": 1.2,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "1",
@@ -96,7 +99,7 @@
             "participantType": "MATCH",
             "oddDecimal": 4.7,
             "status": "won",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "3",
@@ -112,7 +115,7 @@
             "participantType": "MATCH",
             "oddDecimal": 1.111,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Resultado final 1-1.",
             "sourceMarketId": "3",
@@ -139,7 +142,7 @@
             "participantName": "Catar",
             "oddDecimal": 9.2,
             "status": "void",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Empate final: seleccion anulada.",
             "sourceMarketId": "156",
@@ -166,7 +169,7 @@
             "line": 2.5,
             "oddDecimal": 1.6,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
@@ -183,7 +186,7 @@
             "line": 2.5,
             "oddDecimal": 2.35,
             "status": "won",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
@@ -200,7 +203,7 @@
             "line": 0.5,
             "oddDecimal": 13,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "El total llego a 2 goles.",
             "sourceMarketId": "6",
@@ -217,7 +220,7 @@
             "line": 1.5,
             "oddDecimal": 1.17,
             "status": "won",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "El total llego a 2 goles.",
             "sourceMarketId": "6",
@@ -234,7 +237,7 @@
             "line": 1.5,
             "oddDecimal": 4.4,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "El total llego a 2 goles.",
             "sourceMarketId": "6",
@@ -251,7 +254,7 @@
             "line": 3.5,
             "oddDecimal": 2.6,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
@@ -268,7 +271,7 @@
             "line": 3.5,
             "oddDecimal": 1.5,
             "status": "won",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "El total termino en 2 goles.",
             "sourceMarketId": "6",
@@ -312,7 +315,7 @@
             "participantType": "MATCH",
             "oddDecimal": 2.35,
             "status": "won",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Ambos equipos ya marcaron.",
             "sourceMarketId": "222",
@@ -328,7 +331,7 @@
             "participantType": "MATCH",
             "oddDecimal": 1.55,
             "status": "lost",
-            "resolvedAt": "2026-06-13T23:30:00.000Z",
+            "resolvedAt": "2026-06-14T18:53:29.107Z",
             "resolvedMinute": 90,
             "resolutionReason": "Ambos equipos ya marcaron.",
             "sourceMarketId": "222",
@@ -648,567 +651,967 @@
     ]
   },
   "result": {
+    "evidence": {
+      "provider": "espn",
+      "eventId": "760420",
+      "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=760420",
+      "fetchedAt": "2026-06-14T18:53:29.085Z",
+      "payloadSha256": "21351488846a463bdd3c02c189216dacd199e7305b70585408ba2bdaec49c285",
+      "rawArtifactPath": "data/evidence/espn/760420.json"
+    },
     "status": "FT",
     "elapsedMinutes": 90,
     "score": {
       "home": 1,
       "away": 1,
       "halftimeHome": 0,
-      "halftimeAway": 0
+      "halftimeAway": 1
     },
     "firstScoringTeam": "HOME",
     "yellowCards": {
       "home": 2,
-      "away": 2
+      "away": 1
     },
     "corners": {
-      "home": 8,
-      "away": 3
+      "home": 3,
+      "away": 10
+    },
+    "teamStatistics": {
+      "home": {
+        "fouls": 12,
+        "yellowCards": 2,
+        "redCards": 0,
+        "offsides": 0,
+        "corners": 3,
+        "saves": 5,
+        "possessionPercent": 32,
+        "totalShots": 6,
+        "shotsOnTarget": 3,
+        "blockedShots": 0,
+        "accuratePasses": 200,
+        "totalPasses": 278,
+        "accurateCrosses": 1,
+        "totalCrosses": 9,
+        "totalLongBalls": 64,
+        "accurateLongBalls": 19,
+        "tacklesWon": 9,
+        "totalTackles": 14,
+        "interceptions": 11,
+        "clearances": 31
+      },
+      "away": {
+        "fouls": 11,
+        "yellowCards": 1,
+        "redCards": 0,
+        "offsides": 1,
+        "corners": 10,
+        "saves": 3,
+        "possessionPercent": 68,
+        "totalShots": 26,
+        "shotsOnTarget": 7,
+        "blockedShots": 9,
+        "accuratePasses": 527,
+        "totalPasses": 576,
+        "accurateCrosses": 6,
+        "totalCrosses": 35,
+        "totalLongBalls": 35,
+        "accurateLongBalls": 27,
+        "tacklesWon": 6,
+        "totalTackles": 8,
+        "interceptions": 7,
+        "clearances": 13
+      }
     },
     "events": [
       {
         "type": "YELLOW_CARD",
+        "originalType": "yellow-card",
         "teamSide": "HOME",
-        "minute": 33,
+        "period": 1,
+        "minute": 16,
         "extraMinute": null,
-        "playerName": "F. Chamorro",
-        "providerEventId": "1505459-33-2341-0"
-      },
-      {
-        "type": "SUBSTITUTION",
-        "teamSide": "HOME",
-        "minute": 44,
-        "extraMinute": null,
-        "playerName": "A. Zanini",
-        "providerEventId": "1505459-44-2341-1"
-      },
-      {
-        "type": "SUBSTITUTION",
-        "teamSide": "HOME",
-        "minute": 46,
-        "extraMinute": null,
-        "playerName": "B. Soto",
-        "providerEventId": "1505459-46-2329-2"
+        "playerName": "Mahmoud Abunada",
+        "providerEventId": "espn:760420:49493953",
+        "text": "Mahmoud Abunada (Qatar) is shown the yellow card."
       },
       {
         "type": "YELLOW_CARD",
+        "originalType": "yellow-card",
         "teamSide": "HOME",
-        "minute": 53,
+        "period": 1,
+        "minute": 23,
         "extraMinute": null,
-        "playerName": "B. Gutierrez",
-        "providerEventId": "1505459-53-2341-3"
+        "playerName": "Jassem Gaber",
+        "providerEventId": "espn:760420:49494097",
+        "text": "Jassem Gaber (Qatar) is shown the yellow card for a bad foul."
+      },
+      {
+        "type": "YELLOW_CARD",
+        "originalType": "yellow-card",
+        "teamSide": "AWAY",
+        "period": 1,
+        "minute": 42,
+        "extraMinute": null,
+        "playerName": "Denis Zakaria",
+        "providerEventId": "espn:760420:49494583",
+        "text": "Denis Zakaria (Switzerland) is shown the yellow card for a bad foul."
       },
       {
         "type": "SUBSTITUTION",
+        "originalType": "substitution",
         "teamSide": "HOME",
-        "minute": 55,
+        "period": 2,
+        "minute": 60,
         "extraMinute": null,
-        "playerName": "M. Collao",
-        "providerEventId": "1505459-55-2329-4"
+        "playerName": "Ahmed Fathy",
+        "providerEventId": "espn:760420:49495327",
+        "text": "Substitution, Qatar. Ahmed Fathy replaces Ayoub Al Oui."
       },
       {
         "type": "SUBSTITUTION",
+        "originalType": "substitution",
         "teamSide": "HOME",
-        "minute": 62,
+        "period": 2,
+        "minute": 60,
         "extraMinute": null,
-        "playerName": "E. Matus",
-        "providerEventId": "1505459-62-2329-5"
+        "playerName": "Karim Boudiaf",
+        "providerEventId": "espn:760420:49495328",
+        "text": "Substitution, Qatar. Karim Boudiaf replaces Jassem Gaber."
       },
       {
         "type": "SUBSTITUTION",
+        "originalType": "substitution",
         "teamSide": "HOME",
-        "minute": 62,
+        "period": 2,
+        "minute": 60,
         "extraMinute": null,
-        "playerName": "F. Troyansky",
-        "providerEventId": "1505459-62-2329-6"
+        "playerName": "Ahmed Alaaeldin",
+        "providerEventId": "espn:760420:49495367",
+        "text": "Substitution, Qatar. Ahmed Alaa replaces Yusuf Abdurisag."
       },
       {
         "type": "SUBSTITUTION",
-        "teamSide": "HOME",
-        "minute": 66,
+        "originalType": "substitution",
+        "teamSide": "AWAY",
+        "period": 2,
+        "minute": 65,
         "extraMinute": null,
-        "playerName": "F. Chamorro",
-        "providerEventId": "1505459-66-2341-7"
+        "playerName": "Fabian Rieder",
+        "providerEventId": "espn:760420:49495540",
+        "text": "Substitution, Switzerland. Fabian Rieder replaces Michel Aebischer."
       },
       {
         "type": "SUBSTITUTION",
-        "teamSide": "HOME",
-        "minute": 66,
+        "originalType": "substitution",
+        "teamSide": "AWAY",
+        "period": 2,
+        "minute": 65,
         "extraMinute": null,
-        "playerName": "M. Pinto",
-        "providerEventId": "1505459-66-2341-8"
-      },
-      {
-        "type": "GOAL",
-        "teamSide": "HOME",
-        "minute": 74,
-        "extraMinute": null,
-        "playerName": "G. Escalante",
-        "providerEventId": "1505459-74-2341-9"
+        "playerName": "Johan Manzambi",
+        "providerEventId": "espn:760420:49495541",
+        "text": "Substitution, Switzerland. Johan Manzambi replaces Dan Ndoye."
       },
       {
         "type": "SUBSTITUTION",
+        "originalType": "substitution",
         "teamSide": "HOME",
+        "period": 2,
         "minute": 79,
         "extraMinute": null,
-        "playerName": "M. Fuentes",
-        "providerEventId": "1505459-79-2329-10"
+        "playerName": "Mohamed Manai",
+        "providerEventId": "espn:760420:49495880",
+        "text": "Substitution, Qatar. Mohammad Al Mannai replaces Assim Madibo."
       },
       {
         "type": "SUBSTITUTION",
-        "teamSide": "HOME",
+        "originalType": "substitution",
+        "teamSide": "AWAY",
+        "period": 2,
         "minute": 79,
         "extraMinute": null,
-        "playerName": "F. Mateos",
-        "providerEventId": "1505459-79-2329-11"
-      },
-      {
-        "type": "YELLOW_CARD",
-        "teamSide": "HOME",
-        "minute": 80,
-        "extraMinute": null,
-        "playerName": "E. Ferrario",
-        "providerEventId": "1505459-80-2329-12"
-      },
-      {
-        "type": "GOAL",
-        "teamSide": "HOME",
-        "minute": 82,
-        "extraMinute": null,
-        "playerName": "D. Coelho",
-        "providerEventId": "1505459-82-2329-13"
+        "playerName": "Zeki Amdouni",
+        "providerEventId": "espn:760420:49495912",
+        "text": "Substitution, Switzerland. Zeki Amdouni replaces Rubén Vargas."
       },
       {
         "type": "SUBSTITUTION",
+        "originalType": "substitution",
         "teamSide": "HOME",
-        "minute": 87,
+        "period": 2,
+        "minute": 88,
         "extraMinute": null,
-        "playerName": "M. Marin",
-        "providerEventId": "1505459-87-2341-14"
+        "playerName": "Hassan Al-Haydos",
+        "providerEventId": "espn:760420:49496199",
+        "text": "Substitution, Qatar. Hassan Al Haydos replaces Edmílson Junior."
       },
       {
-        "type": "YELLOW_CARD",
-        "teamSide": "HOME",
+        "type": "SUBSTITUTION",
+        "originalType": "substitution",
+        "teamSide": "AWAY",
+        "period": 2,
         "minute": 89,
         "extraMinute": null,
-        "playerName": "D. Coelho",
-        "providerEventId": "1505459-89-2329-15"
+        "playerName": "Ardon Jashari",
+        "providerEventId": "espn:760420:49496202",
+        "text": "Substitution, Switzerland. Ardon Jashari replaces Remo Freuler."
       },
       {
         "type": "SUBSTITUTION",
+        "originalType": "substitution",
+        "teamSide": "AWAY",
+        "period": 2,
+        "minute": 89,
+        "extraMinute": null,
+        "playerName": "Miro Muheim",
+        "providerEventId": "espn:760420:49496201",
+        "text": "Substitution, Switzerland. Miro Muheim replaces Ricardo Rodríguez."
+      },
+      {
+        "type": "GOAL",
+        "originalType": "own-goal",
         "teamSide": "HOME",
+        "period": 2,
         "minute": 90,
-        "extraMinute": 5,
-        "playerName": "J. Vargas",
-        "providerEventId": "1505459-90-2341-16"
+        "extraMinute": 4,
+        "playerName": "Miro Muheim",
+        "providerEventId": "espn:760420:49496324",
+        "text": "Own Goal by Miro Muheim, Switzerland. Qatar 1, Switzerland 1."
       }
     ],
     "playerStats": {
-      "player_11495": {
+      "player_mahmoud-abunada": {
+        "playerName": "Mahmoud Abunada",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 1,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_tomas-ahumada": {
+      "player_boualem-khoukhi": {
+        "playerName": "Boualem Khoukhi",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_11351": {
+      "player_pedro-miguel": {
+        "playerName": "Pedro Miguel",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_enzo-ferrario": {
+      "player_homam-ahmed": {
+        "playerName": "Homam Ahmed",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 1,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_11767": {
+      "player_ayoub-al-oui": {
+        "playerName": "Ayoub Al-Oui",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_marco-collao": {
+      "player_assim-madibo": {
+        "playerName": "Assim Madibo",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_353976": {
+      "player_issa-laye": {
+        "playerName": "Issa Laye",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 1,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_daniel-pina": {
+      "player_jassem-gaber": {
+        "playerName": "Jassem Gaber",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 1,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_11356": {
+      "player_yusuf-abdurisag": {
+        "playerName": "Yusuf Abdurisag",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_raimundo-rebolledo": {
+      "player_akram-afif": {
+        "playerName": "Akram Afif",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_12226": {
+      "player_edmilson-junior": {
+        "playerName": "Edmílson Junior",
+        "teamSide": "HOME",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_federico-mateos": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_70464": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_bryan-soto": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_11713": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_michael-vadulli": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_353975": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_esteban-matus": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_414545": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_giovani-chiaverano": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_6131": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_franco-troyansky": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_356450": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_ignacio-fuenzalida": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_643105": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_vicente-zenteno": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_310594": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_paolo-guajardo": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_51347": {
-        "goals": 1,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_diego-coelho": {
-        "goals": 1,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_485674": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_mario-sandoval": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_362431": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_favian-loyola": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_307109": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": false
-      },
-      "player_pedro-garrido": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": false
-      },
-      "player_508431": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": false
-      },
-      "player_martin-jimenez": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": false
-      },
-      "player_408960": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": false
-      },
-      "player_diego-monreal": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": false
-      },
-      "player_357317": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_jose-tapia": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_237168": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_bruno-gutierrez": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_59297": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_andres-zanini": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_5935": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_rafael-delgado": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_371150": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_yahir-salazar": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_6717": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_francis-mac-allister": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_47388": {
-        "goals": 1,
+        "shots": 2,
         "shotsOnTarget": 2,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_gonzalo-escalante": {
+      "player_hassan-al-haydos": {
+        "playerName": "Hassan Al-Haydos",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_ahmed-al-ganehi": {
+        "playerName": "Ahmed Al-Ganehi",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_mohamed-manai": {
+        "playerName": "Mohamed Manai",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_mohammed-muntari": {
+        "playerName": "Mohammed Muntari",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_lucas-mendes": {
+        "playerName": "Lucas Mendes",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_al-hashmi-al-hussain": {
+        "playerName": "Al-Hashmi Al-Hussain",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_tahsin-jamshid": {
+        "playerName": "Tahsin Jamshid",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_meshaal-barsham": {
+        "playerName": "Meshaal Barsham",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_sultan-al-brake": {
+        "playerName": "Sultan Al-Brake",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_abdulaziz-hatem": {
+        "playerName": "Abdulaziz Hatem",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_ahmed-fathy": {
+        "playerName": "Ahmed Fathy",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_ahmed-alaaeldin": {
+        "playerName": "Ahmed Alaaeldin",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
+        "goals": 0,
+        "shots": 1,
+        "shotsOnTarget": 1,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_almoez-ali": {
+        "playerName": "Almoez Ali",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_salah-zakaria": {
+        "playerName": "Salah Zakaria",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_karim-boudiaf": {
+        "playerName": "Karim Boudiaf",
+        "teamSide": "HOME",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
+        "goals": 0,
+        "shots": 1,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_gregor-kobel": {
+        "playerName": "Gregor Kobel",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_manuel-akanji": {
+        "playerName": "Manuel Akanji",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 1,
+        "shotsOnTarget": 1,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_nico-elvedi": {
+        "playerName": "Nico Elvedi",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 2,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_ricardo-rodriguez": {
+        "playerName": "Ricardo Rodríguez",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_denis-zakaria": {
+        "playerName": "Denis Zakaria",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 2,
+        "shotsOnTarget": 1,
+        "yellowCards": 1,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_granit-xhaka": {
+        "playerName": "Granit Xhaka",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 2,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_remo-freuler": {
+        "playerName": "Remo Freuler",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_michel-aebischer": {
+        "playerName": "Michel Aebischer",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 1,
+        "shotsOnTarget": 1,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_breel-embolo": {
+        "playerName": "Breel Embolo",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
         "goals": 1,
+        "shots": 4,
+        "shotsOnTarget": 1,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_ruben-vargas": {
+        "playerName": "Rubén Vargas",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 3,
+        "shotsOnTarget": 1,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_dan-ndoye": {
+        "playerName": "Dan Ndoye",
+        "teamSide": "AWAY",
+        "starter": true,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 6,
         "shotsOnTarget": 2,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": true
       },
-      "player_343903": {
+      "player_eray-comert": {
+        "playerName": "Eray Cömert",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_matias-pinto": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_274563": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_felipe-chamorro": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_11378": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_jeisson-vargas": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_11857": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_matias-marin": {
-        "goals": 0,
-        "shotsOnTarget": 1,
-        "appeared": true
-      },
-      "player_12070": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_joaquin-gutierrez": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_12078": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_sebastian-diaz": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_11840": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_angelo-henriquez": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_506569": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_fabricio-diaz": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_589528": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_milovan-velasquez": {
-        "goals": 0,
-        "shotsOnTarget": 0,
-        "appeared": true
-      },
-      "player_411625": {
-        "goals": 0,
-        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
       },
-      "player_fernando-dinamarca": {
+      "player_marvin-keller": {
+        "playerName": "Marvin Keller",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
       },
-      "player_11728": {
+      "player_aurele-amenda": {
+        "playerName": "Aurèle Amenda",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
       },
-      "player_joan-orellana": {
+      "player_miro-muheim": {
+        "playerName": "Miro Muheim",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_silvan-widmer": {
+        "playerName": "Silvan Widmer",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
       },
-      "player_639759": {
+      "player_noah-okafor": {
+        "playerName": "Noah Okafor",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
       },
-      "player_bastian-sandoval": {
+      "player_luca-jaquez": {
+        "playerName": "Luca Jaquez",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
         "goals": 0,
+        "shots": 0,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
       },
-      "player_0": {
+      "player_fabian-rieder": {
+        "playerName": "Fabian Rieder",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
         "goals": 0,
+        "shots": 1,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_djibril-sow": {
+        "playerName": "Djibril Sow",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
       },
-      "player_maximo-hernandez": {
+      "player_zeki-amdouni": {
+        "playerName": "Zeki Amdouni",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
         "goals": 0,
+        "shots": 1,
         "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_yvon-mvogo": {
+        "playerName": "Yvon Mvogo",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
         "appeared": false
+      },
+      "player_christian-fassnacht": {
+        "playerName": "Christian Fassnacht",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_johan-manzambi": {
+        "playerName": "Johan Manzambi",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
+        "goals": 0,
+        "shots": 2,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
+      },
+      "player_cedric-itten": {
+        "playerName": "Cedric Itten",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
+        "goals": 0,
+        "shots": 0,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": false
+      },
+      "player_ardon-jashari": {
+        "playerName": "Ardon Jashari",
+        "teamSide": "AWAY",
+        "starter": false,
+        "substitute": true,
+        "minutes": null,
+        "goals": 0,
+        "shots": 1,
+        "shotsOnTarget": 0,
+        "yellowCards": 0,
+        "redCards": 0,
+        "assists": 0,
+        "appeared": true
       }
     }
   },
   "metadata": {
     "createdAt": "2026-06-13T07:49:20.636Z",
-    "finalizedAt": "2026-06-13T23:30:00.000Z",
-    "lastEvaluatedAt": "2026-06-13T23:30:00.000Z"
+    "finalizedAt": "2026-06-14T18:53:29.107Z",
+    "lastEvaluatedAt": "2026-06-14T18:53:29.107Z"
   }
 }

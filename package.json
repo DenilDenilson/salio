@@ -23,7 +23,8 @@
     "odds:capture": "tsx scripts/odds-capture.ts",
     "odds:capture:cdp": "BROWSER_WS_ENDPOINT=http://127.0.0.1:9222 tsx scripts/odds-capture.ts",
     "odds:capture:headed": "tsx scripts/odds-capture.ts --headed",
-    "fixture:search": "tsx scripts/fixture-search.ts",
+    "espn:validate": "tsx scripts/espn-validate.ts",
+    "snapshots:migrate:v2": "tsx scripts/migrate-snapshots-v2.ts",
     "match:finalize": "tsx scripts/match-finalize.ts"
   },
   "dependencies": {

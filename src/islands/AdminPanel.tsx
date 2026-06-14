@@ -1,6 +1,13 @@
 import { useState } from "react";
-import type { FixtureCandidate } from "../server/providers/types";
 import type { MatchSummary } from "../domain/model";
+
+interface SportsEventCandidate {
+  eventId: string;
+  homeTeamName: string;
+  awayTeamName: string;
+  competitionName: string | null;
+  score: number;
+}
 
 interface Props {
   matches: MatchSummary[];
@@ -10,7 +17,7 @@ interface Props {
 export default function AdminPanel({ matches, csrfToken }: Props) {
   const [message, setMessage] = useState("");
   const [candidates, setCandidates] = useState<
-    Record<string, FixtureCandidate[]>
+    Record<string, SportsEventCandidate[]>
   >({});
 
   async function post(path: string, body: Record<string, unknown> = {}) {
@@ -25,7 +32,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
     const payload = (await response.json()) as {
       ok?: boolean;
       error?: string;
-      candidates?: FixtureCandidate[];
+      candidates?: SportsEventCandidate[];
     };
     if (!response.ok) {
       throw new Error(payload.error ?? "Operación fallida");
@@ -124,8 +131,8 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                 <div>
                   <h2 className="text-lg font-semibold">{match.title}</h2>
                   <p className="text-sm text-neutral">
-                    {match.slug} · Fixture{" "}
-                    {match.apiFootballFixtureId ?? "sin confirmar"} ·{" "}
+                    {match.slug} · Evento{" "}
+                    {match.sportsEventId ?? "sin confirmar"} ·{" "}
                     {match.published ? "Publicado" : "Borrador"}
                   </p>
                 </div>
@@ -167,7 +174,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                     })
                   }
                 >
-                  Buscar fixture
+                  Buscar evento
                 </button>
                 <button
                   className="rounded-md border border-line bg-panel px-3 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent"
@@ -213,7 +220,7 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                   {candidates[match.id].map((candidate) => (
                     <div
                       className="metal-panel flex flex-col gap-2 rounded-md p-3 md:flex-row md:items-center md:justify-between"
-                      key={candidate.fixtureId}
+                      key={candidate.eventId}
                     >
                       <div className="text-sm">
                         <strong>
@@ -232,14 +239,14 @@ export default function AdminPanel({ matches, csrfToken }: Props) {
                             await post(
                               `/api/admin/matches/${match.id}/confirm-fixture`,
                               {
-                                fixtureId: candidate.fixtureId,
+                                eventId: candidate.eventId,
                               },
                             );
                             window.location.reload();
                           })
                         }
                       >
-                        Confirmar
+                        Confirmar evento
                       </button>
                     </div>
                   ))}

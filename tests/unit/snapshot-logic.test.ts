@@ -8,17 +8,30 @@ import {
 } from "../../src/domain/model";
 import { importStakeHtml } from "../../src/server/importers/stake/importer";
 import { DemoSportsProvider } from "../../src/server/providers/demoProvider";
+import type {
+  ProviderFixture,
+  ProviderTeamStats,
+  TeamMatchStatistics,
+} from "../../src/server/providers/types";
 import {
   buildOddsCapturedSnapshot,
   buildResultSnapshot,
   evaluateSnapshot,
   snapshotToStateResponse,
 } from "../../src/server/snapshots/logic";
+import { resetContaminatedSnapshot } from "../../src/server/snapshots/repair";
 
 const stakeUrl =
   "https://stake.pe/deportes/futbol/world-cup/event-canada-bosnia-demo";
 const capturedAt = "2026-06-12T18:57:00.000Z";
 const finalizedAt = new Date("2026-06-13T06:45:00.000Z");
+const demoEventId = "demo-canada-bosnia";
+const demoSportsData = {
+  provider: "demo" as const,
+  eventId: demoEventId,
+  leagueSlug: "fifa.world",
+  sourceUrl: "demo://canada-vs-bosnia",
+};
 
 function importedCanadaBosnia() {
   return importStakeHtml({
@@ -55,13 +68,77 @@ function buildOddsSnapshot() {
 async function buildDemoResult() {
   const provider = new DemoSportsProvider();
   const [fixture, events, teamStats, playerStats] = await Promise.all([
-    provider.getFixture(990001),
-    provider.getEvents(990001),
-    provider.getTeamStatistics(990001),
-    provider.getPlayerStatistics(990001),
+    provider.getFixture(demoEventId),
+    provider.getEvents(demoEventId),
+    provider.getTeamStatistics(demoEventId),
+    provider.getPlayerStatistics(demoEventId),
   ]);
 
   return buildResultSnapshot({ fixture, events, teamStats, playerStats });
+}
+
+function providerFixture(
+  overrides: Partial<ProviderFixture> = {},
+): ProviderFixture {
+  return {
+    eventId: "test-event",
+    sourceUrl:
+      "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=test-event",
+    status: FixtureStatus.FINISHED,
+    providerStatus: "FT",
+    elapsedMinutes: 90,
+    homeTeamId: "home",
+    awayTeamId: "away",
+    homeTeamName: "Home",
+    awayTeamName: "Away",
+    competitionName: "FIFA World Cup",
+    leagueSlug: "fifa.world",
+    score: { home: 1, away: 1, halftimeHome: null, halftimeAway: null },
+    kickoffAt: "2026-06-12T19:00:00.000Z",
+    lastUpdatedAt: "2026-06-12T21:00:00.000Z",
+    ...overrides,
+  };
+}
+
+function emptyTeamStats(
+  overrides: Partial<TeamMatchStatistics> = {},
+): TeamMatchStatistics {
+  return {
+    fouls: null,
+    yellowCards: null,
+    redCards: null,
+    offsides: null,
+    corners: null,
+    saves: null,
+    possessionPercent: null,
+    totalShots: null,
+    shotsOnTarget: null,
+    blockedShots: null,
+    accuratePasses: null,
+    totalPasses: null,
+    accurateCrosses: null,
+    totalCrosses: null,
+    totalLongBalls: null,
+    accurateLongBalls: null,
+    tacklesWon: null,
+    totalTackles: null,
+    interceptions: null,
+    clearances: null,
+    ...overrides,
+  };
+}
+
+function providerTeamStats(
+  overrides: Partial<ProviderTeamStats> = {},
+): ProviderTeamStats {
+  return {
+    home: emptyTeamStats(),
+    away: emptyTeamStats(),
+    yellowCards: { home: null, away: null },
+    corners: { home: null, away: null },
+    shotsOnTarget: { home: null, away: null },
+    ...overrides,
+  };
 }
 
 function findSelection(
@@ -143,18 +220,12 @@ describe("snapshot logic", () => {
 
   it("sorts scoring events, ignores cancelled goals and keeps non-goal events", () => {
     const result = buildResultSnapshot({
-      fixture: {
-        fixtureId: 1,
-        status: FixtureStatus.FINISHED,
-        elapsedMinutes: 90,
-        score: { home: 1, away: 1 },
-        kickoffAt: "2026-06-12T19:00:00.000Z",
-        lastUpdatedAt: "2026-06-12T21:00:00.000Z",
-      },
+      fixture: providerFixture(),
       events: [
         {
           providerEventId: "cancelled-home",
           eventType: "GOAL",
+          originalType: "goal",
           teamSide: "HOME",
           playerName: "Cancelled",
           minute: 5,
@@ -163,6 +234,7 @@ describe("snapshot logic", () => {
         {
           providerEventId: "away-goal",
           eventType: "GOAL",
+          originalType: "goal",
           teamSide: "AWAY",
           playerName: "Away",
           minute: 10,
@@ -172,6 +244,7 @@ describe("snapshot logic", () => {
         {
           providerEventId: "home-goal",
           eventType: "GOAL",
+          originalType: "goal",
           teamSide: "HOME",
           playerName: "Home",
           minute: 10,
@@ -181,39 +254,136 @@ describe("snapshot logic", () => {
         {
           providerEventId: "yellow",
           eventType: "YELLOW_CARD",
+          originalType: "yellow-card",
           teamSide: "AWAY",
           playerName: "Booked",
           minute: 88,
           isCancelled: false,
         },
       ],
-      teamStats: {
+      teamStats: providerTeamStats({
+        home: emptyTeamStats({
+          yellowCards: 0,
+          corners: 2,
+          shotsOnTarget: 3,
+        }),
+        away: emptyTeamStats({
+          yellowCards: 1,
+          corners: 4,
+          shotsOnTarget: 3,
+        }),
         yellowCards: { home: 0, away: 1 },
         corners: { home: 2, away: 4 },
         shotsOnTarget: { home: 3, away: 3 },
-      },
+      }),
       playerStats: [],
     });
 
     expect(result.firstScoringTeam).toBe("HOME");
     expect(result.events).toEqual([
-      expect.objectContaining({ providerEventId: "away-goal" }),
       expect.objectContaining({ providerEventId: "home-goal" }),
+      expect.objectContaining({ providerEventId: "away-goal" }),
       expect.objectContaining({ providerEventId: "yellow" }),
     ]);
   });
 
+  it("does not duplicate events or create both id and name keys for the same player", () => {
+    const result = buildResultSnapshot({
+      fixture: providerFixture({
+        eventId: "760419",
+        score: { home: 1, away: 1, halftimeHome: 1, halftimeAway: 1 },
+        kickoffAt: "2026-06-13T22:00:00.000Z",
+        lastUpdatedAt: "2026-06-14T00:00:00.000Z",
+      }),
+      events: [
+        {
+          providerEventId: "goal-morocco-12",
+          eventType: "GOAL",
+          originalType: "goal",
+          teamSide: "AWAY",
+          playerProviderId: "3110",
+          playerName: "Youssef En-Nesyri",
+          minute: 12,
+          isCancelled: false,
+        },
+        {
+          providerEventId: "goal-morocco-12",
+          eventType: "GOAL",
+          originalType: "goal",
+          teamSide: "AWAY",
+          playerProviderId: "3110",
+          playerName: "Youssef En-Nesyri",
+          minute: 12,
+          isCancelled: false,
+        },
+      ],
+      teamStats: providerTeamStats({
+        home: emptyTeamStats({
+          yellowCards: 1,
+          corners: 8,
+          shotsOnTarget: 7,
+        }),
+        away: emptyTeamStats({
+          yellowCards: 2,
+          corners: 2,
+          shotsOnTarget: 3,
+        }),
+        yellowCards: { home: 1, away: 2 },
+        corners: { home: 8, away: 2 },
+        shotsOnTarget: { home: 7, away: 3 },
+      }),
+      playerStats: [
+        {
+          playerId: "player_3110",
+          playerName: "Youssef En-Nesyri",
+          teamSide: "AWAY",
+          starter: true,
+          substitute: false,
+          minutes: 90,
+          goals: 1,
+          shots: 2,
+          shotsOnTarget: 1,
+          yellowCards: 0,
+          redCards: 0,
+          assists: 0,
+          appeared: true,
+        },
+      ],
+    });
+
+    expect(result.events).toHaveLength(1);
+    expect(Object.keys(result.playerStats)).toEqual(["player_3110"]);
+  });
+
   it("finalizes a snapshot and resolves P0 selections with the demo result", async () => {
+    const oddsSnapshot = buildOddsSnapshot();
+    const frozenSelections = oddsSnapshot.odds.markets.flatMap((market) =>
+      market.selections.map((selection) => ({
+        id: selection.id,
+        oddDecimal: selection.oddDecimal,
+        sourceMarketId: selection.sourceMarketId,
+        sourceSelectionId: selection.sourceSelectionId,
+      })),
+    );
     const finalized = evaluateSnapshot({
-      snapshot: buildOddsSnapshot(),
+      snapshot: oddsSnapshot,
       result: await buildDemoResult(),
       evaluatedAt: finalizedAt,
-      fixtureId: 990001,
+      sportsData: demoSportsData,
     });
+    const finalizedSelections = finalized.odds.markets.flatMap((market) =>
+      market.selections.map((selection) => ({
+        id: selection.id,
+        oddDecimal: selection.oddDecimal,
+        sourceMarketId: selection.sourceMarketId,
+        sourceSelectionId: selection.sourceSelectionId,
+      })),
+    );
 
     expect(finalized.phase).toBe("finalized");
     expect(finalized.metadata.finalizedAt).toBe(finalizedAt.toISOString());
-    expect(finalized.apiFootball.fixtureId).toBe(990001);
+    expect(finalized.sportsData).toEqual(demoSportsData);
+    expect(finalizedSelections).toEqual(frozenSelections);
     expect(
       finalized.odds.markets.flatMap((market) =>
         market.selections.filter(
@@ -237,7 +407,7 @@ describe("snapshot logic", () => {
       snapshot: buildOddsSnapshot(),
       result: await buildDemoResult(),
       evaluatedAt: finalizedAt,
-      fixtureId: 990001,
+      sportsData: demoSportsData,
     });
 
     const state = snapshotToStateResponse(finalized);
@@ -268,5 +438,46 @@ describe("snapshot logic", () => {
     expect(state.odds.notice).toContain("pendiente de resultado oficial");
     expect(state.lastUpdatedAt).toBe(capturedAt);
     expect(state.stale).toBe(false);
+  });
+
+  it("repairs contaminated finalized snapshots without changing frozen odds identity", async () => {
+    const finalized = evaluateSnapshot({
+      snapshot: buildOddsSnapshot(),
+      result: await buildDemoResult(),
+      evaluatedAt: finalizedAt,
+      sportsData: demoSportsData,
+    });
+    const originalOddsSignature = finalized.odds.markets.map((market) => ({
+      id: market.id,
+      selections: market.selections.map((selection) => ({
+        id: selection.id,
+        oddDecimal: selection.oddDecimal,
+        sourceSelectionId: selection.sourceSelectionId,
+      })),
+    }));
+
+    const repaired = resetContaminatedSnapshot(finalized);
+
+    expect(repaired).toMatchObject({
+      phase: "odds_captured",
+      sportsData: { provider: "espn", eventId: null },
+      result: null,
+      metadata: { finalizedAt: null, lastEvaluatedAt: null },
+    });
+    expect(
+      repaired.odds.markets.flatMap((market) =>
+        market.selections.map((selection) => selection.status),
+      ),
+    ).toEqual(expect.arrayContaining([SelectionStatus.PENDING]));
+    expect(
+      repaired.odds.markets.map((market) => ({
+        id: market.id,
+        selections: market.selections.map((selection) => ({
+          id: selection.id,
+          oddDecimal: selection.oddDecimal,
+          sourceSelectionId: selection.sourceSelectionId,
+        })),
+      })),
+    ).toEqual(originalOddsSignature);
   });
 });

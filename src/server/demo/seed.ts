@@ -42,10 +42,10 @@ export async function seedDemoData(
   });
   await store.saveImportedSnapshot(match.id, imported);
   await store.freezeOdds(match.id, new Date("2026-06-12T18:57:00.000Z"), false);
-  await store.confirmFixture(match.id, 990001, "demo");
+  await store.confirmFixture(match.id, "demo-canada-bosnia", "demo");
   await store.saveLiveState({
     matchId: match.id,
-    provider: "api-football",
+    provider: "demo",
     fixtureStatus: FixtureStatus.FINISHED,
     elapsedMinutes: 90,
     scoreHome: 1,

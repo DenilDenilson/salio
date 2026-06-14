@@ -11,7 +11,7 @@ import {
 } from "../../src/server/services/admin";
 
 describe("admin services", () => {
-  it("creates a match, imports by slug with fixture and gets mapping candidates", async () => {
+  it("creates a match, imports by slug with fixture and leaves ESPN mapping explicit", async () => {
     const config = getConfig();
     const store = new MemoryAppStore();
     const provider = new DemoSportsProvider();
@@ -52,9 +52,7 @@ describe("admin services", () => {
     });
 
     expect(snapshot.markets.length).toBeGreaterThanOrEqual(8);
-    expect(candidates[0]).toEqual(
-      expect.objectContaining({ fixtureId: 990001 }),
-    );
+    expect(candidates).toEqual([]);
   });
 
   it("rejects invalid create input", async () => {

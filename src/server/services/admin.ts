@@ -6,7 +6,6 @@ import {
   importStakeHtml,
   type OddsImporter,
 } from "../importers/stake/importer";
-import { type LiveSportsProvider } from "../providers/types";
 import { type AppStore, type CreateMatchInput } from "../repositories/types";
 
 export const CreateMatchSchema = z.object({
@@ -113,17 +112,12 @@ export async function importStakeBySlug(input: {
 
 export async function getFixtureCandidates(input: {
   store: AppStore;
-  provider: LiveSportsProvider;
+  provider: unknown;
   matchId: string;
 }) {
   const match = await input.store.getMatchById(input.matchId);
   if (!match) {
     throw new AppError("MATCH_NOT_FOUND", "Match not found.", 404);
   }
-  return input.provider.searchFixtureCandidates({
-    homeTeamName: match.homeTeamName,
-    awayTeamName: match.awayTeamName,
-    kickoffAt: match.kickoffAt,
-    competitionName: match.competitionName,
-  });
+  return [];
 }

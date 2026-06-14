@@ -5,19 +5,64 @@ import {
   SelectionStatus,
   type StateResponse,
 } from "../../domain/model";
+import { type TeamMatchStatistics } from "../providers/types";
 
 export const SnapshotPhaseSchema = z.enum(["odds_captured", "finalized"]);
+export const SportsDataProviderSchema = z.enum(["espn", "demo"]);
+
+export const SportsDataSourceSchema = z.object({
+  provider: SportsDataProviderSchema,
+  eventId: z.string().min(1).nullable(),
+  leagueSlug: z.string().min(1).nullable(),
+  sourceUrl: z.string().url().nullable(),
+});
+
+export const ResultEvidenceSchema = z.object({
+  provider: SportsDataProviderSchema,
+  eventId: z.string().min(1),
+  sourceUrl: z.string().url(),
+  fetchedAt: z.string().datetime(),
+  payloadSha256: z.string().regex(/^[a-f0-9]{64}$/),
+  rawArtifactPath: z.string().min(1).nullable(),
+});
 
 export const SnapshotResultEventSchema = z.object({
-  type: z.enum(["GOAL", "YELLOW_CARD", "SUBSTITUTION"]),
+  type: z.enum(["GOAL", "YELLOW_CARD", "RED_CARD", "SUBSTITUTION"]),
+  originalType: z.string().nullable(),
   teamSide: z.enum(["HOME", "AWAY"]),
+  period: z.number().int().positive().nullable(),
   minute: z.number().int().nonnegative().nullable(),
   extraMinute: z.number().int().nonnegative().nullable(),
   playerName: z.string().nullable(),
   providerEventId: z.string().nullable(),
+  text: z.string().nullable(),
 });
 
+export const TeamMatchStatisticsSchema = z.object({
+  fouls: z.number().int().nonnegative().nullable(),
+  yellowCards: z.number().int().nonnegative().nullable(),
+  redCards: z.number().int().nonnegative().nullable(),
+  offsides: z.number().int().nonnegative().nullable(),
+  corners: z.number().int().nonnegative().nullable(),
+  saves: z.number().int().nonnegative().nullable(),
+  possessionPercent: z.number().nonnegative().nullable(),
+  totalShots: z.number().int().nonnegative().nullable(),
+  shotsOnTarget: z.number().int().nonnegative().nullable(),
+  blockedShots: z.number().int().nonnegative().nullable(),
+  accuratePasses: z.number().int().nonnegative().nullable(),
+  totalPasses: z.number().int().nonnegative().nullable(),
+  accurateCrosses: z.number().int().nonnegative().nullable(),
+  totalCrosses: z.number().int().nonnegative().nullable(),
+  totalLongBalls: z.number().int().nonnegative().nullable(),
+  accurateLongBalls: z.number().int().nonnegative().nullable(),
+  tacklesWon: z.number().int().nonnegative().nullable(),
+  totalTackles: z.number().int().nonnegative().nullable(),
+  interceptions: z.number().int().nonnegative().nullable(),
+  clearances: z.number().int().nonnegative().nullable(),
+}) satisfies z.ZodType<TeamMatchStatistics>;
+
 export const SnapshotResultSchema = z.object({
+  evidence: ResultEvidenceSchema.nullable(),
   status: FixtureStatusSchema,
   elapsedMinutes: z.number().int().nonnegative().nullable(),
   score: z.object({
@@ -28,18 +73,31 @@ export const SnapshotResultSchema = z.object({
   }),
   firstScoringTeam: z.enum(["HOME", "AWAY"]).nullable(),
   yellowCards: z.object({
-    home: z.number().int().nonnegative(),
-    away: z.number().int().nonnegative(),
+    home: z.number().int().nonnegative().nullable(),
+    away: z.number().int().nonnegative().nullable(),
   }),
   corners: z.object({
-    home: z.number().int().nonnegative(),
-    away: z.number().int().nonnegative(),
+    home: z.number().int().nonnegative().nullable(),
+    away: z.number().int().nonnegative().nullable(),
+  }),
+  teamStatistics: z.object({
+    home: TeamMatchStatisticsSchema,
+    away: TeamMatchStatisticsSchema,
   }),
   events: z.array(SnapshotResultEventSchema),
   playerStats: z.record(
     z.object({
-      goals: z.number().int().nonnegative(),
-      shotsOnTarget: z.number().int().nonnegative(),
+      playerName: z.string(),
+      teamSide: z.enum(["HOME", "AWAY"]).nullable(),
+      starter: z.boolean(),
+      substitute: z.boolean(),
+      minutes: z.number().int().nonnegative().nullable(),
+      goals: z.number().int().nonnegative().nullable(),
+      shots: z.number().int().nonnegative().nullable(),
+      shotsOnTarget: z.number().int().nonnegative().nullable(),
+      yellowCards: z.number().int().nonnegative().nullable(),
+      redCards: z.number().int().nonnegative().nullable(),
+      assists: z.number().int().nonnegative().nullable(),
       appeared: z.boolean(),
     }),
   ),
@@ -47,7 +105,7 @@ export const SnapshotResultSchema = z.object({
 
 export const MatchSnapshotSchema = z
   .object({
-    schemaVersion: z.literal("1.0"),
+    schemaVersion: z.literal("2.0"),
     slug: z
       .string()
       .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid snapshot slug."),
@@ -62,9 +120,7 @@ export const MatchSnapshotSchema = z
       eventUrl: z.string().url(),
       eventId: z.string().nullable(),
     }),
-    apiFootball: z.object({
-      fixtureId: z.number().int().nullable(),
-    }),
+    sportsData: SportsDataSourceSchema,
     odds: z.object({
       source: z.literal("stake"),
       capturedAt: z.string().datetime(),
@@ -122,5 +178,7 @@ export const MatchSnapshotSchema = z
 export type SnapshotPhase = z.infer<typeof SnapshotPhaseSchema>;
 export type SnapshotResult = z.infer<typeof SnapshotResultSchema>;
 export type MatchSnapshot = z.infer<typeof MatchSnapshotSchema>;
+export type SportsDataSource = z.infer<typeof SportsDataSourceSchema>;
+export type ResultEvidence = z.infer<typeof ResultEvidenceSchema>;
 
 export type SnapshotStateResponse = StateResponse;

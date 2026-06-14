@@ -45,7 +45,8 @@ export class MemoryAppStore implements AppStore {
       status: FixtureStatus.NOT_STARTED,
       stakeUrl: input.stakeUrl,
       stakeEventId: null,
-      apiFootballFixtureId: null,
+      sportsEventId: null,
+      sportsProvider: null,
       oddsFreezeOffsetMinutes: input.oddsFreezeOffsetMinutes,
       published: false,
     };
@@ -218,16 +219,20 @@ export class MemoryAppStore implements AppStore {
 
   async confirmFixture(
     matchId: string,
-    fixtureId: number,
+    eventId: string,
     confirmedBy: string,
   ): Promise<MatchSummary> {
     const match = await this.requireMatch(matchId);
-    const updated = { ...match, apiFootballFixtureId: fixtureId };
+    const updated = {
+      ...match,
+      sportsEventId: eventId,
+      sportsProvider: "espn" as const,
+    };
     this.matches.set(matchId, updated);
     await this.addHistory(
       matchId,
       "fixture.confirmed",
-      `Fixture ${fixtureId} confirmado por ${confirmedBy}.`,
+      `Evento deportivo ${eventId} confirmado por ${confirmedBy}.`,
     );
     return updated;
   }
@@ -235,10 +240,10 @@ export class MemoryAppStore implements AppStore {
   async publishMatch(matchId: string): Promise<MatchSummary> {
     const match = await this.requireMatch(matchId);
     const snapshot = await this.getVisibleSnapshot(matchId);
-    if (!match.apiFootballFixtureId) {
+    if (!match.sportsEventId) {
       throw new AppError(
         "FIXTURE_MAPPING_REQUIRED",
-        "Fixture mapping is required.",
+        "Sports event mapping is required.",
         409,
       );
     }

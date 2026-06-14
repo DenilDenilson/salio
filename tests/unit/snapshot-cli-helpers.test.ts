@@ -11,9 +11,10 @@ import {
 describe("snapshot CLI helpers", () => {
   it("parses equals args, value args and boolean flags", () => {
     const args = parseCliArgs([
+      "--",
       "--slug=canada-vs-bosnia",
-      "--fixture-id",
-      "990001",
+      "--event-id",
+      "760419",
       "ignored-positional",
       "--empty",
       "",
@@ -21,7 +22,7 @@ describe("snapshot CLI helpers", () => {
     ]);
 
     expect(requireStringArg(args, "slug")).toBe("canada-vs-bosnia");
-    expect(optionalNumberArg(args, "fixture-id")).toBe(990001);
+    expect(optionalStringArg(args, "event-id")).toBe("760419");
     expect(booleanFlag(args, "demo-provider")).toBe(true);
     expect(optionalStringArg(args, "empty")).toBeNull();
     expect(optionalStringArg(args, "missing")).toBeNull();
@@ -31,9 +32,15 @@ describe("snapshot CLI helpers", () => {
     expect(() => requireStringArg({}, "slug")).toThrow(
       "Missing required argument --slug.",
     );
-    expect(() =>
-      optionalNumberArg({ "fixture-id": "99.5" }, "fixture-id"),
-    ).toThrow("Argument --fixture-id must be an integer.");
+    expect(() => optionalNumberArg({ limit: "99.5" }, "limit")).toThrow(
+      "Argument --limit must be an integer.",
+    );
+    expect(() => optionalNumberArg({ limit: "abc" }, "limit")).toThrow(
+      "Argument --limit must be an integer.",
+    );
+    expect(() => optionalNumberArg({ limit: "-1" }, "limit")).toThrow(
+      "Argument --limit must be a positive integer.",
+    );
     expect(booleanFlag({ "demo-provider": "true" }, "demo-provider")).toBe(
       true,
     );

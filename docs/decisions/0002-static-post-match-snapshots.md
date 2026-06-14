@@ -14,9 +14,9 @@ The product no longer needs a public live runtime, PostgreSQL, or Redis for the 
 - Render `/` and `/partidos/[slug]` from Content Collections with `prerender = true`.
 - Add local CLIs for the operational flow:
   - `pnpm odds:capture -- --slug=... --stake-url=...`
-  - `pnpm fixture:search -- --slug=...`
-  - `pnpm match:finalize -- --slug=... --fixture-id=...`
-- Use demo fixtures/providers only when `DEMO_MODE=true` or the CLI passes `--demo-provider`. Missing API-Football credentials must fail closed for `fixture:search` and `match:finalize`.
+  - `pnpm espn:validate -- --slug=... --event-id=...`
+  - `pnpm match:finalize -- --slug=... --event-id=...`
+- Use demo fixtures/providers only when `DEMO_MODE=true` or the CLI passes `--demo-provider`. ESPN is the real post-match provider and does not require an API key.
 
 ## Technical deviations
 

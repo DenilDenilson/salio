@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "2.0",
   "slug": "canada-vs-bosnia",
   "title": "Canadá vs Bosnia y Herzegovina",
   "competitionName": "Copa Mundial 2026 · Grupo B",
@@ -12,8 +12,11 @@
     "eventUrl": "https://stake.pe/deportes/futbol/world-cup/event-canada-bosnia-demo",
     "eventId": "canada-bosnia-demo"
   },
-  "apiFootball": {
-    "fixtureId": 990001
+  "sportsData": {
+    "provider": "demo",
+    "eventId": "demo-canada-bosnia",
+    "leagueSlug": "fifa.world",
+    "sourceUrl": "demo://canada-vs-bosnia"
   },
   "odds": {
     "source": "stake",
@@ -453,6 +456,14 @@
     ]
   },
   "result": {
+    "evidence": {
+      "provider": "demo",
+      "eventId": "demo-canada-bosnia",
+      "sourceUrl": "demo://canada-vs-bosnia",
+      "fetchedAt": "1970-01-01T00:00:00.000Z",
+      "payloadSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "rawArtifactPath": null
+    },
     "status": "FT",
     "elapsedMinutes": 90,
     "score": {
@@ -470,28 +481,89 @@
       "home": 8,
       "away": 3
     },
+    "teamStatistics": {
+      "home": {
+        "fouls": null,
+        "yellowCards": 2,
+        "redCards": null,
+        "offsides": null,
+        "corners": 8,
+        "saves": null,
+        "possessionPercent": null,
+        "totalShots": null,
+        "shotsOnTarget": null,
+        "blockedShots": null,
+        "accuratePasses": null,
+        "totalPasses": null,
+        "accurateCrosses": null,
+        "totalCrosses": null,
+        "totalLongBalls": null,
+        "accurateLongBalls": null,
+        "tacklesWon": null,
+        "totalTackles": null,
+        "interceptions": null,
+        "clearances": null
+      },
+      "away": {
+        "fouls": null,
+        "yellowCards": 1,
+        "redCards": null,
+        "offsides": null,
+        "corners": 3,
+        "saves": null,
+        "possessionPercent": null,
+        "totalShots": null,
+        "shotsOnTarget": null,
+        "blockedShots": null,
+        "accuratePasses": null,
+        "totalPasses": null,
+        "accurateCrosses": null,
+        "totalCrosses": null,
+        "totalLongBalls": null,
+        "accurateLongBalls": null,
+        "tacklesWon": null,
+        "totalTackles": null,
+        "interceptions": null,
+        "clearances": null
+      }
+    },
     "events": [
       {
         "type": "GOAL",
+        "originalType": null,
         "teamSide": "AWAY",
+        "period": null,
         "minute": 21,
         "extraMinute": null,
         "playerName": "Jovo Lukic",
-        "providerEventId": "goal-bosnia-lukic-21"
+        "providerEventId": "goal-bosnia-lukic-21",
+        "text": null
       },
       {
         "type": "GOAL",
+        "originalType": null,
         "teamSide": "HOME",
+        "period": null,
         "minute": 79,
         "extraMinute": null,
         "playerName": "Cyle Larin",
-        "providerEventId": "goal-canada-larin-79"
+        "providerEventId": "goal-canada-larin-79",
+        "text": null
       }
     ],
     "playerStats": {
       "player_cyle-larin": {
+        "playerName": "player_cyle-larin",
+        "teamSide": null,
+        "starter": false,
+        "substitute": false,
+        "minutes": null,
         "goals": 1,
+        "shots": null,
         "shotsOnTarget": 1,
+        "yellowCards": null,
+        "redCards": null,
+        "assists": null,
         "appeared": true
       }
     }

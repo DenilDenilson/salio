@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { MatchSnapshotSchema, type MatchSnapshot } from "./schema";
 
@@ -30,11 +30,20 @@ export async function readSnapshotIfExists(
 export async function writeSnapshot(snapshot: MatchSnapshot): Promise<void> {
   const parsed = MatchSnapshotSchema.parse(snapshot);
   await mkdir(matchesDirectory(), { recursive: true });
-  await writeFile(
-    snapshotPathForSlug(parsed.slug),
-    `${JSON.stringify(parsed, null, 2)}\n`,
-    "utf8",
+  const finalPath = snapshotPathForSlug(parsed.slug);
+  const tempPath = join(
+    matchesDirectory(),
+    `.${parsed.slug}.${process.pid}.${Date.now()}.tmp`,
   );
+  try {
+    await writeFile(tempPath, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
+    const tempContent = await readFile(tempPath, "utf8");
+    MatchSnapshotSchema.parse(JSON.parse(tempContent));
+    await rename(tempPath, finalPath);
+  } catch (error) {
+    await unlink(tempPath).catch(() => undefined);
+    throw error;
+  }
 }
 
 function matchesDirectory(): string {

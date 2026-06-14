@@ -224,7 +224,7 @@ export function normalizeStakeMarkets(
         rawMarketName: market.rawMarketName,
         sourceMarketId: market.sourceMarketId,
         displayOrder: MARKET_PRIORITY[marketType] + market.displayOrder,
-        supported: marketType !== MarketType.UNSUPPORTED,
+        supported: isSupportedMarketType(marketType) && selections.length > 0,
         selections,
       };
     })
@@ -264,14 +264,12 @@ function normalizeSelection(args: {
     exactHomeScore: parsed.exactHomeScore,
     exactAwayScore: parsed.exactAwayScore,
     oddDecimal: selection.oddDecimal,
-    status:
-      marketType === MarketType.UNSUPPORTED
-        ? SelectionStatus.UNSUPPORTED
-        : SelectionStatus.PENDING,
-    resolutionReason:
-      marketType === MarketType.UNSUPPORTED
-        ? "Este mercado todavia no puede evaluarse automaticamente."
-        : undefined,
+    status: !isSupportedMarketType(marketType)
+      ? SelectionStatus.UNSUPPORTED
+      : SelectionStatus.PENDING,
+    resolutionReason: !isSupportedMarketType(marketType)
+      ? "Este mercado todavia no puede evaluarse automaticamente."
+      : undefined,
     sourceMarketId: market.sourceMarketId,
     sourceSelectionId: selection.sourceSelectionId ?? selection.oddId,
     rawMarketName: market.rawMarketName,
@@ -541,4 +539,8 @@ function playerId(value: string): string {
   return `player_${normalizeText(value)
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")}`;
+}
+
+function isSupportedMarketType(marketType: MarketType): boolean {
+  return ![MarketType.UNSUPPORTED, MarketType.HANDICAP].includes(marketType);
 }

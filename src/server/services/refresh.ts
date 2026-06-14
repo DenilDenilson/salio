@@ -13,6 +13,7 @@ import { logError, logInfo } from "../observability/logger";
 import {
   type LiveSportsProvider,
   type ProviderEvent,
+  type TeamMatchStatistics,
 } from "../providers/types";
 import { type AppStore, type StoredLiveState } from "../repositories/types";
 
@@ -38,10 +39,10 @@ export async function refreshMatchIfStale(input: {
   if (!match.published) {
     throw new AppError("MATCH_NOT_PUBLISHED", "Match is not published.", 404);
   }
-  if (!match.apiFootballFixtureId) {
+  if (!match.sportsEventId) {
     throw new AppError(
       "FIXTURE_MAPPING_REQUIRED",
-      "Fixture mapping required.",
+      "Sports event mapping required.",
       409,
     );
   }
@@ -90,7 +91,7 @@ export async function refreshMatchIfStale(input: {
     const previous = await input.store.getLiveState(match.id);
     const nextLive = await buildLiveState({
       matchId: match.id,
-      fixtureId: match.apiFootballFixtureId,
+      eventId: match.sportsEventId,
       provider: input.provider,
       previous,
       options: input.options,
@@ -170,7 +171,7 @@ export async function refreshMatchIfStale(input: {
     logInfo({
       operation: "match.refresh",
       matchId: match.id,
-      fixtureId: match.apiFootballFixtureId,
+      eventId: match.sportsEventId,
       durationMs: Date.now() - startedAt,
       cacheHit: false,
       lockAcquired: true,
@@ -202,14 +203,14 @@ export async function refreshMatchIfStale(input: {
 
 async function buildLiveState(input: {
   matchId: string;
-  fixtureId: number;
+  eventId: string;
   provider: LiveSportsProvider;
   previous: StoredLiveState | null;
   options: RefreshOptions;
   now: Date;
   force: boolean;
 }): Promise<StoredLiveState> {
-  const fixture = await input.provider.getFixture(input.fixtureId);
+  const fixture = await input.provider.getFixture(input.eventId);
   const shouldRefreshStats =
     input.force ||
     !input.previous?.statsLastRefreshAt ||
@@ -228,10 +229,18 @@ async function buildLiveState(input: {
     );
 
   const [events, teamStats, playerStats] = await Promise.all([
-    input.provider.getEvents(input.fixtureId),
+    input.provider.getEvents(input.eventId),
     shouldRefreshStats
-      ? input.provider.getTeamStatistics(input.fixtureId)
+      ? input.provider.getTeamStatistics(input.eventId)
       : Promise.resolve({
+          home: fallbackTeamStats({
+            yellowCards: input.previous?.context.yellowCards.home ?? null,
+            corners: input.previous?.context.corners.home ?? null,
+          }),
+          away: fallbackTeamStats({
+            yellowCards: input.previous?.context.yellowCards.away ?? null,
+            corners: input.previous?.context.corners.away ?? null,
+          }),
           yellowCards: input.previous?.context.yellowCards ?? {
             home: 0,
             away: 0,
@@ -240,7 +249,7 @@ async function buildLiveState(input: {
           shotsOnTarget: { home: 0, away: 0 },
         }),
     shouldRefreshPlayers
-      ? input.provider.getPlayerStatistics(input.fixtureId)
+      ? input.provider.getPlayerStatistics(input.eventId)
       : Promise.resolve([]),
   ]);
 
@@ -259,7 +268,12 @@ async function buildLiveState(input: {
     now: input.now,
     fixtureStatus: fixture.status,
     elapsedMinutes: fixture.elapsedMinutes,
-    score: fixture.score,
+    score: {
+      home: fixture.score.home ?? 0,
+      away: fixture.score.away ?? 0,
+      halftimeHome: fixture.score.halftimeHome ?? undefined,
+      halftimeAway: fixture.score.halftimeAway ?? undefined,
+    },
     firstScoringTeam,
     yellowCards: teamStats.yellowCards,
     corners: teamStats.corners,
@@ -271,11 +285,11 @@ async function buildLiveState(input: {
 
   return {
     matchId: input.matchId,
-    provider: "api-football",
+    provider: fixture.evidence?.provider ?? "espn",
     fixtureStatus: fixture.status,
     elapsedMinutes: fixture.elapsedMinutes ?? null,
-    scoreHome: fixture.score.home,
-    scoreAway: fixture.score.away,
+    scoreHome: fixture.score.home ?? 0,
+    scoreAway: fixture.score.away ?? 0,
     context,
     capturedAt: input.now.toISOString(),
     fixtureLastRefreshAt: input.now.toISOString(),
@@ -319,4 +333,32 @@ function firstGoal(events: ProviderEvent[]): "HOME" | "AWAY" | null {
     .filter((event) => event.eventType === "GOAL" && !event.isCancelled)
     .sort((a, b) => (a.minute ?? 999) - (b.minute ?? 999))[0];
   return goal?.teamSide ?? null;
+}
+
+function fallbackTeamStats(input: {
+  yellowCards: number | null;
+  corners: number | null;
+}): TeamMatchStatistics {
+  return {
+    fouls: null,
+    yellowCards: input.yellowCards,
+    redCards: null,
+    offsides: null,
+    corners: input.corners,
+    saves: null,
+    possessionPercent: null,
+    totalShots: null,
+    shotsOnTarget: null,
+    blockedShots: null,
+    accuratePasses: null,
+    totalPasses: null,
+    accurateCrosses: null,
+    totalCrosses: null,
+    totalLongBalls: null,
+    accurateLongBalls: null,
+    tacklesWon: null,
+    totalTackles: null,
+    interceptions: null,
+    clearances: null,
+  };
 }

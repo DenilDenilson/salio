@@ -2,8 +2,8 @@ import { InMemoryCache, UpstashCache, type CacheClient } from "./cache/cache";
 import { getConfig, type AppConfig } from "./config";
 import { seedDemoData, stakeFixturePath } from "./demo/seed";
 import { StakeImporter } from "./importers/stake/importer";
-import { ApiFootballProvider } from "./providers/api-football/provider";
 import { DemoSportsProvider } from "./providers/demoProvider";
+import { EspnSportsProvider } from "./providers/espn/provider";
 import { type LiveSportsProvider } from "./providers/types";
 import { MemoryAppStore } from "./repositories/memoryStore";
 import { type AppStore } from "./repositories/types";
@@ -46,9 +46,11 @@ async function createServices(): Promise<Services> {
   });
   const provider = config.DEMO_MODE
     ? new DemoSportsProvider()
-    : new ApiFootballProvider({
-        baseUrl: config.API_FOOTBALL_BASE_URL,
-        apiKey: config.API_FOOTBALL_KEY,
+    : new EspnSportsProvider({
+        baseUrl: config.ESPN_BASE_URL,
+        leagueSlug: config.ESPN_LEAGUE_SLUG,
+        timeoutMs: config.ESPN_REQUEST_TIMEOUT_MS,
+        evidenceDirectory: null,
       });
 
   if (config.DEMO_MODE) {

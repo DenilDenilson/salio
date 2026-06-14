@@ -4,16 +4,16 @@ import { requireAdmin } from "../../../../../server/auth/session";
 import { AppError, publicErrorMessage } from "../../../../../server/errors";
 import { getServices } from "../../../../../server/runtime";
 
-const BodySchema = z.object({ fixtureId: z.number().int().positive() });
+const BodySchema = z.object({ eventId: z.string().min(1) });
 
 export const POST: APIRoute = async (context) => {
   const services = await getServices();
   try {
     const admin = requireAdmin(context, services.config);
-    const { fixtureId } = BodySchema.parse(await context.request.json());
+    const { eventId } = BodySchema.parse(await context.request.json());
     const match = await services.store.confirmFixture(
       context.params.id ?? "",
-      fixtureId,
+      eventId,
       admin.email,
     );
     return json({ ok: true, match });

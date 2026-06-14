@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { ApiFootballProvider } from "../../src/server/providers/api-football/provider";
 import { DemoSportsProvider } from "../../src/server/providers/demoProvider";
+import { EspnSportsProvider } from "../../src/server/providers/espn/provider";
 import { type AppConfig } from "../../src/server/config";
 import { createSnapshotSportsProvider } from "../../src/server/snapshots/providerFactory";
 
@@ -9,8 +9,9 @@ function config(overrides: Partial<AppConfig> = {}): AppConfig {
     DATABASE_URL: undefined,
     UPSTASH_REDIS_REST_URL: undefined,
     UPSTASH_REDIS_REST_TOKEN: undefined,
-    API_FOOTBALL_BASE_URL: "https://api.example.test",
-    API_FOOTBALL_KEY: undefined,
+    ESPN_BASE_URL: "https://site.api.espn.test/apis/site/v2/sports/soccer",
+    ESPN_LEAGUE_SLUG: "fifa.world",
+    ESPN_REQUEST_TIMEOUT_MS: 30_000,
     ADMIN_SESSION_SECRET: "test-secret",
     ADMIN_EMAIL: "admin@example.com",
     ADMIN_PASSWORD_HASH: "demo",
@@ -31,14 +32,14 @@ function config(overrides: Partial<AppConfig> = {}): AppConfig {
 }
 
 describe("snapshot provider factory", () => {
-  it("fails closed without API-Football key or explicit demo mode", () => {
-    expect(() =>
-      createSnapshotSportsProvider({
-        config: config(),
-        homeTeamName: "Canadá",
-        awayTeamName: "Bosnia y Herzegovina",
-      }),
-    ).toThrow(/Missing API_FOOTBALL_KEY/);
+  it("creates the ESPN provider without an API key", () => {
+    const provider = createSnapshotSportsProvider({
+      config: config(),
+      homeTeamName: "Canadá",
+      awayTeamName: "Bosnia y Herzegovina",
+    });
+
+    expect(provider).toBeInstanceOf(EspnSportsProvider);
   });
 
   it("uses demo provider when DEMO_MODE=true", () => {
@@ -62,13 +63,15 @@ describe("snapshot provider factory", () => {
     expect(provider).toBeInstanceOf(DemoSportsProvider);
   });
 
-  it("creates the real provider only when an API-Football key is configured", () => {
+  it("creates the ESPN provider when real mode is configured", () => {
     const provider = createSnapshotSportsProvider({
-      config: config({ API_FOOTBALL_KEY: "test-key" }),
+      config: config({
+        ESPN_BASE_URL: "https://site.api.espn.test/apis/site/v2/sports/soccer",
+      }),
       homeTeamName: "Canadá",
       awayTeamName: "Bosnia y Herzegovina",
     });
 
-    expect(provider).toBeInstanceOf(ApiFootballProvider);
+    expect(provider).toBeInstanceOf(EspnSportsProvider);
   });
 });

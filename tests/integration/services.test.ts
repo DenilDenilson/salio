@@ -10,18 +10,19 @@ import {
 } from "../../src/server/importers/stake/importer";
 import { DemoSportsProvider } from "../../src/server/providers/demoProvider";
 import type {
-  FixtureCandidate,
   LiveSportsProvider,
   ProviderEvent,
   ProviderFixture,
   ProviderPlayerStats,
   ProviderTeamStats,
+  TeamMatchStatistics,
 } from "../../src/server/providers/types";
 import { MemoryAppStore } from "../../src/server/repositories/memoryStore";
 import { refreshMatchIfStale } from "../../src/server/services/refresh";
 
 const stakeUrl =
   "https://stake.pe/deportes/futbol/international/event-21798323";
+const demoEventId = "demo-canada-bosnia";
 
 async function readyStore() {
   const store = new MemoryAppStore();
@@ -92,7 +93,7 @@ describe("domain services integration", () => {
     await expect(store.publishMatch(match.id)).rejects.toMatchObject({
       code: "FIXTURE_MAPPING_REQUIRED",
     });
-    await store.confirmFixture(match.id, 990001, "test");
+    await store.confirmFixture(match.id, demoEventId, "test");
     await store.freezeOdds(
       match.id,
       new Date("2026-06-20T20:57:00.000Z"),
@@ -122,7 +123,7 @@ describe("domain services integration", () => {
 
   it("refreshes stale live data, persists selections and serves fresh cache without provider calls", async () => {
     const { store, config, match } = await readyStore();
-    await store.confirmFixture(match.id, 990001, "test");
+    await store.confirmFixture(match.id, demoEventId, "test");
     await store.freezeOdds(
       match.id,
       new Date("2026-06-20T20:57:00.000Z"),
@@ -166,7 +167,7 @@ describe("domain services integration", () => {
 
   it("returns cached stale state under concurrent refresh pressure", async () => {
     const { store, config, match } = await readyStore();
-    await store.confirmFixture(match.id, 990001, "test");
+    await store.confirmFixture(match.id, demoEventId, "test");
     await store.freezeOdds(
       match.id,
       new Date("2026-06-20T20:57:00.000Z"),
@@ -264,13 +265,13 @@ describe("domain services integration", () => {
         options,
       }),
     ).rejects.toMatchObject({ code: "MATCH_NOT_PUBLISHED" });
-    await store.confirmFixture(match.id, 990001, "test");
+    await store.confirmFixture(match.id, demoEventId, "test");
     await expect(store.publishMatch(match.id)).rejects.toBeTruthy();
   });
 
   it("keeps cached state when provider fails and stops polling final matches", async () => {
     const { store, config, match } = await readyStore();
-    await store.confirmFixture(match.id, 990001, "test");
+    await store.confirmFixture(match.id, demoEventId, "test");
     await store.freezeOdds(
       match.id,
       new Date("2026-06-20T20:57:00.000Z"),
@@ -344,7 +345,10 @@ class FailingProvider implements LiveSportsProvider {
   }
 
   async getTeamStatistics(): Promise<ProviderTeamStats> {
+    const empty = emptyTeamStats();
     return {
+      home: empty,
+      away: empty,
       yellowCards: { home: 0, away: 0 },
       corners: { home: 0, away: 0 },
       shotsOnTarget: { home: 0, away: 0 },
@@ -354,8 +358,29 @@ class FailingProvider implements LiveSportsProvider {
   async getPlayerStatistics(): Promise<ProviderPlayerStats[]> {
     return [];
   }
+}
 
-  async searchFixtureCandidates(): Promise<FixtureCandidate[]> {
-    return [];
-  }
+function emptyTeamStats(): TeamMatchStatistics {
+  return {
+    fouls: null,
+    yellowCards: null,
+    redCards: null,
+    offsides: null,
+    corners: null,
+    saves: null,
+    possessionPercent: null,
+    totalShots: null,
+    shotsOnTarget: null,
+    blockedShots: null,
+    accuratePasses: null,
+    totalPasses: null,
+    accurateCrosses: null,
+    totalCrosses: null,
+    totalLongBalls: null,
+    accurateLongBalls: null,
+    tacklesWon: null,
+    totalTackles: null,
+    interceptions: null,
+    clearances: null,
+  };
 }
