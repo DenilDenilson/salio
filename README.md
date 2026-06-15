@@ -11,6 +11,8 @@ partido y las cruza con resultados deportivos finales.
 
 - Web pública estática con Astro Content Collections.
 - Fuente de verdad: `src/content/matches/*.json`.
+- Despliegue 100 % estático: el hosting solo publica `dist/`.
+- Sin rutas `src/pages/api`, sin panel admin y sin funciones serverless en producción.
 - Captura prepartido: Stake API-only desde una URL interna
   `single-pre-event.json` provista en cada ejecución.
 - Resultado post partido: ESPN summary JSON público, sin API key.
@@ -201,6 +203,7 @@ conservan con cuota y metadatos para revisión.
 ```bash
 pnpm dev
 pnpm build
+pnpm build:static
 pnpm check
 pnpm lint
 pnpm format:check

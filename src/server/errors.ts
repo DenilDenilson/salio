@@ -23,12 +23,6 @@ export type AppErrorCode =
   | "SPORTS_FIXTURE_AMBIGUOUS"
   | "SPORTS_PROVIDER_TIMEOUT"
   | "SPORTS_PROVIDER_INVALID_RESPONSE"
-  | "MATCH_NOT_FOUND"
-  | "MATCH_NOT_PUBLISHED"
-  | "FIXTURE_MAPPING_REQUIRED"
-  | "LOCK_NOT_ACQUIRED"
-  | "STALE_DATA_RETURNED"
-  | "ADMIN_UNAUTHORIZED"
   | "VALIDATION_FAILED";
 
 export class AppError extends Error {
@@ -41,20 +35,4 @@ export class AppError extends Error {
     this.code = code;
     this.status = status;
   }
-}
-
-export function publicErrorMessage(code: AppErrorCode): string {
-  if (code.startsWith("STAKE_")) {
-    return "No se pudo importar el evento de Stake.";
-  }
-  if (code.startsWith("SPORTS_")) {
-    return "No se pudo actualizar el proveedor deportivo.";
-  }
-  if (code === "MATCH_NOT_FOUND") {
-    return "Partido no encontrado.";
-  }
-  if (code === "MATCH_NOT_PUBLISHED") {
-    return "Partido no publicado.";
-  }
-  return "No se pudo completar la operacion.";
 }

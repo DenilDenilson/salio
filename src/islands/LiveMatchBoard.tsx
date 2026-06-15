@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   MarketType,
   SelectionStatus,
@@ -77,34 +77,15 @@ const statusFilters = [
 
 interface Props {
   initialState: StateResponse;
-  pollEnabled?: boolean;
 }
 
-export default function LiveMatchBoard({
-  initialState,
-  pollEnabled = true,
-}: Props) {
-  const [state, setState] = useState(initialState);
+export default function LiveMatchBoard({ initialState }: Props) {
+  const state = initialState;
   const [category, setCategory] =
     useState<(typeof categoryFilters)[number]["id"]>("all");
   const [status, setStatus] =
     useState<(typeof statusFilters)[number]["id"]>("all");
   const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    if (!pollEnabled || state.nextSuggestedPollMs >= 60_000) {
-      return;
-    }
-    const interval = window.setInterval(() => {
-      fetch(`/api/matches/${state.match.slug}/state`, {
-        headers: { accept: "application/json" },
-      })
-        .then((response) => response.json())
-        .then((next: StateResponse) => setState(next))
-        .catch(() => undefined);
-    }, state.nextSuggestedPollMs);
-    return () => window.clearInterval(interval);
-  }, [pollEnabled, state.match.slug, state.nextSuggestedPollMs]);
 
   const markets = useMemo(() => {
     return state.markets

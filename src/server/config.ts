@@ -3,36 +3,12 @@ import { resolve } from "node:path";
 import { z } from "zod";
 
 const EnvSchema = z.object({
-  DATABASE_URL: z.string().optional(),
-  UPSTASH_REDIS_REST_URL: z.string().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
   ESPN_BASE_URL: z
     .string()
     .url()
     .default("https://site.api.espn.com/apis/site/v2/sports/soccer"),
   ESPN_LEAGUE_SLUG: z.string().min(1).default("fifa.world"),
   ESPN_REQUEST_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
-  ADMIN_SESSION_SECRET: z.string().default("dev-session-secret"),
-  ADMIN_EMAIL: z.string().email().default("admin@example.com"),
-  ADMIN_PASSWORD_HASH: z.string().default("demo"),
-  PUBLIC_SITE_URL: z.string().url().default("http://localhost:4321"),
-  ODDS_FREEZE_OFFSET_MINUTES: z.coerce.number().int().positive().default(3),
-  PUBLIC_STATE_POLL_INTERVAL_MS: z.coerce
-    .number()
-    .int()
-    .positive()
-    .default(10_000),
-  EVENTS_REFRESH_INTERVAL_MS: z.coerce
-    .number()
-    .int()
-    .positive()
-    .default(15_000),
-  STATS_REFRESH_INTERVAL_MS: z.coerce.number().int().positive().default(60_000),
-  PLAYER_STATS_REFRESH_INTERVAL_MS: z.coerce
-    .number()
-    .int()
-    .positive()
-    .default(60_000),
   STAKE_ALLOWED_HOSTS: z.string().default("stake.pe"),
   STAKE_API_ALLOWED_HOSTS: z.string().default(".websbkt.com"),
   STAKE_API_TIMEOUT_MS: z.coerce.number().int().positive().default(15_000),
