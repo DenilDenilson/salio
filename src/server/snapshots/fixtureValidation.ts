@@ -10,6 +10,15 @@ import { type MatchSnapshot } from "./schema";
 
 const finalizableProviderStatuses = new Set(["FT"]);
 
+export type FixtureIdentityValidationMode = "strict" | "event-id-only";
+
+export interface FixtureIdentityValidationResult {
+  validationMode: FixtureIdentityValidationMode;
+  identityCheckSkipped: boolean;
+  matchesSnapshot: boolean | null;
+  mismatch: string | null;
+}
+
 export function assertRemoteFixtureMatchesSnapshot(
   snapshot: MatchSnapshot,
   fixture: ProviderFixture,
@@ -73,6 +82,70 @@ No se modifico el snapshot.`,
 
   if (fixture.score.home === null || fixture.score.away === null) {
     mismatch("El marcador final no esta disponible.");
+  }
+}
+
+export function assertTrustedEventIdFixtureIsUsable(
+  fixture: ProviderFixture,
+  requestedEventId: string,
+): void {
+  if (fixture.eventId !== requestedEventId) {
+    throw new AppError(
+      "SPORTS_FIXTURE_MISMATCH",
+      `El proveedor devolvio el evento ${fixture.eventId}; se solicito ${requestedEventId}.
+No se modifico el snapshot.`,
+    );
+  }
+
+  if (!fixture.homeTeamName?.trim() || !fixture.awayTeamName?.trim()) {
+    throw new AppError(
+      "SPORTS_PROVIDER_INVALID_RESPONSE",
+      "El fixture no expone local y visitante validos. No se modifico el snapshot.",
+    );
+  }
+
+  if (fixture.score.home === null || fixture.score.away === null) {
+    throw new AppError(
+      "SPORTS_PROVIDER_INVALID_RESPONSE",
+      "El marcador final no esta disponible. No se modifico el snapshot.",
+    );
+  }
+}
+
+export function validateFixtureIdentity(input: {
+  snapshot: MatchSnapshot;
+  fixture: ProviderFixture;
+  requestedEventId: string;
+  trustEventId: boolean;
+}): FixtureIdentityValidationResult {
+  const validationMode = input.trustEventId ? "event-id-only" : "strict";
+  try {
+    if (input.trustEventId) {
+      assertTrustedEventIdFixtureIsUsable(
+        input.fixture,
+        input.requestedEventId,
+      );
+    } else {
+      assertRemoteFixtureMatchesSnapshot(
+        input.snapshot,
+        input.fixture,
+        input.requestedEventId,
+      );
+    }
+
+    return {
+      validationMode,
+      identityCheckSkipped: input.trustEventId,
+      matchesSnapshot: input.trustEventId ? null : true,
+      mismatch: null,
+    };
+  } catch (error) {
+    return {
+      validationMode,
+      identityCheckSkipped: input.trustEventId,
+      matchesSnapshot: input.trustEventId ? null : false,
+      mismatch: error instanceof Error ? error.message : String(error),
+    };
   }
 }
 

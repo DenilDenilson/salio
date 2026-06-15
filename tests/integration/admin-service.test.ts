@@ -18,7 +18,6 @@ describe("admin services", () => {
     const importer = new StakeImporter({
       allowedHosts: ["stake.pe"],
       timeoutMs: 1000,
-      fixtureHtmlPath: stakeFixturePath,
     });
 
     const match = await createMatch({
@@ -78,7 +77,6 @@ describe("admin services", () => {
     const importer = new StakeImporter({
       allowedHosts: ["stake.pe"],
       timeoutMs: 1000,
-      fixtureHtmlPath: stakeFixturePath,
     });
 
     await expect(
@@ -88,6 +86,7 @@ describe("admin services", () => {
         config,
         slug: "missing-import",
         url: "https://stake.pe/deportes/futbol/international/event-21798323",
+        fixtureHtmlPath: stakeFixturePath,
       }),
     ).resolves.toBeTruthy();
     await expect(

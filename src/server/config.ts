@@ -34,20 +34,21 @@ const EnvSchema = z.object({
     .positive()
     .default(60_000),
   STAKE_ALLOWED_HOSTS: z.string().default("stake.pe"),
-  STAKE_IMPORT_TIMEOUT_MS: z.coerce.number().int().positive().default(45_000),
-  STAKE_IMPORT_HEADLESS: z
+  STAKE_API_ALLOWED_HOSTS: z.string().default(".websbkt.com"),
+  STAKE_API_TIMEOUT_MS: z.coerce.number().int().positive().default(15_000),
+  STAKE_SAVE_RAW_RESPONSES: z
     .string()
     .optional()
-    .transform((value) => value !== "false"),
+    .transform((value) => value === "true"),
   DEMO_MODE: z
     .string()
     .optional()
     .transform((value) => value === "true"),
-  BROWSER_WS_ENDPOINT: z.string().optional(),
 });
 
 export type AppConfig = z.infer<typeof EnvSchema> & {
   stakeAllowedHosts: string[];
+  stakeApiAllowedHosts: string[];
 };
 
 export function getConfig(): AppConfig {
@@ -56,6 +57,9 @@ export function getConfig(): AppConfig {
   return {
     ...parsed,
     stakeAllowedHosts: parsed.STAKE_ALLOWED_HOSTS.split(",")
+      .map((host) => host.trim())
+      .filter(Boolean),
+    stakeApiAllowedHosts: parsed.STAKE_API_ALLOWED_HOSTS.split(",")
       .map((host) => host.trim())
       .filter(Boolean),
   };

@@ -1,0 +1,110 @@
+{
+  "info": {
+    "id": 21798332,
+    "date_start": "2026-06-15T01:00:00Z",
+    "event_slug": "brasil-vs-marruecos",
+    "teams": {
+      "home": "Brasil",
+      "away": "Marruecos"
+    },
+    "teams_id": {
+      "home": 905,
+      "away": 906
+    },
+    "tournament_id": 14301,
+    "tournament_name": "FIFA World Cup",
+    "tournament_slug": "fifa-world-cup",
+    "sport_id": 1,
+    "sport_name": "Football",
+    "is_live": false,
+    "count": 5
+  },
+  "odds": {
+    "313392001": {
+      "id": 313392001,
+      "event_id": 21798332,
+      "odd_id": 601,
+      "odd_code": "ODD_SCORES_1_0",
+      "odd_value": 7.25,
+      "team_name": "1-0",
+      "union_id": 7201,
+      "group_id": 60,
+      "filter_id": 260,
+      "variation_id": 1,
+      "additional_value_raw": "1-0",
+      "frozen": false,
+      "unique_id": "21798332:score:1-0",
+      "row_id": 1,
+      "order_num": 1
+    },
+    "313392002": {
+      "id": 313392002,
+      "event_id": 21798332,
+      "odd_id": 602,
+      "odd_code": "ODD_SCORES_1_1",
+      "odd_value": 6.75,
+      "team_name": "1-1",
+      "union_id": 7201,
+      "group_id": 60,
+      "filter_id": 260,
+      "variation_id": 1,
+      "additional_value_raw": "1-1",
+      "frozen": false,
+      "unique_id": "21798332:score:1-1",
+      "row_id": 1,
+      "order_num": 2
+    },
+    "313392021": {
+      "id": 313392021,
+      "event_id": 21798332,
+      "odd_id": 701,
+      "odd_code": "ODD_YEL_TTL_OVR",
+      "odd_value": 1.88,
+      "team_name": "Más de 4.5",
+      "union_id": 7210,
+      "group_id": 70,
+      "filter_id": 270,
+      "variation_id": 1,
+      "additional_value_raw": "4.5",
+      "frozen": false,
+      "unique_id": "21798332:yellow:over:4.5",
+      "row_id": 1,
+      "order_num": 1
+    },
+    "313392022": {
+      "id": 313392022,
+      "event_id": 21798332,
+      "odd_id": 702,
+      "odd_code": "ODD_YEL_TTL_UND",
+      "odd_value": 1.92,
+      "team_name": "Menos de 4.5",
+      "union_id": 7210,
+      "group_id": 70,
+      "filter_id": 270,
+      "variation_id": 1,
+      "additional_value_raw": "4.5",
+      "frozen": false,
+      "unique_id": "21798332:yellow:under:4.5",
+      "row_id": 1,
+      "order_num": 2
+    },
+    "313392041": {
+      "id": 313392041,
+      "event_id": 21798332,
+      "odd_id": 801,
+      "odd_code": "ODD_UNKNOWN_PROMO_BOOST",
+      "odd_value": 3.33,
+      "team_name": "Especial de promoción",
+      "union_id": 7220,
+      "group_id": 80,
+      "filter_id": 280,
+      "variation_id": 1,
+      "additional_value_raw": null,
+      "frozen": false,
+      "unique_id": "21798332:promo:boost",
+      "row_id": 1,
+      "order_num": 1
+    }
+  },
+  "filters": []
+}

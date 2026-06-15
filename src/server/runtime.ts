@@ -1,6 +1,6 @@
 import { InMemoryCache, UpstashCache, type CacheClient } from "./cache/cache";
 import { getConfig, type AppConfig } from "./config";
-import { seedDemoData, stakeFixturePath } from "./demo/seed";
+import { seedDemoData } from "./demo/seed";
 import { StakeImporter } from "./importers/stake/importer";
 import { DemoSportsProvider } from "./providers/demoProvider";
 import { EspnSportsProvider } from "./providers/espn/provider";
@@ -39,10 +39,10 @@ async function createServices(): Promise<Services> {
       : new InMemoryCache();
   const importer = new StakeImporter({
     allowedHosts: config.stakeAllowedHosts,
-    timeoutMs: config.STAKE_IMPORT_TIMEOUT_MS,
-    browserWsEndpoint: config.BROWSER_WS_ENDPOINT,
-    headless: config.STAKE_IMPORT_HEADLESS,
-    fixtureHtmlPath: config.DEMO_MODE ? stakeFixturePath : undefined,
+    timeoutMs: config.STAKE_API_TIMEOUT_MS,
+    stakeApiAllowedHosts: config.stakeApiAllowedHosts,
+    stakeApiTimeoutMs: config.STAKE_API_TIMEOUT_MS,
+    stakeApiSaveRawResponses: config.STAKE_SAVE_RAW_RESPONSES,
   });
   const provider = config.DEMO_MODE
     ? new DemoSportsProvider()

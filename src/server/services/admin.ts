@@ -41,6 +41,7 @@ export async function importStakeForMatch(input: {
   config: AppConfig;
   matchId: string;
   url: string;
+  stakeApiUrl?: string;
   fixtureHtmlPath?: string;
 }) {
   const match = await input.store.getMatchById(input.matchId);
@@ -58,6 +59,7 @@ export async function importStakeForMatch(input: {
       })
     : await input.importer.importEvent({
         url: input.url,
+        stakeApiUrl: input.stakeApiUrl,
         capturedAt,
         matchId: match.id,
       });
@@ -70,6 +72,7 @@ export async function importStakeBySlug(input: {
   config: AppConfig;
   slug: string;
   url: string;
+  stakeApiUrl?: string;
   fixtureHtmlPath?: string;
 }) {
   const fallback: CreateMatchInput = {
@@ -96,6 +99,7 @@ export async function importStakeBySlug(input: {
       })
     : await input.importer.importEvent({
         url: input.url,
+        stakeApiUrl: input.stakeApiUrl,
         capturedAt,
         matchId: tempMatch.id,
       });

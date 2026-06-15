@@ -250,6 +250,7 @@ describe("ESPN snapshot finalization safety", () => {
 
   it("finalizes with ESPN evidence without changing frozen odds identity", () => {
     const snapshot = oddsCapturedSnapshot();
+    const originalStake = structuredClone(snapshot.stake);
     const originalOddsSignature = snapshot.odds.markets.map((market) => ({
       id: market.id,
       selections: market.selections.map((selection) => ({
@@ -275,6 +276,7 @@ describe("ESPN snapshot finalization safety", () => {
     });
 
     expect(finalized.phase).toBe("finalized");
+    expect(finalized.stake).toEqual(originalStake);
     expect(finalized.sportsData).toEqual(espnSource);
     expect(finalized.result?.evidence).toMatchObject({
       provider: "espn",

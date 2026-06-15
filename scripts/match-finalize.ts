@@ -17,6 +17,7 @@ import {
 import {
   assertFixtureIsFinalizable,
   assertRemoteFixtureMatchesSnapshot,
+  assertTrustedEventIdFixtureIsUsable,
 } from "../src/server/snapshots/fixtureValidation";
 import { createSnapshotSportsProvider } from "../src/server/snapshots/providerFactory";
 import { type MatchSnapshot } from "../src/server/snapshots/schema";
@@ -26,6 +27,11 @@ const args = parseCliArgs(process.argv.slice(2));
 try {
   const slug = requireStringArg(args, "slug");
   const snapshot = await readSnapshot(slug);
+  if (snapshot.phase === "finalized") {
+    throw new Error(
+      `Snapshot ${slug} ya esta finalizado. No se modifico el snapshot.`,
+    );
+  }
   const config = getConfig();
   const eventId =
     optionalStringArg(args, "event-id") ?? snapshot.sportsData.eventId;
@@ -38,6 +44,7 @@ try {
   const originalFrozenOdds = snapshot.odds;
   const originalStake = snapshot.stake;
   const demoProvider = booleanFlag(args, "demo-provider");
+  const trustEventId = booleanFlag(args, "trust-event-id");
 
   const provider = createSnapshotSportsProvider({
     config,
@@ -47,7 +54,11 @@ try {
   });
 
   const fixture = await provider.getFixture(eventId);
-  assertRemoteFixtureMatchesSnapshot(snapshot, fixture, eventId);
+  if (trustEventId) {
+    assertTrustedEventIdFixtureIsUsable(fixture, eventId);
+  } else {
+    assertRemoteFixtureMatchesSnapshot(snapshot, fixture, eventId);
+  }
   assertFixtureIsFinalizable(fixture);
 
   const [events, teamStats, playerStats] = await Promise.all([
@@ -113,7 +124,7 @@ try {
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
   console.error(
-    "Uso: pnpm match:finalize -- --slug=<slug> --event-id=<ESPN_EVENT_ID> [--demo-provider]",
+    "Uso: pnpm match:finalize -- --slug=<slug> --event-id=<ESPN_EVENT_ID> [--trust-event-id] [--demo-provider]",
   );
   process.exit(1);
 }

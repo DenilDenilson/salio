@@ -1,12 +1,13 @@
 import { getConfig } from "../src/server/config";
 import {
+  booleanFlag,
   optionalStringArg,
   parseCliArgs,
   requireStringArg,
 } from "../src/server/snapshots/cli";
 import {
   assertFixtureIsFinalizable,
-  assertRemoteFixtureMatchesSnapshot,
+  validateFixtureIdentity,
 } from "../src/server/snapshots/fixtureValidation";
 import { readSnapshot } from "../src/server/snapshots/io";
 import { createSnapshotSportsProvider } from "../src/server/snapshots/providerFactory";
@@ -16,6 +17,7 @@ const args = parseCliArgs(process.argv.slice(2));
 try {
   const slug = requireStringArg(args, "slug");
   const eventId = requireStringArg(args, "event-id");
+  const trustEventId = booleanFlag(args, "trust-event-id");
   const config = getConfig();
   const snapshot = await readSnapshot(slug);
   const provider = createSnapshotSportsProvider({
@@ -26,16 +28,21 @@ try {
   });
   const fixture = await provider.getFixture(eventId);
 
-  let matchesSnapshot = true;
-  let finalizable = true;
-  let mismatch: string | null = null;
-  try {
-    assertRemoteFixtureMatchesSnapshot(snapshot, fixture, eventId);
-    assertFixtureIsFinalizable(fixture);
-  } catch (error) {
-    matchesSnapshot = false;
-    finalizable = false;
-    mismatch = error instanceof Error ? error.message : String(error);
+  const identity = validateFixtureIdentity({
+    snapshot,
+    fixture,
+    requestedEventId: eventId,
+    trustEventId,
+  });
+  let finalizable = identity.mismatch === null;
+  let mismatch = identity.mismatch;
+  if (!mismatch) {
+    try {
+      assertFixtureIsFinalizable(fixture);
+    } catch (error) {
+      finalizable = false;
+      mismatch = error instanceof Error ? error.message : String(error);
+    }
   }
 
   console.log(
@@ -44,7 +51,9 @@ try {
         ok: true,
         slug,
         eventId,
-        matchesSnapshot,
+        validationMode: identity.validationMode,
+        identityCheckSkipped: identity.identityCheckSkipped,
+        matchesSnapshot: identity.matchesSnapshot,
         finalizable,
         fixture: {
           eventId: fixture.eventId,
@@ -66,6 +75,8 @@ try {
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
   const slug = optionalStringArg(args, "slug") ?? "brasil-vs-marruecos";
-  console.error(`Uso: pnpm espn:validate -- --slug=${slug} --event-id=760419`);
+  console.error(
+    `Uso: pnpm espn:validate -- --slug=${slug} --event-id=760419 [--trust-event-id]`,
+  );
   process.exit(1);
 }

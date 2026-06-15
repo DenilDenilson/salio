@@ -6,6 +6,8 @@ import type { ProviderFixture } from "../../src/server/providers/types";
 import {
   assertFixtureIsFinalizable,
   assertRemoteFixtureMatchesSnapshot,
+  assertTrustedEventIdFixtureIsUsable,
+  validateFixtureIdentity,
 } from "../../src/server/snapshots/fixtureValidation";
 import {
   MatchSnapshotSchema,
@@ -49,6 +51,31 @@ function providerFixture(
     lastUpdatedAt: "2026-06-14T00:00:00.000Z",
     ...overrides,
   };
+}
+
+function translatedGermanyFixture(
+  overrides: Partial<ProviderFixture> = {},
+): ProviderFixture {
+  return providerFixture({
+    eventId: "760422",
+    sourceUrl:
+      "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=760422",
+    homeTeamId: "481",
+    awayTeamId: "613",
+    homeTeamName: "Germany",
+    awayTeamName: "Curaçao",
+    competitionName: "FIFA World Cup",
+    leagueSlug: "fifa.world",
+    score: {
+      home: 4,
+      away: 0,
+      halftimeHome: 2,
+      halftimeAway: 0,
+    },
+    kickoffAt: "2026-06-14T17:00:00.000Z",
+    lastUpdatedAt: "2026-06-14T19:00:00.000Z",
+    ...overrides,
+  });
 }
 
 describe("match:finalize safety validation", () => {
@@ -139,4 +166,96 @@ describe("match:finalize safety validation", () => {
       ),
     ).toThrow(/todavia no esta finalizado/i);
   });
+
+  it("keeps strict mode as the default and rejects translated team names", () => {
+    const current = snapshot("alemania-vs-curazao");
+    const fixture = translatedGermanyFixture();
+
+    expect(() =>
+      assertRemoteFixtureMatchesSnapshot(current, fixture, "760422"),
+    ).toThrow(/Los equipos o la orientacion local\/visitante no coinciden/i);
+
+    const validation = validateFixtureIdentity({
+      snapshot: current,
+      fixture,
+      requestedEventId: "760422",
+      trustEventId: false,
+    });
+
+    expect(validation).toMatchObject({
+      validationMode: "strict",
+      identityCheckSkipped: false,
+      matchesSnapshot: false,
+    });
+    expect(validation.mismatch).toMatch(/orientacion local\/visitante/i);
+  });
+
+  it("allows translated team names only when --trust-event-id is explicit", () => {
+    const current = snapshot("alemania-vs-curazao");
+    const fixture = translatedGermanyFixture();
+
+    expect(() =>
+      assertTrustedEventIdFixtureIsUsable(fixture, "760422"),
+    ).not.toThrow();
+
+    expect(
+      validateFixtureIdentity({
+        snapshot: current,
+        fixture,
+        requestedEventId: "760422",
+        trustEventId: true,
+      }),
+    ).toEqual({
+      validationMode: "event-id-only",
+      identityCheckSkipped: true,
+      matchesSnapshot: null,
+      mismatch: null,
+    });
+  });
+
+  it("rejects trusted mode when the provider returns a different event id", () => {
+    expect(() =>
+      assertTrustedEventIdFixtureIsUsable(
+        translatedGermanyFixture({ eventId: "760999" }),
+        "760422",
+      ),
+    ).toThrow(/se solicito 760422/i);
+  });
+
+  it("rejects trusted mode when the fixture is not finalized", () => {
+    const fixture = translatedGermanyFixture({
+      status: FixtureStatus.LIVE,
+      providerStatus: "2H",
+    });
+
+    expect(() => {
+      assertTrustedEventIdFixtureIsUsable(fixture, "760422");
+      assertFixtureIsFinalizable(fixture);
+    }).toThrow(/todavia no esta finalizado/i);
+  });
+
+  it.each([
+    [
+      "missing home/away names",
+      { homeTeamName: "", awayTeamName: "Curaçao" },
+      /local y visitante validos/i,
+    ],
+    [
+      "missing final score",
+      {
+        score: { home: null, away: 0, halftimeHome: null, halftimeAway: null },
+      },
+      /marcador final no esta disponible/i,
+    ],
+  ] as const)(
+    "keeps result integrity validation in trusted mode: %s",
+    (_caseName, overrides, message) => {
+      expect(() =>
+        assertTrustedEventIdFixtureIsUsable(
+          translatedGermanyFixture(overrides),
+          "760422",
+        ),
+      ).toThrow(message);
+    },
+  );
 });

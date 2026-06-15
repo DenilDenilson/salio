@@ -9,18 +9,22 @@ import {
 export interface RawStakeSelection {
   sourceSelectionId?: string;
   oddId?: string;
+  oddCode?: string;
   rawSelectionName: string;
   oddDecimal: number;
   additionalValue?: string;
   teamSide?: string;
   ttl?: string;
   locked: boolean;
+  metadata?: Record<string, unknown>;
 }
 
 export interface RawStakeMarket {
   sourceMarketId?: string;
   rawMarketName: string;
   displayOrder: number;
+  marketType?: MarketType;
+  metadata?: Record<string, unknown>;
   selections: RawStakeSelection[];
 }
 
@@ -201,7 +205,12 @@ export function normalizeStakeMarkets(
 ): NormalizedMarket[] {
   return input.markets
     .map((market, marketIndex) => {
-      const marketType = detectMarketType(market.rawMarketName);
+      const marketType =
+        market.marketType ??
+        detectMarketTypeFromStakeOddCodes(
+          market.selections.map((selection) => selection.oddCode),
+        ) ??
+        detectMarketType(market.rawMarketName);
       const marketId = stableId(
         "market",
         market.sourceMarketId ?? `${market.rawMarketName}-${marketIndex}`,
@@ -296,13 +305,30 @@ function inferSelection(
   const home = normalizeText(homeTeamName);
   const away = normalizeText(awayTeamName);
   const token = normalizeText(
-    `${selection.sourceSelectionId ?? ""} ${selection.oddId ?? ""} ${selection.ttl ?? ""}`,
+    `${selection.sourceSelectionId ?? ""} ${selection.oddId ?? ""} ${selection.ttl ?? ""} ${selection.oddCode ?? ""}`,
   );
   const line = parseLine(
     selection.additionalValue ?? selection.rawSelectionName,
   );
 
   if (marketType === MarketType.MATCH_RESULT) {
+    if (isOddCode(selection, "ODD_S1")) {
+      return team(
+        SelectionOperator.HOME,
+        ParticipantType.HOME_TEAM,
+        homeTeamName,
+      );
+    }
+    if (isOddCode(selection, "ODD_S2")) {
+      return team(
+        SelectionOperator.AWAY,
+        ParticipantType.AWAY_TEAM,
+        awayTeamName,
+      );
+    }
+    if (isOddCode(selection, "ODD_SX")) {
+      return base(SelectionOperator.DRAW);
+    }
     if (isTeamNameMatch(text, home)) {
       return team(
         SelectionOperator.HOME,
@@ -321,6 +347,15 @@ function inferSelection(
   }
 
   if (marketType === MarketType.DOUBLE_CHANCE) {
+    if (isOddCode(selection, "ODD_D1X")) {
+      return base(SelectionOperator.HOME_OR_DRAW);
+    }
+    if (isOddCode(selection, "ODD_D12")) {
+      return base(SelectionOperator.HOME_OR_AWAY);
+    }
+    if (isOddCode(selection, "ODD_DX2")) {
+      return base(SelectionOperator.DRAW_OR_AWAY);
+    }
     if (
       text.includes("1x") ||
       text.includes("local o empate") ||
@@ -339,6 +374,20 @@ function inferSelection(
   }
 
   if (marketType === MarketType.DRAW_NO_BET) {
+    if (isOddCodePrefix(selection, "ODD_DRAWNOBET_2")) {
+      return team(
+        SelectionOperator.AWAY,
+        ParticipantType.AWAY_TEAM,
+        awayTeamName,
+      );
+    }
+    if (isOddCodePrefix(selection, "ODD_DRAWNOBET_1")) {
+      return team(
+        SelectionOperator.HOME,
+        ParticipantType.HOME_TEAM,
+        homeTeamName,
+      );
+    }
     return isTeamNameMatch(text, away)
       ? team(SelectionOperator.AWAY, ParticipantType.AWAY_TEAM, awayTeamName)
       : team(SelectionOperator.HOME, ParticipantType.HOME_TEAM, homeTeamName);
@@ -355,6 +404,7 @@ function inferSelection(
     ].includes(marketType)
   ) {
     const operator =
+      isStakeUnderCode(selection) ||
       text.includes("menos") ||
       text.includes("inferior") ||
       text.includes("abajo de") ||
@@ -389,6 +439,12 @@ function inferSelection(
   }
 
   if (marketType === MarketType.BOTH_TEAMS_TO_SCORE) {
+    if (isStakeNoCode(selection)) {
+      return base(SelectionOperator.NO);
+    }
+    if (isStakeYesCode(selection)) {
+      return base(SelectionOperator.YES);
+    }
     return base(
       /\b(si|yes|s)\b/.test(text)
         ? SelectionOperator.YES
@@ -424,7 +480,9 @@ function inferSelection(
   }
 
   if (marketType === MarketType.ANYTIME_GOALSCORER) {
-    const playerName = selection.rawSelectionName.trim();
+    const playerName = stripPlayerMarketWords(
+      selection.rawSelectionName.trim(),
+    );
     return {
       operator: SelectionOperator.PLAYER,
       participantType: ParticipantType.PLAYER,
@@ -441,6 +499,71 @@ function inferSelection(
   }
 
   return base(SelectionOperator.EXACT);
+}
+
+export function detectMarketTypeFromStakeOddCodes(
+  oddCodes: Array<string | undefined>,
+): MarketType | null {
+  const codes = oddCodes
+    .filter((code): code is string => typeof code === "string")
+    .map((code) => code.toUpperCase());
+  for (const code of codes) {
+    const classified = classifyStakeOddCode(code);
+    if (classified !== MarketType.UNSUPPORTED) {
+      return classified;
+    }
+  }
+  return null;
+}
+
+export function classifyStakeOddCode(code: string): MarketType {
+  const normalized = code.trim().toUpperCase();
+  if (["ODD_S1", "ODD_SX", "ODD_S2"].includes(normalized)) {
+    return MarketType.MATCH_RESULT;
+  }
+  if (["ODD_D1X", "ODD_D12", "ODD_DX2"].includes(normalized)) {
+    return MarketType.DOUBLE_CHANCE;
+  }
+  if (normalized.startsWith("ODD_DRAWNOBET_")) {
+    return MarketType.DRAW_NO_BET;
+  }
+  if (normalized.startsWith("ODD_TTL_")) {
+    return MarketType.TOTAL_GOALS;
+  }
+  if (
+    normalized.startsWith("ODD_INDTTL1_") ||
+    normalized.startsWith("ODD_INDTTL2_")
+  ) {
+    return MarketType.TEAM_TOTAL_GOALS;
+  }
+  if (normalized.startsWith("ODD_HT1_TTL_")) {
+    return MarketType.FIRST_HALF_TOTAL_GOALS;
+  }
+  if (normalized.startsWith("ODD_FTB_BOTHTEAMSSCORE_")) {
+    return MarketType.BOTH_TEAMS_TO_SCORE;
+  }
+  if (normalized.startsWith("ODD_SCORES_")) {
+    return MarketType.EXACT_SCORE;
+  }
+  if (normalized.startsWith("ODD_HND_")) {
+    return MarketType.HANDICAP;
+  }
+  if (normalized.startsWith("ODD_YEL_TTL_")) {
+    return MarketType.TOTAL_YELLOW_CARDS;
+  }
+  if (normalized.startsWith("ODD_CRN_TTL_")) {
+    return MarketType.TOTAL_CORNERS;
+  }
+  if (normalized.startsWith("ODD_PLR_SHOTSONTARGET_")) {
+    return MarketType.PLAYER_SHOTS_ON_TARGET;
+  }
+  if (normalized === "ODD_SPLR_SCORES_PLAYER") {
+    return MarketType.ANYTIME_GOALSCORER;
+  }
+  if (normalized.startsWith("ODD_FTB_2HALVES_")) {
+    return MarketType.UNSUPPORTED;
+  }
+  return MarketType.UNSUPPORTED;
 }
 
 function base(
@@ -516,6 +639,48 @@ function stripLineWords(value: string): string {
     .replace(/(?:over|under)\s+[-+]?\d+(?:[.,]\d+)?/gi, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function stripPlayerMarketWords(value: string): string {
+  return stripLineWords(value)
+    .replace(/el jugador marcara un gol/gi, "")
+    .replace(/el jugador marcar[aá] un gol/gi, "")
+    .replace(/jugador marcara un gol/gi, "")
+    .replace(/jugador marcar[aá] un gol/gi, "")
+    .replace(/tiros a puerta/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isOddCode(selection: RawStakeSelection, code: string): boolean {
+  return selection.oddCode?.toUpperCase() === code;
+}
+
+function isOddCodePrefix(
+  selection: RawStakeSelection,
+  prefix: string,
+): boolean {
+  return selection.oddCode?.toUpperCase().startsWith(prefix) ?? false;
+}
+
+function isStakeUnderCode(selection: RawStakeSelection): boolean {
+  const code = selection.oddCode?.toUpperCase() ?? "";
+  return (
+    code.includes("_UNDER") ||
+    code.endsWith("_U") ||
+    code.includes("_UND") ||
+    code.includes("_MENOS")
+  );
+}
+
+function isStakeYesCode(selection: RawStakeSelection): boolean {
+  const code = selection.oddCode?.toUpperCase() ?? "";
+  return code.endsWith("_YES") || code.endsWith("_SI") || code.endsWith("_Y");
+}
+
+function isStakeNoCode(selection: RawStakeSelection): boolean {
+  const code = selection.oddCode?.toUpperCase() ?? "";
+  return code.endsWith("_NO") || code.endsWith("_N");
 }
 
 function isTeamNameMatch(candidate: string, team: string): boolean {

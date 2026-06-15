@@ -22,11 +22,12 @@ function config(overrides: Partial<AppConfig> = {}): AppConfig {
     STATS_REFRESH_INTERVAL_MS: 60_000,
     PLAYER_STATS_REFRESH_INTERVAL_MS: 60_000,
     STAKE_ALLOWED_HOSTS: "stake.pe",
-    STAKE_IMPORT_TIMEOUT_MS: 45_000,
-    STAKE_IMPORT_HEADLESS: true,
+    STAKE_API_ALLOWED_HOSTS: ".websbkt.com",
+    STAKE_API_TIMEOUT_MS: 15_000,
+    STAKE_SAVE_RAW_RESPONSES: false,
     DEMO_MODE: false,
-    BROWSER_WS_ENDPOINT: undefined,
     stakeAllowedHosts: ["stake.pe"],
+    stakeApiAllowedHosts: [".websbkt.com"],
     ...overrides,
   };
 }
