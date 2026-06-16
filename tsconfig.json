@@ -1,12 +1,26 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "types": ["node", "vitest/globals"]
-  },
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "coverage", "playwright-report", "test-results"]
+	"extends": "astro/tsconfigs/strict",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@/*": [
+				"src/*"
+			]
+		},
+		"types": [
+			"node",
+			"vitest/globals"
+		]
+	},
+	"include": [
+		".astro/types.d.ts",
+		"**/*",
+		"./worker-configuration.d.ts"
+	],
+	"exclude": [
+		"dist",
+		"coverage",
+		"playwright-report",
+		"test-results"
+	]
 }

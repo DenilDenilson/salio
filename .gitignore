@@ -3,6 +3,7 @@ node_modules
 dist
 .vercel
 .tmp
+.wrangler
 coverage
 playwright-report
 test-results
