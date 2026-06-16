@@ -12,9 +12,9 @@ describe("snapshot CLI helpers", () => {
   it("parses equals args, value args and boolean flags", () => {
     const args = parseCliArgs([
       "--",
-      "--slug=canada-vs-bosnia",
+      "--slug= canada-vs-bosnia\n",
       "--event-id",
-      "760419",
+      " 760419 ",
       "ignored-positional",
       "--empty",
       "",
@@ -26,6 +26,21 @@ describe("snapshot CLI helpers", () => {
     expect(booleanFlag(args, "demo-provider")).toBe(true);
     expect(optionalStringArg(args, "empty")).toBeNull();
     expect(optionalStringArg(args, "missing")).toBeNull();
+  });
+
+  it("trims accidental multiline shell paste whitespace from string args", () => {
+    const args = parseCliArgs([
+      "--stake-api-url=https://pre-143o-sp.websbkt.com/cache/143/es/pe/21798332/single-pre-event.json?hidenseek=abc123\n",
+      "--title",
+      "\nArabia Saudita vs Uruguay ",
+    ]);
+
+    expect(requireStringArg(args, "stake-api-url")).toBe(
+      "https://pre-143o-sp.websbkt.com/cache/143/es/pe/21798332/single-pre-event.json?hidenseek=abc123",
+    );
+    expect(optionalStringArg(args, "title")).toBe(
+      "Arabia Saudita vs Uruguay",
+    );
   });
 
   it("validates required strings, integers and truthy boolean aliases", () => {

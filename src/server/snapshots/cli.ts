@@ -31,12 +31,16 @@ export function requireStringArg(args: CliArgs, key: string): string {
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`Missing required argument --${key}.`);
   }
-  return value;
+  return value.trim();
 }
 
 export function optionalStringArg(args: CliArgs, key: string): string | null {
   const value = args[key];
-  return typeof value === "string" && value.trim().length > 0 ? value : null;
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
 }
 
 export function parseMatchTitleTeams(
