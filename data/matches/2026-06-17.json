@@ -1,0 +1,297 @@
+{
+  "schema_version": "match-discovery-manifest.v2",
+  "generated_at": "2026-06-17T08:20:33Z",
+  "generated_for": {
+    "local_date": "2026-06-17",
+    "timezone": "America/Lima"
+  },
+  "search_window": {
+    "from_utc": "2026-06-17T05:00:00Z",
+    "to_utc": "2026-06-18T04:59:59Z"
+  },
+  "competition": {
+    "id": "fifa-world-cup-2026",
+    "name": "FIFA World Cup 2026",
+    "season": "2026"
+  },
+  "matches": [
+    {
+      "candidate_key": "fifa-world-cup-2026-portugal-dr-congo-2026-06-17T17:00:00Z",
+      "home_team": {
+        "name": "Portugal",
+        "short_name": "POR",
+        "canonical_id": null
+      },
+      "away_team": {
+        "name": "DR Congo",
+        "short_name": "COD",
+        "canonical_id": null
+      },
+      "stage": {
+        "type": "group_stage",
+        "name": "Group Stage",
+        "group": "K",
+        "matchday": 1
+      },
+      "venue": {
+        "name": "Houston Stadium",
+        "host_city": "Houston",
+        "country": "United States"
+      },
+      "kickoff": {
+        "utc": "2026-06-17T17:00:00Z",
+        "lima": "2026-06-17T12:00:00-05:00"
+      },
+      "match_status": "scheduled",
+      "monitoring_profile": "world_cup_public_sources_v2",
+      "sources": {
+        "schedule": [
+          {
+            "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/portugal-congo-dr-preview-live-stream-team-news-tickets",
+            "source_type": "official",
+            "retrieved_at": "2026-06-17T08:20:33Z",
+            "supports": [
+              "competition",
+              "teams",
+              "kickoff",
+              "venue",
+              "stage"
+            ],
+            "confidence": 1.0
+          }
+        ],
+        "stake": {
+          "market": "PE",
+          "locale": "es-PE",
+          "discovery_status": "found",
+          "event_url": "https://stake.pe/deportes/football/world/fifa-world-cup/portugal-vs-republica-democratica-del-congo/event/24932193",
+          "public_page_id": "24932193",
+          "confidence": 0.99
+        },
+        "espn": {
+          "discovery_status": "found",
+          "match_url": "https://espndeportes.espn.com/futbol/partido/_/juegoId/760435/rd-del-congo-portugal",
+          "event_id": "760435",
+          "confidence": 0.99
+        }
+      },
+      "validation": {
+        "overall_confidence": 0.99,
+        "review_required": false,
+        "issues": []
+      }
+    },
+    {
+      "candidate_key": "fifa-world-cup-2026-england-croatia-2026-06-17T20:00:00Z",
+      "home_team": {
+        "name": "England",
+        "short_name": "ENG",
+        "canonical_id": null
+      },
+      "away_team": {
+        "name": "Croatia",
+        "short_name": "CRO",
+        "canonical_id": null
+      },
+      "stage": {
+        "type": "group_stage",
+        "name": "Group Stage",
+        "group": "L",
+        "matchday": 1
+      },
+      "venue": {
+        "name": "Dallas Stadium",
+        "host_city": "Dallas",
+        "country": "United States"
+      },
+      "kickoff": {
+        "utc": "2026-06-17T20:00:00Z",
+        "lima": "2026-06-17T15:00:00-05:00"
+      },
+      "match_status": "scheduled",
+      "monitoring_profile": "world_cup_public_sources_v2",
+      "sources": {
+        "schedule": [
+          {
+            "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/england-croatia-live-stream-team-news-tickets",
+            "source_type": "official",
+            "retrieved_at": "2026-06-17T08:20:33Z",
+            "supports": [
+              "competition",
+              "teams",
+              "kickoff",
+              "venue",
+              "stage"
+            ],
+            "confidence": 1.0
+          }
+        ],
+        "stake": {
+          "market": "PE",
+          "locale": "es-PE",
+          "discovery_status": "found",
+          "event_url": "https://stake.pe/deportes/football/world/fifa-world-cup/inglaterra-vs-croacia/event/21798337",
+          "public_page_id": "21798337",
+          "confidence": 0.99
+        },
+        "espn": {
+          "discovery_status": "found",
+          "match_url": "https://espndeportes.espn.com/futbol/partido/_/juegoId/760437/croacia-inglaterra",
+          "event_id": "760437",
+          "confidence": 0.99
+        }
+      },
+      "validation": {
+        "overall_confidence": 0.99,
+        "review_required": false,
+        "issues": []
+      }
+    },
+    {
+      "candidate_key": "fifa-world-cup-2026-ghana-panama-2026-06-17T23:00:00Z",
+      "home_team": {
+        "name": "Ghana",
+        "short_name": "GHA",
+        "canonical_id": null
+      },
+      "away_team": {
+        "name": "Panama",
+        "short_name": "PAN",
+        "canonical_id": null
+      },
+      "stage": {
+        "type": "group_stage",
+        "name": "Group Stage",
+        "group": "L",
+        "matchday": 1
+      },
+      "venue": {
+        "name": "Toronto Stadium",
+        "host_city": "Toronto",
+        "country": "Canada"
+      },
+      "kickoff": {
+        "utc": "2026-06-17T23:00:00Z",
+        "lima": "2026-06-17T18:00:00-05:00"
+      },
+      "match_status": "scheduled",
+      "monitoring_profile": "world_cup_public_sources_v2",
+      "sources": {
+        "schedule": [
+          {
+            "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/ghana-panama-preview-live-stream-team-news-tickets",
+            "source_type": "official",
+            "retrieved_at": "2026-06-17T08:20:33Z",
+            "supports": [
+              "competition",
+              "teams",
+              "kickoff",
+              "venue",
+              "stage"
+            ],
+            "confidence": 1.0
+          }
+        ],
+        "stake": {
+          "market": "PE",
+          "locale": "es-PE",
+          "discovery_status": "found",
+          "event_url": "https://stake.pe/deportes/football/world/fifa-world-cup/ghana-vs-panama/event/21798338",
+          "public_page_id": "21798338",
+          "confidence": 0.99
+        },
+        "espn": {
+          "discovery_status": "found",
+          "match_url": "https://espndeportes.espn.com/futbol/partido/_/juegoId/760434/panama-ghana",
+          "event_id": "760434",
+          "confidence": 0.99
+        }
+      },
+      "validation": {
+        "overall_confidence": 0.99,
+        "review_required": false,
+        "issues": []
+      }
+    },
+    {
+      "candidate_key": "fifa-world-cup-2026-uzbekistan-colombia-2026-06-18T02:00:00Z",
+      "home_team": {
+        "name": "Uzbekistan",
+        "short_name": "UZB",
+        "canonical_id": null
+      },
+      "away_team": {
+        "name": "Colombia",
+        "short_name": "COL",
+        "canonical_id": null
+      },
+      "stage": {
+        "type": "group_stage",
+        "name": "Group Stage",
+        "group": "K",
+        "matchday": 1
+      },
+      "venue": {
+        "name": "Mexico City Stadium",
+        "host_city": "Mexico City",
+        "country": "Mexico"
+      },
+      "kickoff": {
+        "utc": "2026-06-18T02:00:00Z",
+        "lima": "2026-06-17T21:00:00-05:00"
+      },
+      "match_status": "scheduled",
+      "monitoring_profile": "world_cup_public_sources_v2",
+      "sources": {
+        "schedule": [
+          {
+            "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/uzbekistan-colombia-preview-live-stream-team-news-tickets",
+            "source_type": "official",
+            "retrieved_at": "2026-06-17T08:20:33Z",
+            "supports": [
+              "competition",
+              "teams",
+              "kickoff",
+              "venue",
+              "stage"
+            ],
+            "confidence": 1.0
+          }
+        ],
+        "stake": {
+          "market": "PE",
+          "locale": "es-PE",
+          "discovery_status": "found",
+          "event_url": "https://stake.pe/deportes/football/world/fifa-world-cup/uzbekistan-vs-colombia/event/21798339",
+          "public_page_id": "21798339",
+          "confidence": 0.99
+        },
+        "espn": {
+          "discovery_status": "found",
+          "match_url": "https://espndeportes.espn.com/futbol/partido/_/juegoId/760436/colombia-uzbekistan",
+          "event_id": "760436",
+          "confidence": 0.99
+        }
+      },
+      "validation": {
+        "overall_confidence": 0.99,
+        "review_required": false,
+        "issues": [
+          {
+            "code": "utc_date_differs_from_lima_date",
+            "severity": "info",
+            "message": "El kickoff ocurre el 18 de junio en UTC, pero corresponde al 17 de junio a las 21:00 en America/Lima."
+          }
+        ]
+      }
+    }
+  ],
+  "rejected_candidates": [],
+  "summary": {
+    "matches_discovered": 4,
+    "matches_ready_for_endpoint_discovery": 4,
+    "matches_requiring_review": 0,
+    "stake_pages_found": 4,
+    "espn_pages_found": 4
+  }
+}
