@@ -29,7 +29,7 @@ new URL(pageUrl)
 const context = await chromium.launchPersistentContext(
     ".cache/network-profile",
     {
-        headless: false,
+        headless: process.env.HEADLESS !== "0",
     }
 )
 

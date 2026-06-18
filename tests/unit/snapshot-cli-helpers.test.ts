@@ -38,9 +38,7 @@ describe("snapshot CLI helpers", () => {
     expect(requireStringArg(args, "stake-api-url")).toBe(
       "https://pre-143o-sp.websbkt.com/cache/143/es/pe/21798332/single-pre-event.json?hidenseek=abc123",
     );
-    expect(optionalStringArg(args, "title")).toBe(
-      "Arabia Saudita vs Uruguay",
-    );
+    expect(optionalStringArg(args, "title")).toBe("Arabia Saudita vs Uruguay");
   });
 
   it("validates required strings, integers and truthy boolean aliases", () => {

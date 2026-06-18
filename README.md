@@ -73,6 +73,9 @@ El script rechaza sobrescribir snapshots ya finalizados.
 Antes de escribir el resultado puedes validar que el `event-id` de ESPN
 corresponde al snapshot:
 
+e.g.
+https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=760435
+
 ```bash
 pnpm espn:validate -- --slug=brasil-vs-marruecos --event-id=760419
 ```
@@ -215,7 +218,6 @@ pnpm odds:capture -- --slug=... --stake-url=... --stake-api-url=... --kickoff=..
 pnpm stake:diagnose -- --stake-url=... --stake-api-url=...
 pnpm espn:validate -- --slug=... --event-id=...
 pnpm match:finalize -- --slug=... --event-id=...
-pnpm snapshots:migrate:v2
 ```
 
 ## Variables De Entorno
@@ -261,17 +263,6 @@ El diagnóstico solo imprime transporte, status HTTP, content-type, tamaño de
 respuesta y URL censurada. La captura principal usa `curl` internamente porque
 replica mejor los headers aceptados por Stake.
 
-## Migración
-
-Snapshots `schemaVersion: "1.0"` se migran con:
-
-```bash
-pnpm snapshots:migrate:v2
-```
-
-El migrador lee el campo histórico de API-Football si existe, pero el modelo
-activo ya no usa API-Football. El contrato activo es `sportsData`.
-
 ## Testing
 
 ```bash
@@ -293,3 +284,119 @@ Stake ni a ESPN.
 - [0003: Stake live capture browser modes](docs/decisions/0003-stake-live-capture-browser-modes.md)
 - [0005: ESPN post-match provider](docs/decisions/0005-espn-summary-post-match-provider.md)
 - [0006: Stake API-only odds capture](docs/decisions/0006-stake-api-first-odds-capture.md)
+
+TODO:
+Ahora implementamos timers automáticos desde mi VPS usando systemd desde orchestrate-matches.ts
+
+que toma solo este json con el nombre de la fecha de los partidos con estructura:
+```jsonc
+{
+  "schema_version": "string", // Ej. "match-discovery-manifest.v2"
+  "generated_at": "string", // Fecha ISO 8601 en UTC
+
+  "generated_for": {
+    "local_date": "string", // YYYY-MM-DD
+    "timezone": "string" // Zona horaria IANA
+  },
+
+  "search_window": {
+    "from_utc": "string", // Fecha ISO 8601
+    "to_utc": "string" // Fecha ISO 8601
+  },
+
+  "competition": {
+    "id": "string",
+    "name": "string",
+    "season": "string"
+  },
+
+  "matches": [
+    {
+      "candidate_key": "string",
+
+      "home_team": {
+        "name": "string",
+        "short_name": "string",
+        "canonical_id": "string | null"
+      },
+
+      "away_team": {
+        "name": "string",
+        "short_name": "string",
+        "canonical_id": "string | null"
+      },
+
+      "stage": {
+        "type": "string",
+        "name": "string",
+        "group": "string | null",
+        "matchday": "number | null"
+      },
+
+      "venue": {
+        "name": "string",
+        "host_city": "string",
+        "country": "string"
+      },
+
+      "kickoff": {
+        "utc": "string", // Fecha ISO 8601 en UTC
+        "lima": "string" // Fecha ISO 8601 con offset
+      },
+
+      "match_status": "string",
+      "monitoring_profile": "string",
+
+      "sources": {
+        "schedule": [
+          {
+            "url": "string",
+            "source_type": "string",
+            "retrieved_at": "string", // Fecha ISO 8601
+            "supports": ["string"],
+            "confidence": "number" // Entre 0 y 1
+          }
+        ],
+
+        "stake": {
+          "market": "string",
+          "locale": "string",
+          "discovery_status": "string",
+          "event_url": "string",
+          "public_page_id": "string",
+          "confidence": "number" // Entre 0 y 1
+        },
+
+        "espn": {
+          "discovery_status": "string",
+          "match_url": "string",
+          "event_id": "string",
+          "confidence": "number" // Entre 0 y 1
+        }
+      },
+
+      "validation": {
+        "overall_confidence": "number", // Entre 0 y 1
+        "review_required": "boolean",
+        "issues": [
+          {
+            "code": "string",
+            "severity": "string",
+            "message": "string"
+          }
+        ]
+      }
+    }
+  ],
+
+  "rejected_candidates": ["object"],
+
+  "summary": {
+    "matches_discovered": "number",
+    "matches_ready_for_endpoint_discovery": "number",
+    "matches_requiring_review": "number",
+    "stake_pages_found": "number",
+    "espn_pages_found": "number"
+  }
+}
+```
