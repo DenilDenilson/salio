@@ -64,12 +64,18 @@ const orchestratorPath = resolve("scripts/orchestrate-matches.ts");
 const endpointFinderPath = resolve("scripts/find-network-endpoint.ts");
 
 if (mode === "--stake") {
-  await captureStake(_required(manifestArgument, "manifest"), _parseIndex(indexArgument));
+  await captureStake(
+    _required(manifestArgument, "manifest"),
+    _parseIndex(indexArgument),
+  );
   process.exit(0);
 }
 
 if (mode === "--result") {
-  await watchResult(_required(manifestArgument, "manifest"), _parseIndex(indexArgument));
+  await watchResult(
+    _required(manifestArgument, "manifest"),
+    _parseIndex(indexArgument),
+  );
   process.exit(0);
 }
 
@@ -115,14 +121,28 @@ async function captureStake(
   const match = _getMatch(await _readManifest(manifestPath), index);
   console.log(`🔎 Descubriendo endpoint de Stake para ${match.slug}`);
 
-  const output = await _capture(nodePath, [
-    pnpmPath,
-    "exec",
-    "tsx",
-    endpointFinderPath,
-    match.stakeUrl,
-    "single-pre-event.json",
-  ]);
+  const xvfbRunPath = await realpath("/usr/bin/xvfb-run");
+
+  const profileDirectory = resolve(".cache/network-profiles", match.slug);
+
+  const output = await _capture(
+    xvfbRunPath,
+    [
+      "-a",
+      "-s",
+      "-screen 0 1280x1024x24",
+      nodePath,
+      pnpmPath,
+      "exec",
+      "tsx",
+      endpointFinderPath,
+      match.stakeUrl,
+      "single-pre-event.json",
+    ],
+    {
+      PROFILE_DIR: profileDirectory,
+    },
+  );
 
   const endpoint = _extractStakeEndpoint(output);
 
@@ -142,10 +162,7 @@ async function captureStake(
   ]);
 }
 
-async function watchResult(
-  manifestPath: string,
-  index: number,
-): Promise<void> {
+async function watchResult(manifestPath: string, index: number): Promise<void> {
   const match = _getMatch(await _readManifest(manifestPath), index);
 
   const endpoint =
@@ -197,10 +214,6 @@ async function watchResult(
   ]);
 }
 
-
-
-
-
 // FUNCIONES AUXILIARES
 
 async function _schedule(input: {
@@ -223,7 +236,6 @@ async function _schedule(input: {
     "--timer-property=AccuracySec=1s",
     "--timer-property=Persistent=true",
     `--working-directory=${projectDirectory}`,
-    "--setenv=HEADLESS=1",
     nodePath,
     pnpmPath,
     "exec",
@@ -246,9 +258,7 @@ function _resultCheckTime(kickoff: Date): Date {
 }
 
 function _slugFromStakeUrl(stakeUrl: string): string {
-  const segments = new URL(stakeUrl).pathname
-    .split("/")
-    .filter(Boolean);
+  const segments = new URL(stakeUrl).pathname.split("/").filter(Boolean);
 
   const eventIndex = segments.lastIndexOf("event");
   const slug = segments[eventIndex - 1];
@@ -279,8 +289,6 @@ function _isEspnFinal(summary: unknown): boolean {
   return type?.completed === true || type?.state === "post";
 }
 
-
-
 function _getMatch(manifest: Manifest, index: number): Match {
   const raw = _asObject(manifest.matches[index], `matches[${index}]`);
   const home = _asObject(raw.home_team, "home_team");
@@ -303,10 +311,7 @@ function _getMatch(manifest: Manifest, index: number): Match {
     throw new Error(`matches[${index}]: ESPN no encontrado`);
   }
 
-  const stakeUrl = _required(
-    stake.event_url,
-    "sources.stake.event_url",
-  );
+  const stakeUrl = _required(stake.event_url, "sources.stake.event_url");
 
   const stakeParsed = new URL(stakeUrl);
 
@@ -317,8 +322,7 @@ function _getMatch(manifest: Manifest, index: number): Match {
     throw new Error(`URL de Stake inválida: ${stakeUrl}`);
   }
 
-  const stakeId =
-    stakeParsed.pathname.match(/\/event\/(\d+)\/?$/)?.[1];
+  const stakeId = stakeParsed.pathname.match(/\/event\/(\d+)\/?$/)?.[1];
 
   const declaredStakeId = _required(
     stake.public_page_id,
@@ -331,26 +335,19 @@ function _getMatch(manifest: Manifest, index: number): Match {
     );
   }
 
-  const espnEventId = _required(
-    espn.event_id,
-    "sources.espn.event_id",
-  );
+  const espnEventId = _required(espn.event_id, "sources.espn.event_id");
 
-  const espnMatchUrl = _required(
-    espn.match_url,
-    "sources.espn.match_url",
-  );
+  const espnMatchUrl = _required(espn.match_url, "sources.espn.match_url");
 
-  const espnUrlId =
-    new URL(espnMatchUrl).pathname.match(/\/juegoId\/(\d+)/)?.[1];
+  const espnUrlId = new URL(espnMatchUrl).pathname.match(
+    /\/juegoId\/(\d+)/,
+  )?.[1];
 
   if (!/^\d+$/.test(espnEventId) || espnUrlId !== espnEventId) {
     throw new Error(`ESPN event ID inválido: ${espnEventId}`);
   }
 
-  const kickoff = new Date(
-    _required(kickoffObject.utc, "kickoff.utc"),
-  );
+  const kickoff = new Date(_required(kickoffObject.utc, "kickoff.utc"));
 
   if (Number.isNaN(kickoff.getTime())) {
     throw new Error(`Kickoff inválido en matches[${index}]`);
@@ -377,15 +374,9 @@ async function _readManifest(path: string): Promise<Manifest> {
     throw new Error("El manifiesto no es match-discovery-manifest.v2");
   }
 
-  const generatedFor = _asObject(
-    manifest.generated_for,
-    "generated_for",
-  );
+  const generatedFor = _asObject(manifest.generated_for, "generated_for");
 
-  const competition = _asObject(
-    manifest.competition,
-    "competition",
-  );
+  const competition = _asObject(manifest.competition, "competition");
 
   if (!Array.isArray(manifest.matches)) {
     throw new Error("El manifiesto no contiene matches[]");
@@ -398,10 +389,7 @@ async function _readManifest(path: string): Promise<Manifest> {
   };
 }
 
-function _asObject(
-  value: unknown,
-  label: string,
-): Record<string, unknown> {
+function _asObject(value: unknown, label: string): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error(`${label} debe ser un objeto`);
   }
@@ -420,32 +408,51 @@ function _required(value: unknown, label: string): string {
 function _capture(
   command: string,
   args: string[],
+  extraEnvironment: NodeJS.ProcessEnv = {},
 ): Promise<string> {
   return new Promise((resolveCapture, reject) => {
+    const environment: NodeJS.ProcessEnv = {
+      ...process.env,
+      ...extraEnvironment,
+      VIRTUAL_DISPLAY: "1",
+    };
+
+    // xvfb-run asignará un DISPLAY nuevo para su proceso hijo.
+    // Eliminamos las rutas hacia las pantallas gráficas reales.
+    delete environment.DISPLAY;
+    delete environment.WAYLAND_DISPLAY;
+    delete environment.XDG_SESSION_TYPE;
+
     const child = spawn(command, args, {
       cwd: projectDirectory,
-      env: {
-        ...process.env,
-        HEADLESS: "1",
-      },
+      env: environment,
       stdio: ["ignore", "pipe", "inherit"],
       shell: false,
     });
 
     const output: Buffer[] = [];
+    let settled = false;
 
     child.stdout?.on("data", (chunk: Buffer) => {
       output.push(chunk);
     });
 
-    child.once("error", reject);
+    child.once("error", (error) => {
+      if (settled) return;
+      settled = true;
+      reject(error);
+    });
 
     child.once("close", (code) => {
+      if (settled) return;
+      settled = true;
+
       if (code === 0) {
         resolveCapture(Buffer.concat(output).toString("utf8"));
-      } else {
-        reject(new Error(`${command} terminó con código ${code}`));
+        return;
       }
+
+      reject(new Error(`${command} terminó con código ${code}`));
     });
   });
 }
@@ -479,10 +486,7 @@ function _toSystemdDate(date: Date): string {
     .replace(/\.\d{3}Z$/, " UTC");
 }
 
-function _run(
-  command: string,
-  args: string[],
-): Promise<void> {
+function _run(command: string, args: string[]): Promise<void> {
   return new Promise((resolveRun, reject) => {
     const child = spawn(command, args, {
       cwd: projectDirectory,
@@ -504,11 +508,8 @@ function _run(
 }
 
 function _sleep(milliseconds: number): Promise<void> {
-  return new Promise((resolveSleep) =>
-    setTimeout(resolveSleep, milliseconds),
-  );
+  return new Promise((resolveSleep) => setTimeout(resolveSleep, milliseconds));
 }
-
 
 interface Manifest {
   timezone: string;
