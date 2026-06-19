@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { readFile, realpath } from "node:fs/promises";
-import { resolve } from "node:path";
+import { constants } from "node:fs";
+import { access, readFile, realpath } from "node:fs/promises";
+import { delimiter, resolve } from "node:path";
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -49,15 +50,9 @@ if (mode === "--self-test") {
   process.exit(0);
 }
 
-const npmExecPath = process.env.npm_execpath;
-
-if (!npmExecPath) {
-  throw new Error("Este script debe ejecutarse mediante pnpm");
-}
-
-// Las rutas reales permanecen válidas aunque fnm cambie su multishell.
-const nodePath = await realpath(process.execPath);
-const pnpmPath = await realpath(npmExecPath);
+// Se resuelve una ruta absoluta para que los workers de systemd
+// no dependan de aliases, shell interactiva ni npm_execpath.
+const pnpmPath = await _resolvePnpmPath();
 
 const projectDirectory = process.cwd();
 const orchestratorPath = resolve("scripts/orchestrate-matches.ts");
@@ -68,6 +63,7 @@ if (mode === "--stake") {
     _required(manifestArgument, "manifest"),
     _parseIndex(indexArgument),
   );
+
   process.exit(0);
 }
 
@@ -76,6 +72,7 @@ if (mode === "--result") {
     _required(manifestArgument, "manifest"),
     _parseIndex(indexArgument),
   );
+
   process.exit(0);
 }
 
@@ -90,7 +87,8 @@ await scheduleManifest(resolve(mode));
 async function scheduleManifest(manifestPath: string): Promise<void> {
   const manifest = await _readManifest(manifestPath);
 
-  // Validamos todos antes de crear timers para evitar una programación parcial.
+  // Validamos todos los partidos antes de crear timers.
+  // Así evitamos una programación parcial.
   const matches = manifest.matches.map((_, index) =>
     _getMatch(manifest, index),
   );
@@ -118,11 +116,15 @@ async function captureStake(
   manifestPath: string,
   index: number,
 ): Promise<void> {
-  const match = _getMatch(await _readManifest(manifestPath), index);
+  const manifest = await _readManifest(manifestPath);
+  const match = _getMatch(manifest, index);
+
   console.log(`🔎 Descubriendo endpoint de Stake para ${match.slug}`);
 
   const xvfbRunPath = await realpath("/usr/bin/xvfb-run");
 
+  // Cada partido utiliza su propio perfil para permitir
+  // capturas simultáneas sin bloquear userDataDir.
   const profileDirectory = resolve(".cache/network-profiles", match.slug);
 
   const output = await _capture(
@@ -131,7 +133,6 @@ async function captureStake(
       "-a",
       "-s",
       "-screen 0 1280x1024x24",
-      nodePath,
       pnpmPath,
       "exec",
       "tsx",
@@ -148,8 +149,7 @@ async function captureStake(
 
   console.log(`📥 Capturando cuotas de ${match.title}`);
 
-  await _run(nodePath, [
-    pnpmPath,
+  await _run(pnpmPath, [
     "odds:capture",
     "--",
     `--slug=${match.slug}`,
@@ -163,14 +163,15 @@ async function captureStake(
 }
 
 async function watchResult(manifestPath: string, index: number): Promise<void> {
-  const match = _getMatch(await _readManifest(manifestPath), index);
+  const manifest = await _readManifest(manifestPath);
+  const match = _getMatch(manifest, index);
 
   const endpoint =
     "https://site.api.espn.com/apis/site/v2/sports/" +
     `soccer/fifa.world/summary?event=${match.espnEventId}`;
 
-  // ponytail: consulta indefinidamente cada 10 minutos.
-  // Si luego necesitas manejar partidos suspendidos, añade un deadline.
+  // Consulta indefinidamente cada 10 minutos.
+  // Para manejar partidos suspendidos puede añadirse un deadline.
   while (true) {
     try {
       const response = await fetch(endpoint, {
@@ -181,15 +182,17 @@ async function watchResult(manifestPath: string, index: number): Promise<void> {
         throw new Error(`ESPN respondió HTTP ${response.status}`);
       }
 
-      const summary = await response.json();
+      const summary: unknown = await response.json();
 
       if (_isEspnFinal(summary)) {
         console.log(`✅ ESPN confirmó el final de ${match.title}`);
+
         break;
       }
 
       console.log(
-        `⏳ ${match.title} todavía no terminó; próximo intento en 10 minutos`,
+        `⏳ ${match.title} todavía no terminó; ` +
+          "próximo intento en 10 minutos",
       );
     } catch (error) {
       console.error(
@@ -203,18 +206,21 @@ async function watchResult(manifestPath: string, index: number): Promise<void> {
   }
 
   console.log("⏳ Esperando 25 minutos para consolidar estadísticas...");
+
   await _sleep(25 * MINUTE);
 
-  await _run(nodePath, [
-    pnpmPath,
+  await _run(pnpmPath, [
     "match:finalize",
     "--",
     `--slug=${match.slug}`,
     `--event-id=${match.espnEventId}`,
+    "--trust-event-id",
   ]);
 }
 
-// FUNCIONES AUXILIARES
+// -----------------------------------------------------------------------------
+// Funciones auxiliares
+// -----------------------------------------------------------------------------
 
 async function _schedule(input: {
   unit: string;
@@ -225,8 +231,11 @@ async function _schedule(input: {
 }): Promise<void> {
   if (input.runAt.getTime() <= Date.now()) {
     console.log(`⏭️ ${input.unit}: la hora ya pasó`);
+
     return;
   }
+
+  const pathValue = process.env.PATH ?? "";
 
   await _run("systemd-run", [
     "--user",
@@ -236,7 +245,12 @@ async function _schedule(input: {
     "--timer-property=AccuracySec=1s",
     "--timer-property=Persistent=true",
     `--working-directory=${projectDirectory}`,
-    nodePath,
+
+    // Los workers reciben explícitamente pnpm y el PATH
+    // del proceso que creó los timers.
+    `--setenv=PNPM_BIN=${pnpmPath}`,
+    `--setenv=PATH=${pathValue}`,
+
     pnpmPath,
     "exec",
     "tsx",
@@ -291,12 +305,19 @@ function _isEspnFinal(summary: unknown): boolean {
 
 function _getMatch(manifest: Manifest, index: number): Match {
   const raw = _asObject(manifest.matches[index], `matches[${index}]`);
+
   const home = _asObject(raw.home_team, "home_team");
+
   const away = _asObject(raw.away_team, "away_team");
+
   const kickoffObject = _asObject(raw.kickoff, "kickoff");
+
   const sources = _asObject(raw.sources, "sources");
+
   const stake = _asObject(sources.stake, "sources.stake");
+
   const espn = _asObject(sources.espn, "sources.espn");
+
   const validation = _asObject(raw.validation, "validation");
 
   if (validation.review_required === true) {
@@ -331,7 +352,9 @@ function _getMatch(manifest: Manifest, index: number): Match {
 
   if (!stakeId || stakeId !== declaredStakeId) {
     throw new Error(
-      `Stake ID no coincide: ${stakeId ?? "ausente"} !== ${declaredStakeId}`,
+      `Stake ID no coincide: ` +
+        `${stakeId ?? "ausente"} !== ` +
+        declaredStakeId,
     );
   }
 
@@ -368,6 +391,7 @@ function _getMatch(manifest: Manifest, index: number): Match {
 
 async function _readManifest(path: string): Promise<Manifest> {
   const parsed = JSON.parse(await readFile(path, "utf8")) as unknown;
+
   const manifest = _asObject(parsed, "manifest");
 
   if (manifest.schema_version !== "match-discovery-manifest.v2") {
@@ -417,8 +441,8 @@ function _capture(
       VIRTUAL_DISPLAY: "1",
     };
 
-    // xvfb-run asignará un DISPLAY nuevo para su proceso hijo.
-    // Eliminamos las rutas hacia las pantallas gráficas reales.
+    // xvfb-run asignará su propio DISPLAY.
+    // Eliminamos las rutas hacia Hyprland/Wayland.
     delete environment.DISPLAY;
     delete environment.WAYLAND_DISPLAY;
     delete environment.XDG_SESSION_TYPE;
@@ -437,18 +461,21 @@ function _capture(
       output.push(chunk);
     });
 
-    child.once("error", (error) => {
+    child.once("error", (spawnError) => {
       if (settled) return;
+
       settled = true;
-      reject(error);
+      reject(spawnError);
     });
 
     child.once("close", (code) => {
       if (settled) return;
+
       settled = true;
 
       if (code === 0) {
         resolveCapture(Buffer.concat(output).toString("utf8"));
+
         return;
       }
 
@@ -495,20 +522,68 @@ function _run(command: string, args: string[]): Promise<void> {
       shell: false,
     });
 
-    child.once("error", reject);
+    let settled = false;
+
+    child.once("error", (spawnError) => {
+      if (settled) return;
+
+      settled = true;
+      reject(spawnError);
+    });
 
     child.once("close", (code) => {
+      if (settled) return;
+
+      settled = true;
+
       if (code === 0) {
         resolveRun();
-      } else {
-        reject(new Error(`${command} terminó con código ${code}`));
+        return;
       }
+
+      reject(new Error(`${command} terminó con código ${code}`));
     });
   });
 }
 
+async function _resolvePnpmPath(): Promise<string> {
+  const configuredPath = process.env.PNPM_BIN?.trim();
+
+  if (configuredPath) {
+    const absolutePath = resolve(configuredPath);
+
+    await access(absolutePath, constants.X_OK);
+
+    return absolutePath;
+  }
+
+  const pathValue = process.env.PATH;
+
+  if (!pathValue) {
+    throw new Error("PATH no está definido y no se proporcionó PNPM_BIN");
+  }
+
+  for (const directory of pathValue.split(delimiter)) {
+    if (!directory) continue;
+
+    const candidate = resolve(directory, "pnpm");
+
+    try {
+      await access(candidate, constants.X_OK);
+
+      return await realpath(candidate);
+    } catch {
+      // Continuar con el siguiente directorio del PATH.
+    }
+  }
+
+  throw new Error("No se encontró el ejecutable pnpm en PATH");
+}
+
 function _sleep(milliseconds: number): Promise<void> {
-  return new Promise((resolveSleep) => setTimeout(resolveSleep, milliseconds));
+  return new Promise((resolveSleep) => {
+    setTimeout(resolveSleep, milliseconds);
+  });
 }
 
 interface Manifest {
