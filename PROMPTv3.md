@@ -1,7 +1,7 @@
 ## Parámetro de entrada
 
 ```text
-FECHA_OBJETIVO=2026-06-19
+FECHA_OBJETIVO=2026-06-20
 ZONA_HORARIA=America/Lima
 ```
 
@@ -799,11 +799,9 @@ Formatos habituales:
 
 ```text
 https://espndeportes.espn.com/futbol/partido/_/juegoId/<event_id>/<slug>
+https://www.espn.com.pe/futbol/partido/_/juegoId/<event_id>/<slug>
 ```
 
-```text
-https://www.espn.com/soccer/match/_/gameId/<event_id>/<slug>
-```
 
 Busca utilizando:
 

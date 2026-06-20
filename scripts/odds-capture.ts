@@ -15,27 +15,40 @@ import {
   requireStringArg,
 } from "../src/server/snapshots/cli";
 
+const STAKE_API_RETRY_DELAYS_MS = [2_000, 5_000, 10_000, 20_000, 30_000];
+
+type StakeImportInput = Parameters<StakeImporter["importEvent"]>[0];
+type StakeImportResult = Awaited<ReturnType<StakeImporter["importEvent"]>>;
+
 const args = parseCliArgs(process.argv.slice(2));
+
 const usage =
   'Uso: pnpm odds:capture -- --slug=equipo-a-vs-equipo-b --stake-url="https://stake.pe/..." --stake-api-url="https://.../single-pre-event.json?hidenseek=..." --kickoff="2026-06-13T22:00:00.000Z" --title="Equipo A vs Equipo B" [--save-raw-api="./data/evidence/stake-api/event.json"]';
 
 try {
   const config = getConfig();
+
   const slug = requireStringArg(args, "slug");
   const stakeUrl = requireStringArg(args, "stake-url");
   const stakeApiUrl = requireStringArg(args, "stake-api-url");
+
   const title = optionalStringArg(args, "title");
   const titleTeams = parseMatchTitleTeams(title);
+
   const homeTeamName =
     optionalStringArg(args, "home") ?? titleTeams?.home ?? undefined;
+
   const awayTeamName =
     optionalStringArg(args, "away") ?? titleTeams?.away ?? undefined;
+
   const competitionName = optionalStringArg(args, "competition");
   const kickoffArg = optionalStringArg(args, "kickoff");
+
   const capturedAt = parseDateArg(
     optionalStringArg(args, "captured-at") ?? new Date().toISOString(),
     "captured-at",
   );
+
   const previous = await readSnapshotIfExists(slug);
 
   assertOddsCaptureCanWriteSnapshot(slug, previous);
@@ -48,7 +61,8 @@ try {
     stakeApiSaveRawPath: optionalStringArg(args, "save-raw-api"),
     stakeApiSaveRawResponses: config.STAKE_SAVE_RAW_RESPONSES,
   });
-  const imported = await importer.importEvent({
+
+  const imported = await importStakeEventWithRetries(importer, {
     url: stakeUrl,
     stakeApiUrl,
     capturedAt,
@@ -60,6 +74,7 @@ try {
   });
 
   const kickoffAt = kickoffArg ?? imported.kickoffAt ?? null;
+
   if (!kickoffAt) {
     throw new Error("Missing --kickoff and Stake fixture did not expose one.");
   }
@@ -115,10 +130,68 @@ try {
   process.exit(1);
 }
 
+async function importStakeEventWithRetries(
+  importer: StakeImporter,
+  input: StakeImportInput,
+): Promise<StakeImportResult> {
+  const maxAttempts = STAKE_API_RETRY_DELAYS_MS.length + 1;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await importer.importEvent(input);
+    } catch (error) {
+      lastError = error;
+
+      if (attempt >= maxAttempts || !isRetryableStakeApiError(error)) {
+        throw error;
+      }
+
+      const delayMs = STAKE_API_RETRY_DELAYS_MS[attempt - 1] ?? 30_000;
+
+      console.error(
+        `⚠️ Stake API falló en intento ${attempt}/${maxAttempts}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+
+      console.error(
+        `⏳ Reintentando Stake API en ${Math.round(delayMs / 1000)}s...`,
+      );
+
+      await sleep(delayMs);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
+}
+
+function isRetryableStakeApiError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (
+    /Stake API returned HTTP (406|408|425|429|500|502|503|504)\b/.test(message)
+  ) {
+    return true;
+  }
+
+  return /fetch failed|network|timeout|timed out|AbortError|ETIMEDOUT|ECONNRESET|EAI_AGAIN/i.test(
+    message,
+  );
+}
+
 function parseDateArg(value: string, key: string): Date {
   const parsed = new Date(value);
+
   if (Number.isNaN(parsed.getTime())) {
     throw new Error(`Argument --${key} must be a valid date.`);
   }
+
   return parsed;
+}
+
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
 }
