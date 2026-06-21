@@ -18,6 +18,7 @@ test-results/
 # Local scratch/debug artifacts
 .tmp/
 tmp/
+logs/
 *.tmp
 *.log
 
@@ -30,6 +31,7 @@ tmp/
 # Transient match discovery manifests may contain Stake hidenseek URLs.
 data/matches/
 data/evidence/stake-api/
+data/evidence/espn/
 
 # OS/editor noise
 .DS_Store

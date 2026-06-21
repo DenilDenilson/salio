@@ -785,29 +785,203 @@ No debes:
 
 ---
 
-# 7. Descubrimiento de ESPN
+# 7. Descubrimiento de ESPN en español
 
-Encuentra para cada partido una página individual de ESPN Deportes o ESPN.
+Encuentra para cada partido una página individual de ESPN **en español**.
 
-Formatos habituales:
+## 7.1 Regla obligatoria de URL final
 
-```text
-https://espndeportes.espn.com/futbol/partido/_/juegoId/<event_id>/<slug>
-https://www.espn.com.pe/futbol/partido/_/juegoId/<event_id>/<slug>
+El valor final de:
+
+```json
+"sources.espn.match_url"
 ```
 
+debe ser siempre una URL en español y debe cumplir todas estas condiciones:
+
+1. El dominio debe ser uno de estos:
+
+```text
+https://espndeportes.espn.com
+https://www.espn.com.pe
+```
+
+2. La ruta debe contener obligatoriamente:
+
+```text
+/futbol/partido/_/juegoId/
+```
+
+3. El ID debe aparecer después de:
+
+```text
+/juegoId/<event_id>/
+```
+
+4. La URL final no puede contener:
+
+```text
+/soccer/
+```
+
+```text
+/match/
+```
+
+```text
+/gameId/
+```
+
+5. No se debe guardar como URL final ninguna página de ESPN en inglés.
+
+Ejemplos de URLs válidas:
+
+```text
+https://espndeportes.espn.com/futbol/partido/_/juegoId/760451/iran-belgica
+```
+
+```text
+https://www.espn.com.pe/futbol/partido/_/juegoId/760451/iran-belgica
+```
+
+Ejemplos de URLs prohibidas como resultado final:
+
+```text
+https://www.espn.com/soccer/match/_/gameId/760451/iran-belgium
+```
+
+```text
+https://www.espn.com/soccer/match/_/gameId/760453/saudi-arabia-spain
+```
+
+```text
+https://www.espn.com/soccer/game/_/gameId/760451
+```
+
+Aunque una URL en inglés cargue correctamente y corresponda al partido, **no debe guardarse en `match_url`**.
+
+## 7.2 Uso permitido de ESPN en inglés
+
+Las páginas en inglés de ESPN pueden usarse únicamente como pistas auxiliares para:
+
+* Descubrir el `event_id`.
+* Confirmar que existe una página individual del partido.
+* Obtener una señal adicional de equipos, fecha o competición.
+
+Pero si se encuentra una URL en inglés como:
+
+```text
+https://www.espn.com/soccer/match/_/gameId/<event_id>/<slug_en>
+```
+
+debes intentar convertirla, buscarla o validarla en formato español:
+
+```text
+https://espndeportes.espn.com/futbol/partido/_/juegoId/<event_id>/<slug_es>
+```
+
+o:
+
+```text
+https://www.espn.com.pe/futbol/partido/_/juegoId/<event_id>/<slug_es>
+```
+
+Solo la versión en español puede guardarse en el manifiesto.
+
+## 7.3 Construcción y normalización del slug español de ESPN
+
+Cuando tengas un `event_id` confirmado pero la URL encontrada sea inglesa, construye candidatos en español usando nombres habituales de ESPN Deportes.
+
+Reglas:
+
+* Minúsculas.
+* Sin tildes.
+* Sin caracteres especiales.
+* Palabras separadas por guiones.
+* Usa nombres de equipos en español cuando ESPN Deportes los use así.
+* Prueba el orden que aparezca en ESPN, aunque sea diferente al orden local–visitante.
+* Prueba también el orden inverso cuando sea necesario.
+
+Ejemplos de normalización para slugs ESPN en español:
+
+```text
+Belgium -> belgica
+Iran -> iran
+Saudi Arabia -> arabia-saudita
+Spain -> espana
+Cape Verde -> cabo-verde
+New Zealand -> nueva-zelanda
+Egypt -> egipto
+South Korea -> corea-del-sur
+United States -> estados-unidos
+Ivory Coast -> costa-de-marfil
+DR Congo -> rd-del-congo
+Czechia -> chequia
+```
+
+Ejemplo correcto:
+
+Una página inglesa encontrada fue:
+
+```text
+https://www.espn.com/soccer/match/_/gameId/760451/iran-belgium
+```
+
+No la guardes.
+
+Debes buscar o construir y validar una URL en español como:
+
+```text
+https://espndeportes.espn.com/futbol/partido/_/juegoId/760451/iran-belgica
+```
+
+Si esa URL carga y corresponde al partido, guarda esa URL.
+
+## 7.4 Búsquedas recomendadas
 
 Busca utilizando:
 
-* Equipo local.
-* Equipo visitante.
+* Equipo local en inglés.
+* Equipo visitante en inglés.
+* Equipo local en español.
+* Equipo visitante en español.
 * `FECHA_OBJETIVO`.
 * `FIFA World Cup 2026`.
 * `World Cup 2026`.
-* `ESPN`.
+* `Copa Mundial FIFA 2026`.
 * `ESPN Deportes`.
+* `espndeportes`.
+* `juegoId`.
 
-Prioriza ESPN Deportes.
+Consultas sugeridas:
+
+```text
+site:espndeportes.espn.com/futbol/partido/_/juegoId "<equipo 1 español>" "<equipo 2 español>"
+```
+
+```text
+site:espndeportes.espn.com/futbol/partido/_/juegoId "<equipo 1 inglés>" "<equipo 2 inglés>"
+```
+
+```text
+site:www.espn.com.pe/futbol/partido/_/juegoId "<equipo 1 español>" "<equipo 2 español>"
+```
+
+```text
+"<equipo 1 español>" "<equipo 2 español>" "juegoId" "ESPN Deportes"
+```
+
+```text
+"<equipo 1 español>" "<equipo 2 español>" "espndeportes" "partido"
+```
+
+```text
+"<equipo 1 inglés>" "<equipo 2 inglés>" "gameId" "ESPN"
+```
+
+La última consulta puede usarse para descubrir el ID, pero la URL final debe convertirse o validarse en español antes de guardarse.
+
+## 7.5 Validación de ESPN
 
 Comprueba razonablemente:
 
@@ -815,9 +989,15 @@ Comprueba razonablemente:
 * Fecha.
 * Competición.
 * Que sea una página individual del partido.
+* Que la URL final esté en español.
+* Que la ruta final contenga `/futbol/partido/_/juegoId/`.
 
-No aceptes como página de partido:
+No aceptes como página final de ESPN:
 
+* URLs en inglés.
+* URLs con `/soccer/`.
+* URLs con `/match/`.
+* URLs con `/gameId/`.
 * Noticias.
 * Previas editoriales.
 * Calendarios generales.
@@ -826,32 +1006,43 @@ No aceptes como página de partido:
 * Eliminatorias.
 * Partidos de otra competición.
 
-Extrae el ID directamente de:
+Extrae el ID exclusivamente de:
 
 ```text
 /juegoId/<id>/
 ```
 
-o:
+en la URL final guardada.
 
-```text
-/gameId/<id>/
-```
+No extraigas el `event_id` final desde `/gameId/<id>/` salvo como pista temporal para buscar o construir la versión española. Si solo existe una URL con `/gameId/` y no se puede validar ninguna URL española con `/juegoId/`, entonces marca ESPN como `not_found`.
 
 El orden de los equipos en el slug puede ser diferente al orden local–visitante.
 
-Ejemplo:
+## 7.6 Objeto ESPN
+
+Ejemplo correcto:
 
 ```json
 "espn": {
   "discovery_status": "found",
-  "match_url": "https://espndeportes.espn.com/futbol/partido/_/juegoId/760438/sudafrica-chequia",
-  "event_id": "760438",
+  "match_url": "https://espndeportes.espn.com/futbol/partido/_/juegoId/760451/iran-belgica",
+  "event_id": "760451",
   "confidence": 0.99
 }
 ```
 
-Cuando no se encuentre:
+Ejemplo prohibido:
+
+```json
+"espn": {
+  "discovery_status": "found",
+  "match_url": "https://www.espn.com/soccer/match/_/gameId/760451/iran-belgium",
+  "event_id": "760451",
+  "confidence": 0.99
+}
+```
+
+Cuando no se encuentre una URL española válida:
 
 ```json
 "espn": {
@@ -863,6 +1054,52 @@ Cuando no se encuentre:
 ```
 
 No inventes el `event_id`.
+
+## 7.7 Issues de ESPN
+
+Cuando se encuentre solo una URL inglesa pero no se logre validar una URL española equivalente:
+
+```json
+{
+  "code": "espn_spanish_match_url_not_found",
+  "severity": "warning",
+  "message": "Se encontró una página de ESPN en inglés o un ID de ESPN, pero no se pudo validar una URL equivalente en español con /futbol/partido/_/juegoId/."
+}
+```
+
+Cuando una URL candidata española no cargue:
+
+```json
+{
+  "code": "espn_spanish_candidate_did_not_load",
+  "severity": "warning",
+  "message": "La URL candidata de ESPN en español no cargó correctamente."
+}
+```
+
+Cuando una URL candidata española cargue pero corresponda a otro partido:
+
+```json
+{
+  "code": "espn_candidate_team_mismatch",
+  "severity": "warning",
+  "message": "La URL candidata de ESPN en español cargó, pero los equipos no coinciden con el partido esperado."
+}
+```
+
+Cuando una URL candidata española cargue pero el horario no coincida:
+
+```json
+{
+  "code": "espn_candidate_time_mismatch",
+  "severity": "warning",
+  "message": "La URL candidata de ESPN en español cargó, pero el horario no coincide con el partido esperado."
+}
+```
+
+## 7.8 Regla crítica de ESPN
+
+**ESPN en inglés puede ayudar a descubrir el `event_id`, pero nunca debe guardarse como URL final. El manifiesto solo puede marcar ESPN como `found` si `match_url` es una URL en español con dominio `espndeportes.espn.com` o `www.espn.com.pe`, ruta `/futbol/partido/_/juegoId/`, y `event_id` extraído desde `/juegoId/<id>/`.**
 
 ---
 

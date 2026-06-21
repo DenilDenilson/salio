@@ -1,129 +1,199 @@
 # Salió
 
-Sitio informativo para congelar cuotas prepartido de Stake y, después del
-partido, mostrar qué selecciones salieron usando snapshots JSON versionados.
+Pipeline de automatización para congelar cuotas prepartido, esperar resultados
+oficiales y publicar una web estática con qué selecciones salieron.
 
-No realiza apuestas, no maneja dinero, no accede a cuentas de usuarios y no
-automatiza acciones dentro de Stake. Solo captura cuotas públicas antes del
-partido y las cruza con resultados deportivos finales.
+Este repositorio no intenta ser una casa de apuestas ni un producto financiero.
+Es un proyecto de ingeniería práctica: automatización de flujos web/API,
+validación de datos, orquestación local con `systemd`, snapshots auditables,
+tests con fixtures y publicación estática.
 
-## Estado Actual
+## Qué Demuestra
 
-- Web pública estática con Astro Content Collections.
-- Fuente de verdad: `src/content/matches/*.json`.
-- Despliegue 100 % estático: el hosting solo publica `dist/`.
-- Sin rutas `src/pages/api`, sin panel admin y sin funciones serverless en producción.
-- Captura prepartido: Stake API-only desde una URL interna
-  `single-pre-event.json` provista en cada ejecución.
-- Resultado post partido: ESPN summary JSON público, sin API key.
-- Sin base de datos en el flujo público.
-- Tests con fixtures y mocks; CI no debe llamar a Stake ni a ESPN.
-- Snapshots actuales usan `schemaVersion: "2.0"` y `sportsData`.
+- Automatización end-to-end: discovery asistido, captura prepartido,
+  finalización postpartido y deploy estático.
+- Diseño defensivo en integraciones inestables: timeouts, retries, validación
+  Zod, allowlists, hashes SHA-256 y redacción de tokens.
+- Criterio de producción: no DB si JSON versionado alcanza, no serverless si
+  `dist/` estático alcanza, no llamadas reales en CI.
+- Operación en VPS: timers `systemd --user`, Chromium bajo `xvfb-run`,
+  procesos aislados por partido y comandos reproducibles.
+- UI de consulta con Astro + React: filtros en cliente, snapshots de Content
+  Collections y build 100 % estático.
+- Workflow AI-assisted: prompts estructurados generan manifiestos diarios; el
+  código valida y ejecuta solo lo que cumple contrato.
+
+Aunque la implementación está en TypeScript, el problema es el mismo que se
+resuelve en automatización con Python: navegar sistemas externos, convertir
+fuentes poco confiables en datos verificables, programar tareas, registrar
+evidencia y dejar un resultado consumible.
+
+## Arquitectura
+
+```text
+PROMPTv3.md / investigación asistida
+        ↓
+data/matches/YYYY-MM-DD.json          manifiesto diario validado
+        ↓
+scripts/orchestrate-matches.ts        crea timers systemd por partido
+        ↓
+scripts/find-network-endpoint.ts      detecta single-pre-event.json en Stake
+        ↓
+scripts/odds-capture.ts               congela cuotas en src/content/matches
+        ↓
+scripts/match-finalize.ts             cruza ESPN final + reglas de mercados
+        ↓
+Astro Content Collections             render estático de / y /partidos/[slug]
+        ↓
+dist/                                 hosting estático
+```
+
+Fuente de verdad pública:
+
+```text
+src/content/matches/*.json
+```
+
+Evidencia cruda no interactiva:
+
+```text
+data/evidence/espn/*.json
+```
+
+Nunca se debe versionar un `hidenseek` real de Stake. Las URLs internas se
+descubren en ejecución y se pasan directo al capturador.
+
+## Stack
+
+- Astro, React, Tailwind, Content Collections.
+- TypeScript, Zod, Vitest, Playwright, Axe.
+- Node `fetch`, `curl` vía `spawn`, `systemd-run`, `xvfb-run`.
+- ESPN public summary JSON para resultados.
+- Stake internal `single-pre-event.json` para cuotas prepartido.
+- Wrangler para publicar assets estáticos.
 
 ## Flujo Operativo
 
-### 1. Prepartido: Capturar Cuotas
+### 1. Crear Manifiesto Diario
 
-El flujo recibe dos URLs:
+El manifiesto diario vive en:
 
-- `--stake-url`: URL pública del evento en Stake; de aquí se extrae el
-  `eventId`.
-- `--stake-api-url`: URL interna completa de
-  `single-pre-event.json`, incluyendo host dinámico, `eventId`, query string e
-  `hidenseek`.
+```text
+data/matches/YYYY-MM-DD.json
+```
 
-La URL interna es obligatoria en cada ejecución. El sistema no la construye, no
-la corrige, no la descubre, no la completa y no la reutiliza entre partidos.
-Solo valida HTTPS, allowlist de host y que el `eventId` coincida.
+Se genera con investigación asistida usando [`PROMPTv3.md`](PROMPTv3.md). El
+JSON debe tener `schema_version: "match-discovery-manifest.v2"` y, por partido:
 
-Modo recomendado:
+- equipos, kickoff UTC/Lima, fase y sede;
+- URL pública de Stake y `public_page_id`;
+- URL ESPN y `event_id`;
+- `validation.review_required: false`.
+
+Ejemplo mínimo:
+
+```json
+{
+  "schema_version": "match-discovery-manifest.v2",
+  "generated_for": {
+    "local_date": "2026-06-21",
+    "timezone": "America/Lima"
+  },
+  "competition": {
+    "name": "FIFA World Cup 2026"
+  },
+  "matches": []
+}
+```
+
+### 2. Programar Captura y Resultado
+
+En el VPS:
+
+```bash
+pnpm exec tsx scripts/orchestrate-matches.ts data/matches/2026-06-21.json
+```
+
+El orquestador:
+
+- valida todo el manifiesto antes de crear timers;
+- programa captura de Stake 1 hora antes del kickoff;
+- programa watcher de ESPN 2 horas después del kickoff;
+- consulta ESPN cada 10 minutos hasta detectar final;
+- espera 25 minutos después del final para consolidar estadísticas;
+- ejecuta `match:finalize --trust-event-id`;
+- usa `systemd-run --user --collect` con timers persistentes.
+
+Requisitos del VPS:
+
+- Linux con `systemd --user`;
+- `pnpm` disponible o `PNPM_BIN=/ruta/a/pnpm`;
+- `xvfb-run` para ejecutar Chromium sin sesión gráfica real;
+- browsers de Playwright instalados.
+
+### 3. Captura Manual Prepartido
+
+Si quieres operar un partido manualmente, primero encuentra el endpoint interno:
+
+```bash
+pnpm tsx scripts/find-network-endpoint.ts \
+  "https://stake.pe/deportes/football/world/fifa-world-cup/equipo-a-vs-equipo-b/event/123" \
+  "single-pre-event.json"
+```
+
+Luego congela cuotas:
 
 ```bash
 pnpm odds:capture -- \
-  --slug=espana-vs-cabo-verde \
-  --stake-url="https://stake.pe/deportes/football/world/fifa-world-cup/espana-vs-cabo-verde/event/21798330" \
+  --slug=equipo-a-vs-equipo-b \
+  --stake-url="https://stake.pe/deportes/football/world/fifa-world-cup/equipo-a-vs-equipo-b/event/123" \
   --stake-api-url="$STAKE_EVENT_API_URL" \
-  --kickoff="2026-06-15T16:00:00.000Z" \
-  --title="España vs Cabo Verde" \
-  --competition="Mundial 2026"
+  --kickoff="2026-06-21T16:00:00.000Z" \
+  --title="Equipo A vs Equipo B" \
+  --competition="FIFA World Cup 2026"
 ```
 
-El valor de `hidenseek` nunca debe hardcodearse en el repo.
+`--stake-api-url` es obligatorio. El sistema no lo construye, no lo corrige, no
+lo descubre dentro del capturador y no lo reutiliza. Solo valida HTTPS,
+allowlist `.websbkt.com` y que el event ID coincida.
 
-Para guardar evidencia cruda del payload, sin modificarlo:
+### 4. Validar y Finalizar Manualmente
 
-```bash
-pnpm odds:capture -- \
-  --slug=espana-vs-cabo-verde \
-  --stake-url="https://stake.pe/deportes/football/world/fifa-world-cup/espana-vs-cabo-verde/event/21798330" \
-  --stake-api-url="$STAKE_EVENT_API_URL" \
-  --save-raw-api="data/evidence/stake-api/21798330.json" \
-  --kickoff="2026-06-15T16:00:00.000Z" \
-  --title="España vs Cabo Verde" \
-  --competition="Mundial 2026"
-```
-
-Esto crea o actualiza `src/content/matches/<slug>.json` en fase
-`odds_captured`.
-
-El script rechaza sobrescribir snapshots ya finalizados.
-
-### 2. Post Partido: Validar ESPN
-
-Antes de escribir el resultado puedes validar que el `event-id` de ESPN
-corresponde al snapshot:
-
-e.g.
-https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=760435
+Validación estricta:
 
 ```bash
 pnpm espn:validate -- --slug=brasil-vs-marruecos --event-id=760419
 ```
 
-La validación revisa:
-
-- ID del evento.
-- Equipos y orientación local/visitante.
-- Liga esperada (`fifa.world` para Mundial).
-- Kickoff dentro de tolerancia.
-- Marcador disponible.
-
-### 3. Post Partido: Finalizar Snapshot
+Cuando ESPN usa nombres en otro idioma y ya verificaste manualmente el ID:
 
 ```bash
-pnpm match:finalize -- --slug=brasil-vs-marruecos --event-id=760419
+pnpm espn:validate -- \
+  --slug=alemania-vs-curazao \
+  --event-id=760422 \
+  --trust-event-id
 ```
 
-Si el snapshot ya tiene `sportsData.eventId`, puedes omitir `--event-id`:
+Finalización:
 
 ```bash
-pnpm match:finalize -- --slug=brasil-vs-marruecos
+pnpm match:finalize -- \
+  --slug=alemania-vs-curazao \
+  --event-id=760422 \
+  --trust-event-id
 ```
 
-La finalización:
+`--trust-event-id` solo omite la comparación semántica de identidad. No permite
+finalizar partidos en vivo, programados, cancelados o sin marcador final.
 
-- Lee ESPN summary JSON desde
-  `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=<EVENT_ID>`.
-- Guarda evidencia cruda en `data/evidence/espn/<event-id>.json`.
-- Calcula SHA-256 del payload.
-- Evalúa selecciones soportadas.
-- Escribe el snapshot atómicamente.
-- Preserva cuotas congeladas, IDs de mercado, IDs de selección y odds.
+## Snapshot
 
-## JSON De Snapshot
-
-Estructura resumida:
+Cada partido se guarda como JSON versionado:
 
 ```json
 {
   "schemaVersion": "2.0",
   "slug": "brasil-vs-marruecos",
-  "title": "Brasil vs Marruecos",
-  "competitionName": "Mundial 2026",
-  "timezone": "America/Lima",
-  "homeTeamName": "Brasil",
-  "awayTeamName": "Marruecos",
-  "kickoffAt": "2026-06-13T22:00:00.000Z",
   "phase": "finalized",
   "stake": {
     "eventUrl": "https://stake.pe/...",
@@ -132,8 +202,7 @@ Estructura resumida:
   "sportsData": {
     "provider": "espn",
     "eventId": "760419",
-    "leagueSlug": "fifa.world",
-    "sourceUrl": "https://site.api.espn.com/..."
+    "leagueSlug": "fifa.world"
   },
   "odds": {
     "source": "stake",
@@ -142,71 +211,38 @@ Estructura resumida:
     "markets": []
   },
   "result": {
-    "evidence": {
-      "provider": "espn",
-      "eventId": "760419",
-      "sourceUrl": "https://site.api.espn.com/...",
-      "fetchedAt": "2026-06-14T00:01:00.000Z",
-      "payloadSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "rawArtifactPath": "data/evidence/espn/760419.json"
-    },
     "status": "FINISHED",
-    "score": { "home": 1, "away": 1, "halftimeHome": 1, "halftimeAway": 1 },
-    "events": [],
-    "teamStatistics": { "home": {}, "away": {} },
-    "playerStats": {}
-  },
-  "metadata": {
-    "createdAt": "2026-06-13T21:08:03.608Z",
-    "finalizedAt": "2026-06-14T00:05:00.000Z",
-    "lastEvaluatedAt": "2026-06-14T00:05:00.000Z"
+    "score": { "home": 1, "away": 1 }
   }
 }
 ```
 
-## Mercados
+La finalización preserva cuotas, IDs de mercado, IDs de selección y stake
+original. Solo se agregan resultado, evidencia y estado de resolución.
 
-P0 funcional:
+## Mercados Soportados
 
 - Resultado 1X2.
 - Doble oportunidad.
 - Draw no bet.
-- Totales de goles.
+- Totales del partido, equipo y primer tiempo.
 - Ambos equipos anotan.
 - Primer equipo en anotar.
+- Marcador exacto.
 - Córners totales.
-- Tarjetas amarillas totales/equipo.
+- Tarjetas amarillas.
 - Goleador anytime.
-- Tiros al arco de jugador.
+- Tiros a puerta de jugador.
 
-Clasificación API-first por `odd_code`:
+Mercados desconocidos o sin evaluación segura se conservan como `UNSUPPORTED`
+para inspección, sin inventar una resolución.
 
-| `odd_code`                       | Mercado                               |
-| -------------------------------- | ------------------------------------- |
-| `ODD_S1`, `ODD_SX`, `ODD_S2`     | Resultado 1X2                         |
-| `ODD_D1X`, `ODD_D12`, `ODD_DX2`  | Doble oportunidad                     |
-| `ODD_DRAWNOBET_*`                | Draw no bet                           |
-| `ODD_TTL_*`                      | Totales del partido                   |
-| `ODD_INDTTL1_*`, `ODD_INDTTL2_*` | Totales por equipo                    |
-| `ODD_HT1_TTL_*`                  | Total primer tiempo                   |
-| `ODD_FTB_BOTHTEAMSSCORE_*`       | Ambos equipos marcan                  |
-| `ODD_SCORES_*`                   | Marcador exacto                       |
-| `ODD_HND_*`                      | Handicap, conservado pero no evaluado |
-| `ODD_YEL_TTL_*`                  | Total tarjetas amarillas              |
-| `ODD_CRN_TTL_*`                  | Total corners                         |
-| `ODD_PLR_SHOTSONTARGET_*`        | Tiros a puerta por jugador            |
-| `ODD_SPLR_SCORES_PLAYER`         | Goleador anytime                      |
-| `ODD_FTB_2HALVES_*`              | Conservado como `UNSUPPORTED`         |
-
-Mercados desconocidos o sin evaluación segura quedan `UNSUPPORTED`, pero se
-conservan con cuota y metadatos para revisión.
-
-## Scripts
+## Comandos
 
 ```bash
 pnpm dev
 pnpm build
-pnpm build:static
+pnpm deploy
 pnpm check
 pnpm lint
 pnpm format:check
@@ -214,10 +250,13 @@ pnpm test
 pnpm test:coverage
 pnpm test:e2e
 
-pnpm odds:capture -- --slug=... --stake-url=... --stake-api-url=... --kickoff=... --title=...
 pnpm stake:diagnose -- --stake-url=... --stake-api-url=...
-pnpm espn:validate -- --slug=... --event-id=...
-pnpm match:finalize -- --slug=... --event-id=...
+pnpm odds:capture -- --slug=... --stake-url=... --stake-api-url=... --kickoff=... --title=...
+pnpm espn:validate -- --slug=... --event-id=... [--trust-event-id]
+pnpm match:finalize -- --slug=... --event-id=... [--trust-event-id]
+
+pnpm exec tsx scripts/find-network-endpoint.ts <stake-page-url> single-pre-event.json
+pnpm exec tsx scripts/orchestrate-matches.ts data/matches/YYYY-MM-DD.json
 ```
 
 ## Variables De Entorno
@@ -230,38 +269,20 @@ STAKE_ALLOWED_HOSTS=stake.pe
 STAKE_API_ALLOWED_HOSTS=.websbkt.com
 STAKE_API_TIMEOUT_MS=15000
 STAKE_SAVE_RAW_RESPONSES=false
+PNPM_BIN=/usr/bin/pnpm
 ```
 
-ESPN no requiere API key.
+`PNPM_BIN` es opcional para uso local, pero recomendable en timers de `systemd`.
 
-`STAKE_API_ALLOWED_HOSTS=.websbkt.com` permite subdominios reales de
-`websbkt.com` sin permitir hosts como `websbkt.com.attacker.example`.
+## Calidad y Seguridad
 
-## Diagnóstico Stake API
-
-La API de Stake usada para cuotas prepartido es interna y puede cambiar. Si una
-captura falla:
-
-- Confirma que la URL pública contenga `/event/<id>`.
-- Confirma que la URL interna completa apunte a ese mismo `<id>`.
-- Confirma que el host esté permitido por `STAKE_API_ALLOWED_HOSTS`.
-- Si el token `hidenseek` venció o cambió, obtén una URL interna nueva desde
-  DevTools y vuelve a ejecutar.
-- Guarda evidencia local con `--save-raw-api=...`.
-- Los mensajes y evidencias sanitizan `hidenseek`; no pegues tokens en commits,
-  issues ni documentación.
-
-Para comparar transporte Node `fetch` vs `curl` con exactamente la misma URL:
-
-```bash
-pnpm stake:diagnose -- \
-  --stake-url="https://stake.pe/deportes/football/world/fifa-world-cup/espana-vs-cabo-verde/event/21798330" \
-  --stake-api-url="$STAKE_EVENT_API_URL"
-```
-
-El diagnóstico solo imprime transporte, status HTTP, content-type, tamaño de
-respuesta y URL censurada. La captura principal usa `curl` internamente porque
-replica mejor los headers aceptados por Stake.
+- Validación de entrada con Zod y checks manuales en bordes de confianza.
+- Tests con fixtures/mocks; CI no debe llamar a Stake ni ESPN.
+- Escritura atómica de snapshots.
+- Hash SHA-256 de payloads de resultado.
+- Allowlist estricta de hosts.
+- Censura de `hidenseek` en errores, logs y evidencia.
+- Sin DB, sin APIs públicas, sin panel admin y sin server runtime en producción.
 
 ## Testing
 
@@ -270,133 +291,36 @@ pnpm format:check
 pnpm lint
 pnpm check
 pnpm test
-pnpm test:coverage
 pnpm test:e2e
 pnpm build
 ```
 
-Regla de CI: los tests deben usar fixtures/mocks. No deben llamar realmente a
-Stake ni a ESPN.
+Self-checks rápidos de scripts:
 
-## Decisiones
+```bash
+pnpm tsx scripts/find-network-endpoint.ts --self-test
+pnpm exec tsx scripts/orchestrate-matches.ts --self-test
+```
+
+## Despliegue
+
+El sitio se construye como estático:
+
+```bash
+pnpm build
+```
+
+Publicación con Wrangler:
+
+```bash
+pnpm deploy
+```
+
+El hosting solo necesita servir `dist/`.
+
+## Decisiones Técnicas
 
 - [0002: Static post-match snapshots](docs/decisions/0002-static-post-match-snapshots.md)
 - [0003: Stake live capture browser modes](docs/decisions/0003-stake-live-capture-browser-modes.md)
 - [0005: ESPN post-match provider](docs/decisions/0005-espn-summary-post-match-provider.md)
 - [0006: Stake API-only odds capture](docs/decisions/0006-stake-api-first-odds-capture.md)
-
-TODO:
-Ahora implementamos timers automáticos desde mi VPS usando systemd desde orchestrate-matches.ts
-
-que toma solo este json con el nombre de la fecha de los partidos con estructura:
-```jsonc
-{
-  "schema_version": "string", // Ej. "match-discovery-manifest.v2"
-  "generated_at": "string", // Fecha ISO 8601 en UTC
-
-  "generated_for": {
-    "local_date": "string", // YYYY-MM-DD
-    "timezone": "string" // Zona horaria IANA
-  },
-
-  "search_window": {
-    "from_utc": "string", // Fecha ISO 8601
-    "to_utc": "string" // Fecha ISO 8601
-  },
-
-  "competition": {
-    "id": "string",
-    "name": "string",
-    "season": "string"
-  },
-
-  "matches": [
-    {
-      "candidate_key": "string",
-
-      "home_team": {
-        "name": "string",
-        "short_name": "string",
-        "canonical_id": "string | null"
-      },
-
-      "away_team": {
-        "name": "string",
-        "short_name": "string",
-        "canonical_id": "string | null"
-      },
-
-      "stage": {
-        "type": "string",
-        "name": "string",
-        "group": "string | null",
-        "matchday": "number | null"
-      },
-
-      "venue": {
-        "name": "string",
-        "host_city": "string",
-        "country": "string"
-      },
-
-      "kickoff": {
-        "utc": "string", // Fecha ISO 8601 en UTC
-        "lima": "string" // Fecha ISO 8601 con offset
-      },
-
-      "match_status": "string",
-      "monitoring_profile": "string",
-
-      "sources": {
-        "schedule": [
-          {
-            "url": "string",
-            "source_type": "string",
-            "retrieved_at": "string", // Fecha ISO 8601
-            "supports": ["string"],
-            "confidence": "number" // Entre 0 y 1
-          }
-        ],
-
-        "stake": {
-          "market": "string",
-          "locale": "string",
-          "discovery_status": "string",
-          "event_url": "string",
-          "public_page_id": "string",
-          "confidence": "number" // Entre 0 y 1
-        },
-
-        "espn": {
-          "discovery_status": "string",
-          "match_url": "string",
-          "event_id": "string",
-          "confidence": "number" // Entre 0 y 1
-        }
-      },
-
-      "validation": {
-        "overall_confidence": "number", // Entre 0 y 1
-        "review_required": "boolean",
-        "issues": [
-          {
-            "code": "string",
-            "severity": "string",
-            "message": "string"
-          }
-        ]
-      }
-    }
-  ],
-
-  "rejected_candidates": ["object"],
-
-  "summary": {
-    "matches_discovered": "number",
-    "matches_ready_for_endpoint_discovery": "number",
-    "matches_requiring_review": "number",
-    "stake_pages_found": "number",
-    "espn_pages_found": "number"
-  }
-}
-```
