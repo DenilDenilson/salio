@@ -1,10 +1,10 @@
-## Parámetro de 2026-06-21
+## Parámetro de 2026-06-22
 ZONA_HORARIA=America/Lima
 ```
 
 Antes de comenzar, sustituye `YYYY-MM-DD` por la fecha que deseo consultar.
 
-Ejemplo2026-06-21
+Ejemplo2026-06-22
 ZONA_HORARIA=America/Lima
 ```
 
@@ -50,7 +50,7 @@ Sustituye `FECHA_OBJETIVO` por la fecha real en formato `YYYY-MM-DD`.
 Ejemplo:
 
 ```text
-2026-06-21.json
+2026-06-22.json
 ```
 
 Proporciona un enlace descargable al archivo.
