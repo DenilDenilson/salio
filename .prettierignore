@@ -6,4 +6,7 @@ test-results
 .astro
 .vercel
 .tmp
+tmp
+data/evidence
+data/matches
 pnpm-lock.yaml

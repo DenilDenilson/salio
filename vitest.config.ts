@@ -10,13 +10,6 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html", "lcov"],
       include: ["src/domain/**/*.ts", "src/server/**/*.ts"],
-      exclude: [
-        "src/server/db/**",
-        "src/server/auth/session.ts",
-        "src/server/runtime.ts",
-        "src/server/demo/**",
-        "src/server/observability/**",
-      ],
       thresholds: {
         lines: 80,
         branches: 80,

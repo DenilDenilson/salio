@@ -1,13 +1,37 @@
-node_modules
-.astro
-dist
-.vercel
-.tmp
-coverage
-playwright-report
-test-results
+# Dependencies
+node_modules/
+
+# Astro/build output
+.astro/
+dist/
+
+# Hosting/tool caches
+.vercel/
+.wrangler/
+.cache/
+
+# Test and coverage output
+coverage/
+playwright-report/
+test-results/
+
+# Local scratch/debug artifacts
+.tmp/
+tmp/
+logs/
+*.tmp
+*.log
+
+# Local secrets
 .env
 .env.local
 .env.*.local
-.DS_Store
 !.env.example
+
+# Transient match discovery manifests may contain Stake hidenseek URLs.
+data/matches/
+data/evidence/stake-api/
+data/evidence/espn/
+
+# OS/editor noise
+.DS_Store

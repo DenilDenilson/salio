@@ -23,5 +23,5 @@ const state = snapshotToStateResponse(entry.data);
 ---
 
 <AppLayout title={state.match.title}>
-  <LiveMatchBoard client:load initialState={state} pollEnabled={false} />
+  <LiveMatchBoard client:load initialState={state} />
 </AppLayout>

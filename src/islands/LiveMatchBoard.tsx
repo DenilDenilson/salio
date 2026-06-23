@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   MarketType,
   SelectionStatus,
@@ -6,6 +6,7 @@ import {
   type NormalizedSelection,
   type StateResponse,
 } from "../domain/model";
+import { selectionDisplayName } from "../domain/markets/display";
 
 const stateLabels: Record<
   SelectionStatus,
@@ -77,34 +78,15 @@ const statusFilters = [
 
 interface Props {
   initialState: StateResponse;
-  pollEnabled?: boolean;
 }
 
-export default function LiveMatchBoard({
-  initialState,
-  pollEnabled = true,
-}: Props) {
-  const [state, setState] = useState(initialState);
+export default function LiveMatchBoard({ initialState }: Props) {
+  const state = initialState;
   const [category, setCategory] =
     useState<(typeof categoryFilters)[number]["id"]>("all");
   const [status, setStatus] =
     useState<(typeof statusFilters)[number]["id"]>("all");
   const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    if (!pollEnabled || state.nextSuggestedPollMs >= 60_000) {
-      return;
-    }
-    const interval = window.setInterval(() => {
-      fetch(`/api/matches/${state.match.slug}/state`, {
-        headers: { accept: "application/json" },
-      })
-        .then((response) => response.json())
-        .then((next: StateResponse) => setState(next))
-        .catch(() => undefined);
-    }, state.nextSuggestedPollMs);
-    return () => window.clearInterval(interval);
-  }, [pollEnabled, state.match.slug, state.nextSuggestedPollMs]);
 
   const markets = useMemo(() => {
     return state.markets
@@ -280,6 +262,7 @@ export default function LiveMatchBoard({
 
 function SelectionRow({ selection }: { selection: NormalizedSelection }) {
   const label = stateLabels[selection.status];
+  const displayName = selectionDisplayName(selection);
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 px-4 py-3 transition hover:bg-accent/5">
       <div className="min-w-0">
@@ -291,7 +274,7 @@ function SelectionRow({ selection }: { selection: NormalizedSelection }) {
             <span>{label.label}</span>
           </span>
           <span className="min-w-0 break-words font-medium text-ink">
-            {selection.rawSelectionName}
+            {displayName}
           </span>
         </div>
         <p className="mt-2 text-sm text-neutral">
@@ -324,10 +307,11 @@ function filterMarket(
   }
   const normalizedQuery = query.trim().toLowerCase();
   const selections = market.selections.filter((selection) => {
+    const displayName = selectionDisplayName(selection);
     const statusMatch = status === "all" || selection.status === status;
     const queryMatch =
       normalizedQuery.length === 0 ||
-      selection.rawSelectionName.toLowerCase().includes(normalizedQuery);
+      displayName.toLowerCase().includes(normalizedQuery);
     return statusMatch && queryMatch;
   });
   return selections.length > 0 ? { ...market, selections } : null;

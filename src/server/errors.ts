@@ -6,6 +6,15 @@ export type AppErrorCode =
   | "STAKE_NO_MARKETS_FOUND"
   | "STAKE_SCHEMA_CHANGED"
   | "STAKE_IMPORT_ALREADY_FROZEN"
+  | "STAKE_API_URL_NOT_RESOLVED"
+  | "STAKE_API_HOST_NOT_ALLOWED"
+  | "STAKE_API_EVENT_ID_MISMATCH"
+  | "STAKE_API_HTTP_ERROR"
+  | "STAKE_API_INVALID_CONTENT_TYPE"
+  | "STAKE_API_INVALID_PAYLOAD"
+  | "STAKE_API_NO_ODDS"
+  | "STAKE_API_TIMEOUT"
+  | "STAKE_API_RESPONSE_TOO_LARGE"
   | "SPORTS_PROVIDER_UNAUTHORIZED"
   | "SPORTS_PROVIDER_RATE_LIMITED"
   | "SPORTS_FIXTURE_NOT_FOUND"
@@ -14,12 +23,6 @@ export type AppErrorCode =
   | "SPORTS_FIXTURE_AMBIGUOUS"
   | "SPORTS_PROVIDER_TIMEOUT"
   | "SPORTS_PROVIDER_INVALID_RESPONSE"
-  | "MATCH_NOT_FOUND"
-  | "MATCH_NOT_PUBLISHED"
-  | "FIXTURE_MAPPING_REQUIRED"
-  | "LOCK_NOT_ACQUIRED"
-  | "STALE_DATA_RETURNED"
-  | "ADMIN_UNAUTHORIZED"
   | "VALIDATION_FAILED";
 
 export class AppError extends Error {
@@ -32,20 +35,4 @@ export class AppError extends Error {
     this.code = code;
     this.status = status;
   }
-}
-
-export function publicErrorMessage(code: AppErrorCode): string {
-  if (code.startsWith("STAKE_")) {
-    return "No se pudo importar el evento de Stake.";
-  }
-  if (code.startsWith("SPORTS_")) {
-    return "No se pudo actualizar el proveedor deportivo.";
-  }
-  if (code === "MATCH_NOT_FOUND") {
-    return "Partido no encontrado.";
-  }
-  if (code === "MATCH_NOT_PUBLISHED") {
-    return "Partido no publicado.";
-  }
-  return "No se pudo completar la operacion.";
 }

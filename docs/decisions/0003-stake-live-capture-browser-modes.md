@@ -2,6 +2,9 @@
 
 Date: 2026-06-13
 
+Status: Retired for live capture. The current capture path is API-only and is
+defined in [Decision 0006](0006-stake-api-first-odds-capture.md).
+
 ## Context
 
 Stake serves sportsbook markets through an embedded `websbkt.com` widget. The raw Stake page can contain the wrapper script and app shell without the rendered market DOM. In that state there are no `.wol-market` or market data attributes to parse, even though a normal browser may show odds after the widget finishes mounting.
