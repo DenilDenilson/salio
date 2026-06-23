@@ -16,6 +16,7 @@ import {
 } from "../src/server/snapshots/cli";
 
 const STAKE_API_RETRY_DELAYS_MS = [2_000, 5_000, 10_000, 20_000, 30_000];
+const STAKE_API_MAX_ATTEMPTS = 13;
 
 type StakeImportInput = Parameters<StakeImporter["importEvent"]>[0];
 type StakeImportResult = Awaited<ReturnType<StakeImporter["importEvent"]>>;
@@ -134,7 +135,7 @@ async function importStakeEventWithRetries(
   importer: StakeImporter,
   input: StakeImportInput,
 ): Promise<StakeImportResult> {
-  const maxAttempts = STAKE_API_RETRY_DELAYS_MS.length + 1;
+  const maxAttempts = STAKE_API_MAX_ATTEMPTS;
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
