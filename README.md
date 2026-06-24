@@ -136,13 +136,13 @@ Contrato esperado, en términos prácticos:
 <summary>Ver prompt completo usado para generar manifiestos</summary>
 
 ````text
-## Parámetro de 2026-06-23
+## Parámetro de 2026-06-24
 ZONA_HORARIA=America/Lima
 ```
 
 Antes de comenzar, sustituye `YYYY-MM-DD` por la fecha que deseo consultar.
 
-Ejemplo2026-06-23
+Ejemplo2026-06-24
 ZONA_HORARIA=America/Lima
 ```
 
@@ -188,7 +188,7 @@ Sustituye `FECHA_OBJETIVO` por la fecha real en formato `YYYY-MM-DD`.
 Ejemplo:
 
 ```text
-2026-06-23.json
+2026-06-24.json
 ```
 
 Proporciona un enlace descargable al archivo.
