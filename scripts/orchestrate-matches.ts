@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { constants } from "node:fs";
-import { access, readFile, realpath } from "node:fs/promises";
+import { access, mkdir, readFile, realpath } from "node:fs/promises";
 import { delimiter, resolve } from "node:path";
 
 const MINUTE = 60_000;
@@ -122,14 +122,23 @@ async function captureStake(
   console.log(`🔎 Descubriendo endpoint de Stake para ${match.slug}`);
 
   const xvfbRunPath = await realpath("/usr/bin/xvfb-run");
+  const flockPath = await realpath("/usr/bin/flock");
+  const cacheDirectory = resolve(".cache");
+  const stakeCaptureLockPath = resolve(cacheDirectory, "stake-capture.lock");
+
+  await mkdir(cacheDirectory, { recursive: true });
 
   // Cada partido utiliza su propio perfil para permitir
-  // capturas simultáneas sin bloquear userDataDir.
+  // reintentos aislados sin bloquear userDataDir.
   const profileDirectory = resolve(".cache/network-profiles", match.slug);
 
   const output = await _capture(
-    xvfbRunPath,
+    flockPath,
     [
+      "-w",
+      "900",
+      stakeCaptureLockPath,
+      xvfbRunPath,
       "-a",
       "-s",
       "-screen 0 1280x1024x24",
