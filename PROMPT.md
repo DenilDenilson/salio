@@ -1,9 +1,9 @@
-## Parámetro de 2026-06-25
+## Parámetro de 2026-06-27
 ZONA_HORARIA=America/Lima
 
 Antes de comenzar, sustituye `YYYY-MM-DD` por la fecha que deseo consultar.
 
-Ejemplo2026-06-25
+Ejemplo2026-06-27
 ZONA_HORARIA=America/Lima
 
 Necesito que generes un manifiesto de descubrimiento para **todos los partidos de la FIFA World Cup 2026 correspondientes a `FECHA_OBJETIVO`**, considerando el día completo según la zona horaria `America/Lima`.
@@ -48,7 +48,7 @@ Sustituye `FECHA_OBJETIVO` por la fecha real en formato `YYYY-MM-DD`.
 Ejemplo:
 
 ```text
-2026-06-25.json
+2026-06-27.json
 ```
 
 Proporciona un enlace descargable al archivo.
